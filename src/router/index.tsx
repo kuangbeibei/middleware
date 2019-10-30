@@ -5,21 +5,26 @@ import {
     Link
 } from "react-router-dom"
 
-import middlewareRouteMap from "./routes"
+function renderNavWithRoutes(middlewareRouteMap:IRoute[]) {
+    return (
+        <>
+           <nav>
+                <ul>
+                    {
+                        middlewareRouteMap.map((route) => {
+                            return <li key={route.key}>
+                                <Link to={route.path}>{route.name}</Link>
+                            </li>
+                        })
+                    }
+                </ul>
+            </nav> 
+        </>
+    )
+}
 
 function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
     return (<>
-        <nav>
-            <ul>
-                {
-                    middlewareRouteMap.map((route) => {
-                        return <li key={route.key}>
-                            <Link to={route.path}>{route.name}</Link>
-                        </li>
-                    })
-                }
-            </ul>
-        </nav>
         <Switch>
             {
                 middlewareRouteMap.map((route) => {
@@ -37,5 +42,7 @@ function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
     </>)
 }
 
-
-export default renderPageWithRoutes(middlewareRouteMap)
+export {
+    renderNavWithRoutes,
+    renderPageWithRoutes
+}

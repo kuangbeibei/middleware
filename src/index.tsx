@@ -5,12 +5,29 @@ import {
 } from "react-router-dom"
 
 import "./assets/style/reset.less"
+import "./assets/style/layout.less"
+import middlewareRouteMap from "@router/routes"
 
-
-import renderAll from "@router/index"
+import {
+    renderNavWithRoutes,
+    renderPageWithRoutes
+} from "@router/index"
 
 ReactDom.render(
 	<Router>
-        {renderAll}
+        <header>
+            <div className="logo"></div>
+            {
+                renderNavWithRoutes(middlewareRouteMap)
+            }
+        </header>
+        <section className="sidebar">
+            
+        </section>
+        <main>
+            {
+                renderPageWithRoutes(middlewareRouteMap)
+            }
+        </main>
     </Router>
 , document.getElementById('root'))

@@ -7,21 +7,21 @@ const middlewareRouteMap:IRoute[] = [
         path: '/',
         page: Mysql,
         key: 'mysql',
-        name: 'mysql',
+        name: 'Mysql',
         isExact: true
     },
     {
         path: '/redis',
         page: Redis,
         key: 'redis',
-        name: 'redis',
+        name: 'Redis',
         isExact: false
     },
     {
         path: '/rocketmq',
         page: Rocketmq,
         key: 'rocketmq',
-        name: 'rocketmq',
+        name: 'Rocket-MQ',
         isExact: false
     }
 ]
