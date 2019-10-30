@@ -7,6 +7,7 @@ import {
 import "./assets/style/reset.less"
 import "./assets/style/layout.less"
 import middlewareRouteMap from "@router/routes"
+import Breadcrumbs from "@com/Breadcrumbs"
 
 import {
     renderNavWithRoutes,
@@ -24,6 +25,11 @@ ReactDom.render(
         <section className="sidebar">
             
         </section>
+
+        <div className="breadcrumbs">
+            <Breadcrumbs />
+        </div>
+
         <main>
             {
                 renderPageWithRoutes(middlewareRouteMap)

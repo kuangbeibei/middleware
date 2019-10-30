@@ -7,6 +7,5 @@ interface IRoute {
 }
 
 interface IRouteMap {
-    map(arg0: (route: IRoute) => JSX.Element): React.ReactNode;
     [index: number]: IRoute[]
 }
