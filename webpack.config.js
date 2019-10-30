@@ -35,16 +35,23 @@ module.exports = WebpackMerge({
     },
     output: {
         filename: ENV === 'DEV' ? '[name].bundle.js' : '[name].[hash:5].bundle.js',
-        path: ResolvePath('dist')
+        path: ResolvePath('dist'),
+        chunkFilename: '[name].chunkfile.js',
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.ts', '.tsx', '.js'],
+        alias: {
+            '@pages': ResolvePath('src/pages'),
+            '@com': ResolvePath('src/components'),
+            '@router': ResolvePath('src/router'),
+            '@types': ResolvePath('src/typings'),
+        }
     },
     module: {
         rules: [
             {
                 test: /\.css$/,
-                use: 'css-loader'
+                use: ['style-loader', 'css-loader']
             },
             {
                 test: /\.less$/,

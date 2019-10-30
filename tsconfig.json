@@ -1,14 +1,23 @@
 {
     "compilerOptions": {
+		"lib": ["es6", "dom"],
+		"noImplicitThis": true,
+		"strictNullChecks": true,
 		"module": "commonjs",
 		"noImplicitAny": true,
 		"removeComments": true,
 		"sourceMap": true,
 		"jsx": "react",
-		"target": "es5"
+		"target": "es5",
+		"baseUrl": ".",
+		"paths": {
+			"@com/*": ["./src/components/*"],
+			"@pages/*": ["./src/pages/*"],
+			"@router/*": ["./src/router"],
+		},
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
 	],
 	"exclude": [
 		"node_modules"
