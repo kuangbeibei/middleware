@@ -25,15 +25,17 @@ ReactDom.render(
         <section className="sidebar">
             
         </section>
-
-        <div className="breadcrumbs">
-            <Breadcrumbs />
-        </div>
-
+        
         <main>
-            {
-                renderPageWithRoutes(middlewareRouteMap)
-            }
+            <section className="breadcrumbs">
+                <Breadcrumbs />
+            </section>
+
+            <section className="page-content">
+                {
+                    renderPageWithRoutes(middlewareRouteMap)
+                }
+            </section>
         </main>
     </Router>
 , document.getElementById('root'))
