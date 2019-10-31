@@ -3,6 +3,9 @@ import {useState, useEffect} from "react"
 import TableAddBtn from "@com/Table-list-add";
 import Tablelist from "@com/Table-list";
 
+import { get, post, del, put } from "@api"
+
+
 export default function(props) {
 	interface Data {
 		name: string;

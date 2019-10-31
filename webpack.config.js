@@ -19,7 +19,7 @@ const BuildConfig = require("./webpack.build.conf");
 
 
 const ResolvePath = (dir) => {
-    return path.resolve(__dirname, dir)
+    return path.join(__dirname, dir)
 }
 
 const {
@@ -45,6 +45,7 @@ module.exports = WebpackMerge({
             '@com': ResolvePath('src/components'),
             '@router': ResolvePath('src/router'),
             '@types': ResolvePath('src/typings'),
+            '@api': ResolvePath('src/utils/api')
         }
     },
     module: {

@@ -1,6 +1,5 @@
 import * as React from "react"
-
-
+import Loading from "@com/Loading"
 interface IDynamicImportProps {
     load: Function,
     children: any
@@ -12,9 +11,9 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 	};
 	componentDidMount() {
 		this.props.load().then(component => {
-            this.setState(() => ({
-                component: component.default ? component.default : component
-            }));
+			this.setState(() => ({
+					component: component.default ? component.default : component
+				}));
 		});
     }
 	render() {
@@ -23,7 +22,7 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 }
 
 function childrenOfDynamicImport(Component, props) {
-	return Component === null ? <p>loading</p> : <Component {...props} />
+	return Component === null ? <Loading /> : <Component {...props} />
 }
 
 

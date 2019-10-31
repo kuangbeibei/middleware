@@ -1,3 +1,8 @@
+/*
+ * @Author: kuangdan 
+ * @Date: 2019-10-31 15:42:34 
+ * @Last Modified: 2019-10-31 15:42:34 
+ */ 
 
 @main-color: #132169; 
 @deepen-main-color-10: darken(@main-color, 10%);
@@ -41,14 +46,20 @@ header {
                 text-align: center;
                 cursor: pointer;
                 a {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
                     color: rgba(255, 255, 255, 0.65);
                 }
-                a:active {
-                    color: @white-color
-                }
-                &:hover {
+                &:hover, a:active {
                     color: @white-color;
                     background: @nav-active-color;
+                }
+            }
+            li.active {
+                background: @nav-active-color;
+                a {
+                    color: @white-color;
                 }
             }
         }
