@@ -81,7 +81,7 @@ const TableList: React.SFC<ITableListProps> = (props) => {
 										hover
 										role="checkbox"
 										tabIndex={-1}
-										key={row.code}
+										key={row.id}
 									>
 										{columns.map(column => {
 											const value = row[column.id];
@@ -91,7 +91,7 @@ const TableList: React.SFC<ITableListProps> = (props) => {
 													align={column.align}
 												>
 													{column.format &&
-													typeof value === "number"
+													typeof value === "string"
 														? column.format(value)
                                                         : value}
                                                     {
@@ -107,7 +107,7 @@ const TableList: React.SFC<ITableListProps> = (props) => {
 				</Table>
 			</div>
 			<TablePagination
-				rowsPerPageOptions={[10, 25, 100]}
+				rowsPerPageOptions={[10]}
 				component="div"
 				count={rows.length}
 				rowsPerPage={rowsPerPage}

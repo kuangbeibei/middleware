@@ -45,7 +45,8 @@ module.exports = WebpackMerge({
             '@com': ResolvePath('src/components'),
             '@router': ResolvePath('src/router'),
             '@types': ResolvePath('src/typings'),
-            '@api': ResolvePath('src/utils/api')
+            '@api': ResolvePath('src/utils/api'),
+            '@tools': ResolvePath('src/utils/tools')
         }
     },
     module: {

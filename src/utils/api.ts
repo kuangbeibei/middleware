@@ -15,7 +15,7 @@ instance.interceptors.request.use(
 		config.timeout = 10000; //设置相应过期时间
 		config.headers = {
 			//request header 设置
-			"yh-tenant-id": "lystest"
+			// "yh-tenant-id": "lystest"
 		};
 		return config;
 	},
@@ -37,7 +37,7 @@ instance.interceptors.response.use(
 	}
 );
 
-export const request = config => {
+const request = config => {
 	return instance
 		.request({ ...config })
 		.then((response: any) => {
