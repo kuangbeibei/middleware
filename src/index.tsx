@@ -22,9 +22,10 @@ ReactDom.render(
                 renderNavWithRoutes(middlewareRouteMap)
             }
         </header>
-        <section className="sidebar">
+
+        <aside className="sidebar">
             
-        </section>
+        </aside>
         
         <main>
             <section className="breadcrumbs">
@@ -37,5 +38,7 @@ ReactDom.render(
                 }
             </section>
         </main>
+
+        <footer></footer>
     </Router>
 , document.getElementById('root'))

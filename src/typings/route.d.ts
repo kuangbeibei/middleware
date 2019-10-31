@@ -1,6 +1,6 @@
 interface IRoute {
     path: string,
-    page: Function,
+    page: any,
     key: string,
     name: string,
     isExact: boolean

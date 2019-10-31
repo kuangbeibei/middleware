@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useState, useEffect} from "react"
 import TableAddBtn from "@com/Table-list-add";
 import Tablelist from "@com/Table-list";
 
@@ -76,13 +77,10 @@ export default function(props) {
             minWidth: 170,
             align: "right",
             render: (text: any, record: any, index: any) => {
-                console.log('text ,', text);
-                console.log('record ,', record);
-                console.log('index ,', index);
                 return <span>123</span>
             }
         }
-	];
+    ];
 
 	return (
 		<>

@@ -12,6 +12,7 @@ function renderNavWithRoutes(middlewareRouteMap:IRoute[]) {
                 <ul>
                     {
                         middlewareRouteMap.map((route) => {
+                            console.log('route', route);
                             return <li key={route.key}>
                                 <Link to={route.path}>{route.name}</Link>
                             </li>
@@ -32,9 +33,7 @@ function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
                         path={route.path}
                         exact={route.isExact} 
                         key={route.key}
-                        render={
-                            props => (<route.page {...props} />)
-                        }
+                        component={route.page}
                     />
                 })
             }

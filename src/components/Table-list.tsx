@@ -11,7 +11,9 @@ import TableRow from "@material-ui/core/TableRow";
 
 const useStyles = makeStyles({
 	root: {
-		width: "100%"
+        width: "98%",
+        marginLeft: '1px',
+        marginTop: '10px'
 	},
 	tableWrapper: {
 		maxHeight: 440,
@@ -46,7 +48,7 @@ const TableList: React.SFC<ITableListProps> = (props) => {
 	};
 
 	return (
-        <Paper className={classes.root} style={{marginLeft: '1px', marginTop: '10px',width: '98%'}}>
+        <Paper className={classes.root}>
 			<div className={classes.tableWrapper}>
 				<Table stickyHeader aria-label="sticky table">
 					<TableHead>
