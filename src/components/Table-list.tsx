@@ -95,7 +95,7 @@ const TableList: React.SFC<ITableListProps> = (props) => {
 														? column.format(value)
                                                         : value}
                                                     {
-                                                        column.render ? column.render() : null
+                                                        column.render ? column.render(row) : null
                                                     }
 												</TableCell>
 											);

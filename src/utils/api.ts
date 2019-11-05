@@ -1,3 +1,9 @@
+/*
+ * @Author: kuangdan 
+ * @Date: 2019-11-01 10:32:55 
+ * @Last Modified: 2019-11-01 10:32:55 
+ */
+
 import * as axios from "axios";
 
 var instance = axios["create"]();

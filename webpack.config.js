@@ -39,14 +39,15 @@ module.exports = WebpackMerge({
         chunkFilename: '[name].chunkfile.js',
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@pages': ResolvePath('src/pages'),
             '@com': ResolvePath('src/components'),
             '@router': ResolvePath('src/router'),
             '@types': ResolvePath('src/typings'),
             '@api': ResolvePath('src/utils/api'),
-            '@tools': ResolvePath('src/utils/tools')
+            '@tools': ResolvePath('src/utils/tools'),
+            '@actions': ResolvePath('src/store/actions')
         }
     },
     module: {

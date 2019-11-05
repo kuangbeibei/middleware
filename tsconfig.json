@@ -10,12 +10,14 @@
 		"jsx": "react",
 		"target": "es5",
 		"baseUrl": ".",
+		"resolveJsonModule": true,
 		"paths": {
 			"@com/*": ["./src/components/*"],
 			"@pages/*": ["./src/pages/*"],
 			"@router/*": ["./src/router"],
 			"@api": ["./src/utils/api"],
-			"@tools": ["./src/utils/tools"]
+			"@tools": ["./src/utils/tools"],
+			"@actions/*": ["./src/store/actions/*"]
 		},
 	},
 	"include": [
