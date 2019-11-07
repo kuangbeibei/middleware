@@ -77,7 +77,7 @@ function RocketMqHome(props) {
 	 * 创建一个RMQ 类型
 	 */
 	const createRmqType = () => {
-		debugger;
+        if (!newItemName || !newItemType) return message.info('请确保已填写名称并选择类型！')
 		createRmqComponentClusterRecord({
 			businessName: newItemName,
 			componentType: newItemType
@@ -129,8 +129,9 @@ function RocketMqHome(props) {
 	 * 前往二级列表页
 	 */
     const gotoNameServerList = (id, type) => {
+        addFlag = false;
         type = type.toLowerCase();
-		props.history.push(`/rocketmq/${type}`);
+		props.history.push(`/rocketmq/${type}/${id}`);
 	}
 	
 	/**

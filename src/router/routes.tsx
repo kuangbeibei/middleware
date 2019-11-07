@@ -67,6 +67,22 @@ const RocketNameServer = props => (
 	</DynamicImport>
 )
 
+const RocketBroker = props => (
+	<DynamicImport load={() => import("@pages/Rocket-MQ/Broker")}>
+		{
+			Component => childrenOfDynamicImport(Component, props)
+		}
+	</DynamicImport>
+)
+
+const RocketConsole = props => (
+	<DynamicImport load={() => import("@pages/Rocket-MQ/Console")}>
+		{
+			Component => childrenOfDynamicImport(Component, props)
+		}
+	</DynamicImport>
+)
+
 const middlewareRouteMap: IRoute[] = [
 	{
 		path: "/",
@@ -87,20 +103,34 @@ const middlewareRouteMap: IRoute[] = [
 		page: RocketmqIndex,
 		key: "RocketmqIndex",
 		name: "RocketmqIndex",
-		isExact: true,
+		isExact: false,
 		children: [
-			{	
-				key: 'RocketNameServer',
-				path: '/rocketmq/rmqnameserver',
-				page: RocketNameServer,
-				name: 'RocketNameServer',
-				isExact: false
-			},
 			{	
 				key: 'RocketmqHome',
 				path: '/rocketmq',
 				page: RocketmqHome,
 				name: 'RocketmqHome',
+				isExact: true
+			},
+			{	
+				key: 'RocketNameServer',
+				path: '/rocketmq/rmqnameserver:id',
+				page: RocketNameServer,
+				name: 'RocketNameServer',
+				isExact: false
+			},
+			{	
+				key: 'RocketBroker',
+				path: '/rocketmq/rmqbroker:id',
+				page: RocketBroker,
+				name: 'RocketBroker',
+				isExact: false
+			},
+			{	
+				key: 'RocketConsole',
+				path: '/rocketmq/rmqconsole:id',
+				page: RocketConsole,
+				name: 'RocketConsole',
 				isExact: false
 			},
 		]

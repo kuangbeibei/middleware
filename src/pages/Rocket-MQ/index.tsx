@@ -6,12 +6,13 @@
 
 import * as React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { renderPageWithRoutes } from "@router/index";
 
 function RocketmqIndex(props) {
 	console.log('props.routes,', props.routes);
 	return (
 		<Switch>
-			{props.routes.map(route => (
+			{/* {props.routes.map(route => (
 				<Route
 					path={route.path}
 					key={route.key}
@@ -20,7 +21,11 @@ function RocketmqIndex(props) {
 						props => <route.page {...props}/>
 					}
 				/>
-			))}
+			))} */}
+			{
+				renderPageWithRoutes(props.routes)
+			}
+			
 		</Switch>
 	);
 }
