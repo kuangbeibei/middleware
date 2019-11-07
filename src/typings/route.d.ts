@@ -8,7 +8,8 @@ interface IRoute {
     page: any,
     key: string,
     name: string,
-    isExact: boolean
+    isExact: boolean,
+    children?: IRoute[]
 }
 
 interface IRouteMap {

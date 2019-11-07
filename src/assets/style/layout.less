@@ -6,7 +6,7 @@
 
 @main-color: #132169; 
 @deepen-main-color-10: darken(@main-color, 10%);
-@nav-active-color: #0070cc;
+@active-color: #0070cc;
 @white-color: #fff;
 @bg-color: #f5f5f5;
 
@@ -53,11 +53,11 @@ header {
                 }
                 &:hover, a:active {
                     color: @white-color;
-                    background: @nav-active-color;
+                    background: @active-color;
                 }
             }
             li.active {
-                background: @nav-active-color;
+                background: @active-color;
                 a {
                     color: @white-color;
                 }
@@ -65,7 +65,7 @@ header {
         }
     }
     nav.active {
-        background: @nav-active-color;
+        background: @active-color;
         color: #fff;
     }
 }
@@ -89,8 +89,17 @@ main {
     padding-top: 10px;
     margin-left: 200px;
     padding-left: 20px;
-    background: @bg-color;
+    .breadcrumbs {
+        position: absolute;
+        top: 25px;
+        width: 100%;
+        font-size: 16px;
+    }
     .page-content {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        top: 60px;
         overflow: hidden;
         height: 100%;
     }
@@ -100,13 +109,11 @@ footer {
     
 }
 
-.breadcrumbs {
-    .MuiPaper-root {
-        margin-left: -16px;
-        background: transparent!important;
-    }
+.ant-btn-primary {
+    background-color: @active-color;
+    border-color: @active-color;
 }
 
-.makeStyles-tableWrapper-114 {
-    max-height: 740px!important;
+.ant-pagination-item-active a {
+    color: @active-color;
 }

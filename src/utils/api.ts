@@ -53,11 +53,7 @@ const request = config => {
 				data: response,
 				message: "success"
 			};
-			if (data.code === "S200") {
-				return data;
-			} else {
-				return;
-			}
+			return data;
 		})
 		.catch(err => {
 			return err;

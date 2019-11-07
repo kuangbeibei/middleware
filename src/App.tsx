@@ -1,12 +1,11 @@
 import * as React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import middlewareRouteMap from "@router/routes";
-import Breadcrumbs from "@com/Breadcrumbs";
 
 import { NavComponent, renderPageWithRoutes } from "@router/index";
 
-const App: React.SFC = () => {
-	
+const App: React.SFC = (props) => {
+	console.log('props, ', props);
 	return (
 			<Router>
 				<header>
@@ -18,10 +17,11 @@ const App: React.SFC = () => {
 
 				<main>
 					<section className="breadcrumbs">
-						<Breadcrumbs />
+						我是面包屑
 					</section>
 
 					<section className="page-content">
+		
 						{renderPageWithRoutes(middlewareRouteMap)}
 					</section>
 				</main>

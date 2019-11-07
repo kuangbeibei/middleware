@@ -1,5 +1,5 @@
 import * as React from "react"
-import Loading from "@com/Loading"
+
 interface IDynamicImportProps {
     load: Function,
     children: any
@@ -13,7 +13,8 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 		this.props.load().then(component => {
 			this.setState(() => ({
 					component: component.default ? component.default : component
-				}));
+			}));
+			console.log('我来啦')
 		});
     }
 	render() {
@@ -22,7 +23,7 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 }
 
 function childrenOfDynamicImport(Component, props) {
-	return Component === null ? <Loading /> : <Component {...props} />
+	return Component === null ? <div>loading</div> : <Component {...props} />
 }
 
 
@@ -42,8 +43,24 @@ const Redis = props => (
 	</DynamicImport>
 )
 
-const Rocketmq = props => (
+const RocketmqIndex = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ")}>
+		{
+			Component => childrenOfDynamicImport(Component, props)
+		}
+	</DynamicImport>
+)
+
+const RocketmqHome = props => (
+	<DynamicImport load={() => import("@pages/Rocket-MQ/Home")}>
+		{
+			Component => childrenOfDynamicImport(Component, props)
+		}
+	</DynamicImport>
+)
+
+const RocketNameServer = props => (
+	<DynamicImport load={() => import("@pages/Rocket-MQ/Nameserver")}>
 		{
 			Component => childrenOfDynamicImport(Component, props)
 		}
@@ -63,14 +80,30 @@ const middlewareRouteMap: IRoute[] = [
 		page: Redis,
 		key: "redis",
 		name: "Redis",
-		isExact: false
+		isExact: true
 	},
 	{
 		path: "/rocketmq",
-		page: Rocketmq,
-		key: "rocketmq",
-		name: "Rocket-MQ",
-		isExact: false
+		page: RocketmqIndex,
+		key: "RocketmqIndex",
+		name: "RocketmqIndex",
+		isExact: true,
+		children: [
+			{	
+				key: 'RocketNameServer',
+				path: '/rocketmq/rmqnameserver',
+				page: RocketNameServer,
+				name: 'RocketNameServer',
+				isExact: false
+			},
+			{	
+				key: 'RocketmqHome',
+				path: '/rocketmq',
+				page: RocketmqHome,
+				name: 'RocketmqHome',
+				isExact: false
+			},
+		]
 	}
 ];
 

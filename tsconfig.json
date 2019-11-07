@@ -17,7 +17,8 @@
 			"@router/*": ["./src/router"],
 			"@api": ["./src/utils/api"],
 			"@tools": ["./src/utils/tools"],
-			"@actions/*": ["./src/store/actions/*"]
+			"@actions/*": ["./src/store/actions/*"],
+			"@styled/*": ["./src/styled-components/*"]
 		},
 	},
 	"include": [

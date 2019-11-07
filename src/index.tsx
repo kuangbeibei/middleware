@@ -10,8 +10,10 @@ import App from "./App";
 import { Provider } from "react-redux";
 import createStore from "./store";
 
+import "antd/dist/antd.less";
 import "./assets/style/reset.less";
 import "./assets/style/layout.less";
+
 
 const store = createStore();
 ReactDom.render(

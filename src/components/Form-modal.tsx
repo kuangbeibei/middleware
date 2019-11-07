@@ -2,11 +2,25 @@ import * as React from "react";
 import { Modal } from "antd";
 
 export default function(props) {
-	const { modalName } = props;
+	const { modalName, visible } = props;
+    
+    const handleOk = () => {
 
-    return <Modal title={modalName}>
-        {
-            props.children
-        }
-    </Modal>;
+    }
+
+    const handleCancel = () => {
+
+    }
+
+	return (
+		<Modal
+			title={modalName}
+            visible={visible}
+            onOk={handleOk}
+			onCancel={handleCancel}
+			maskClosable={false}
+		>
+			{props.children}
+		</Modal>
+	);
 }

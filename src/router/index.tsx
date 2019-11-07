@@ -56,7 +56,9 @@ function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
                         path={route.path}
                         exact={route.isExact} 
                         key={route.key}
-                        component={route.page}
+                        component={(props) => {
+                            return <route.page {...props} routes={route.children} />
+                        }}
                     />
                 })
             }
