@@ -4,31 +4,27 @@ import middlewareRouteMap from "@router/routes";
 
 import { NavComponent, renderPageWithRoutes } from "@router/index";
 
-const App: React.SFC = (props) => {
-	console.log('props, ', props);
+const App: React.SFC = props => {
 	return (
-			<Router>
-				<header>
-					<div className="logo"></div>
-					<NavComponent middlewareRouteMap={middlewareRouteMap} />
-				</header>
+		<Router>
+			<header>
+				<div className="logo"></div>
+				<NavComponent middlewareRouteMap={middlewareRouteMap} />
+			</header>
 
-				<aside className="sidebar"></aside>
+			<aside className="sidebar"></aside>
 
-				<main>
-					<section className="breadcrumbs">
-						我是面包屑
-					</section>
+			<main>
+				<section className="breadcrumbs">我是面包屑</section>
 
-					<section className="page-content">
-		
-						{renderPageWithRoutes(middlewareRouteMap)}
-					</section>
-				</main>
+				<section className="page-content">
+					{renderPageWithRoutes(middlewareRouteMap)}
+				</section>
+			</main>
 
-				<footer></footer>
-			</Router>
-		);
-}
+			<footer></footer>
+		</Router>
+	);
+};
 
 export default App;

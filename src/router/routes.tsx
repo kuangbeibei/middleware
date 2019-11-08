@@ -1,138 +1,122 @@
-import * as React from "react"
+import * as React from "react";
 
 interface IDynamicImportProps {
-    load: Function,
-    children: any
+	load: Function;
+	children: any;
 }
 
 class DynamicImport extends React.Component<IDynamicImportProps> {
 	state = {
 		component: null
 	};
-	componentDidMount() {
-		this.props.load().then(component => {
-			this.setState(() => ({
-					component: component.default ? component.default : component
-			}));
-			console.log('我来啦')
-		});
-    }
+	public async componentDidMount() {
+		const { default: component } = await this.props.load();
+		this.setState({
+			component
+		})
+	}
 	render() {
-        return this.props.children(this.state.component)
-    }
+		return this.props.children(this.state.component, this.props);
+	}
 }
 
 function childrenOfDynamicImport(Component, props) {
-	return Component === null ? <div>loading</div> : <Component {...props} />
+	console.log('引入的Component，', Component);
+	return Component === null ? <div>loading</div> : <Component {...props} />;
 }
-
 
 const Mysql = props => (
 	<DynamicImport load={() => import("@pages/Mysql")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const Redis = props => (
 	<DynamicImport load={() => import("@pages/Redis")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
-const RocketmqIndex = props => (
+const Rocketmq = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const RocketmqHome = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Home")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const RocketNameServer = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Nameserver")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const RocketBroker = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Broker")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const RocketConsole = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Console")}>
-		{
-			Component => childrenOfDynamicImport(Component, props)
-		}
+		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const middlewareRouteMap: IRoute[] = [
 	{
-		path: "/",
+		path: "/mysql",
 		page: Mysql,
 		key: "mysql",
 		name: "Mysql",
-		isExact: true
+		isExact: false
 	},
 	{
 		path: "/redis",
 		page: Redis,
 		key: "redis",
 		name: "Redis",
-		isExact: true
+		isExact: false
 	},
 	{
 		path: "/rocketmq",
-		page: RocketmqIndex,
-		key: "RocketmqIndex",
-		name: "RocketmqIndex",
-		isExact: false,
+		page: Rocketmq,
+		key: "rocketmq",
+		name: "Rocketmq",
+		isExact: true,
 		children: [
-			{	
-				key: 'RocketmqHome',
-				path: '/rocketmq',
+			{
+				key: "RocketmqHome",
+				path: "/rocketmq",
 				page: RocketmqHome,
-				name: 'RocketmqHome',
-				isExact: true
+				name: "RocketmqHome",
+				isExact: false
 			},
-			{	
-				key: 'RocketNameServer',
-				path: '/rocketmq/rmqnameserver:id',
+			{
+				key: "rmqnameserver",
+				path: "/rocketmq/rmqnameserver/:id",
 				page: RocketNameServer,
-				name: 'RocketNameServer',
+				name: "RocketNameServer",
 				isExact: false
 			},
-			{	
-				key: 'RocketBroker',
-				path: '/rocketmq/rmqbroker:id',
+			{
+				key: "rmqbroker",
+				path: "/rocketmq/rmqbroker/:id",
 				page: RocketBroker,
-				name: 'RocketBroker',
+				name: "RocketBroker",
 				isExact: false
 			},
-			{	
-				key: 'RocketConsole',
-				path: '/rocketmq/rmqconsole:id',
+			{
+				key: "rmqconsole",
+				path: "/rocketmq/rmqconsole/:id",
 				page: RocketConsole,
-				name: 'RocketConsole',
+				name: "RocketConsole",
 				isExact: false
-			},
+			}
 		]
 	}
 ];
