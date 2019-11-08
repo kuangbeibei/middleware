@@ -26,7 +26,7 @@ import {
 	Col
 } from "antd";
 
-import { YhOp } from "@styled/Button";
+import { YhOp, YhAdd } from "@styled/Button";
 
 import {
 	getRmqComponentClusterRecords,
@@ -202,9 +202,9 @@ function RocketMqHome(props) {
 						okText="是"
 						cancelText="否"
 					>
-						<YhOp>
+						<Button type="primary" shape="circle">
 							<Icon type="delete" />
-						</YhOp>
+						</Button>
 					</Popconfirm>
 				) : (
 					<>
@@ -230,7 +230,7 @@ function RocketMqHome(props) {
 
 	return (
 		<>
-			<Button type="primary" icon="plus" onClick={addRmqType} />
+            <YhAdd type="primary" icon="plus" onClick={addRmqType} style={{marginBottom: 10}}/>
 			<Table columns={columns} dataSource={tableList} rowKey="id" />
 		</>
 	);

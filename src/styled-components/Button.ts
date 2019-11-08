@@ -2,6 +2,10 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 
+import {
+	Button
+} from "antd"
+
 
 export interface IYhOp {
 	color?: string
@@ -16,4 +20,8 @@ export const YhOp = styled['span']`
 	i,span {
 		font-size: ${p => p.fontSize? p.fontSize : 12}px;
 	}
+`
+
+export const YhAdd = styled(Button)`
+	margin-bottom: 10px;
 `

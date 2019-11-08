@@ -21,7 +21,6 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 }
 
 function childrenOfDynamicImport(Component, props) {
-	console.log('引入的Component，', Component);
 	return Component === null ? <div>loading</div> : <Component {...props} />;
 }
 

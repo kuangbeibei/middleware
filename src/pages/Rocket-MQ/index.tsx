@@ -5,12 +5,10 @@
  */
 
 import * as React from "react";
-import { Redirect, Route, Switch, Link } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import { renderPageWithRoutes } from "@router/index";
 
 function RocketmqIndex(props) {
-	console.log('props.routes,', props.routes);
-	console.log('props~~~ ,',props)
 	return (
 		<Switch>
 			{
