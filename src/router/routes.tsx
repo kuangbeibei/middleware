@@ -87,15 +87,8 @@ const middlewareRouteMap: IRoute[] = [
 		page: Rocketmq,
 		key: "rocketmq",
 		name: "Rocketmq",
-		isExact: true,
+		isExact: false,
 		children: [
-			{
-				key: "RocketmqHome",
-				path: "/rocketmq",
-				page: RocketmqHome,
-				name: "RocketmqHome",
-				isExact: false
-			},
 			{
 				key: "rmqnameserver",
 				path: "/rocketmq/rmqnameserver/:id",
@@ -116,7 +109,14 @@ const middlewareRouteMap: IRoute[] = [
 				page: RocketConsole,
 				name: "RocketConsole",
 				isExact: false
-			}
+			},
+			{
+				key: "RocketmqHome", // 子路由首页放在最后！
+				path: "/rocketmq",
+				page: RocketmqHome,
+				name: "RocketmqHome",
+				isExact: false,
+			},
 		]
 	}
 ];

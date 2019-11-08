@@ -9,7 +9,7 @@ interface IRoute {
     key: string,
     name: string,
     isExact: boolean,
-    children?: IRoute[]
+    children?: IRoute[],
 }
 
 interface IRouteMap {
