@@ -15,7 +15,7 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 			component
 		})
 	}
-	render() {
+	public render() {
 		return this.props.children(this.state.component, this.props);
 	}
 }

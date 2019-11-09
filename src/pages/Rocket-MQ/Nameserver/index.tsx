@@ -57,11 +57,6 @@ function RmqNameServer(props) {
     let [configInfo, setconfigInfo] = useState(Array());
     let [loginfo, setloginfo] = useState("")
 
-	let [postParams, setpostParams] = useState(
-		deepCloneObject(rmqNameServerPrototype)
-	);
-	let { params } = postParams;
-
 	useEffect(() => {
 		getDeployListOfRmqNameServer(id)
 			.then(data => {
@@ -88,62 +83,6 @@ function RmqNameServer(props) {
 	const addNameServer = () => {
         // setvisibility(true);
         setTableModalVisibility();
-	};
-
-	/**
-	 * 创建
-	 */
-	// const handleOk = () => {
-	// 	const {
-	// 		form: { getFieldsValue, validateFields }
-	// 	} = props;
-	// 	validateFields(err => {
-	// 		if (err) return message.warning(`信息填写不完全!`);
-
-	// 		let deployData = Object.assign(
-	// 			{},
-	// 			{
-	// 				params: Object.assign(
-	// 					{},
-	// 					{
-	// 						rmqComponentClusterId: Number(id)
-	// 					},
-	// 					{ ...getFieldsValue().params }
-	// 				)
-	// 			},
-	// 			{
-	// 				type: "rmqNameServer"
-	// 			}
-	// 		);
-	// 		deployData.params.port = Number(deployData.params.port);
-
-	// 		deployTask(deployData)
-	// 			.then(() => {
-	// 				message.success(`NameServer创建成功`);
-	// 				initFormModal();
-	// 				setLoadListCount(loadingListCount + 1);
-	// 			})
-	// 			.catch(e => message.error(e.message));
-	// 	});
-	// };
-
-	/**
-	 * 关闭弹窗
-	 */
-	// const handleCancel = () => {
-	// 	initFormModal();
-	// 	setvisibility(false);
-	// };
-
-	/**
-	 * 初始化表单
-	 */
-	const initFormModal = () => {
-		const {
-			form: { resetFields }
-		} = props;
-		resetFields();
-		// setvisibility(false);
 	};
 
 	/**
@@ -276,7 +215,7 @@ function RmqNameServer(props) {
 			<YhAdd type="primary" icon="plus" onClick={addNameServer} />
 			<Table columns={columns} dataSource={tableList} rowKey="id" />
 
-            <FormMdal />
+            <FormMdal {...props} />
 
 			<ConfigDrawer
 				configVisibility={configVisibility}
