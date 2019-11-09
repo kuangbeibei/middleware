@@ -3,7 +3,7 @@ import {
 } from "../action-types"
 
 export default function setTableModalVisibility(dispatch) {
-    return () => {
+    return async (dispatch) => {
         dispatch({
             type: MODAL_VISIBILITY
         })
