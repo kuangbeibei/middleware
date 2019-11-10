@@ -1,3 +1,9 @@
+/*
+ * @Author: kuangdan
+ * @Date: 2019-11-09 20:45:55
+ * @Last Modified: 2019-11-09 20:45:55
+ */
+
 import * as React from "react";
 
 interface IDynamicImportProps {
@@ -13,7 +19,7 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 		const { default: component } = await this.props.load();
 		this.setState({
 			component
-		})
+		});
 	}
 	public render() {
 		return this.props.children(this.state.component, this.props);
@@ -66,48 +72,72 @@ const RocketConsole = props => (
 	</DynamicImport>
 );
 
-const middlewareRouteMap: IRoute[] = [
+export const MysqlRoutesMap: IRoute[] = [
 	{
 		path: "/mysql",
 		page: Mysql,
 		key: "mysql",
 		name: "Mysql",
-		isExact: false
-	},
+		isExact: false,
+		meta: {
+			title: "Mysql集群列表"
+		}
+	}
+]
+
+export const RedisRoutesMap: IRoute[] = [
 	{
 		path: "/redis",
 		page: Redis,
 		key: "redis",
 		name: "Redis",
-		isExact: false
+		isExact: false,
+		meta: {
+			title: "Redis集群列表"
+		}
 	},
+]
+
+export const RocketmqRoutesMap: IRoute[] = [
 	{
 		path: "/rocketmq",
 		page: Rocketmq,
 		key: "rocketmq",
 		name: "Rocketmq",
 		isExact: false,
+		meta: {
+			title: "RMQ集群列表"
+		},
 		children: [
 			{
 				key: "rmqnameserver",
 				path: "/rocketmq/rmqnameserver/:id",
 				page: RocketNameServer,
 				name: "RocketNameServer",
-				isExact: false
+				isExact: false,
+				meta: {
+					title: "NameServer列表"
+				}
 			},
 			{
 				key: "rmqbroker",
 				path: "/rocketmq/rmqbroker/:id",
 				page: RocketBroker,
 				name: "RocketBroker",
-				isExact: false
+				isExact: false,
+				meta: {
+					title: "Broker列表"
+				}
 			},
 			{
 				key: "rmqconsole",
 				path: "/rocketmq/rmqconsole/:id",
 				page: RocketConsole,
 				name: "RocketConsole",
-				isExact: false
+				isExact: false,
+				meta: {
+					title: "Console列表"
+				}
 			},
 			{
 				key: "RocketmqHome", // 子路由首页放在最后！
@@ -115,9 +145,14 @@ const middlewareRouteMap: IRoute[] = [
 				page: RocketmqHome,
 				name: "RocketmqHome",
 				isExact: false,
-			},
+				meta: {
+					title: "RMQ集群列表"
+				}
+			}
 		]
 	}
-];
+]
+
+const middlewareRouteMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap)
 
 export default middlewareRouteMap;

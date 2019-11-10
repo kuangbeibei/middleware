@@ -1,19 +1,20 @@
+/*
+ * @Author: kuangdan
+ * @Date: 2019-11-09 20:46:23
+ * @Last Modified: 2019-11-09 20:46:23
+ */
+
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from "redux";
 
-import setTableModalVisibility from "@actions/setModalVisibility"
+import setTableModalVisibility from "@actions/setModalVisibility";
 
 import {
 	Descriptions,
-	Drawer,
 	Button,
-	Divider,
 	Table,
-	Modal,
-	Form,
-	Input,
 	Popconfirm,
 	message,
 	Select,
@@ -28,34 +29,30 @@ import ConfigDrawer from "@com/Drawer";
 import { YhOp, YhAdd } from "@styled/Button";
 import { FormatTime, deepCloneObject } from "@tools";
 
-import FormMdal from "./form-modal"
+import FormMdal from "./form-modal";
 
 import {
 	getDeployListOfRmqNameServer,
-	deployTask,
 	releaseTaskResources,
-    getConfigInfo,
-    deployTaskOutput
+	getConfigInfo,
+	deployTaskOutput
 } from "./service";
-
-import { rmqNameServerPrototype, rmqNameServerVersions } from "./data";
 
 function RmqNameServer(props) {
 	const {
 		match: {
 			params: { id }
-        },
-        setTableModalVisibility
+		},
+		setTableModalVisibility
 	} = props;
 
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 
-	// let [visibility, setvisibility] = useState(false);
 	let [configVisibility, setconfigVisibility] = useState(false);
 
-    let [configInfo, setconfigInfo] = useState(Array());
-    let [loginfo, setloginfo] = useState("")
+	let [configInfo, setconfigInfo] = useState(Array());
+	let [loginfo, setloginfo] = useState("");
 
 	useEffect(() => {
 		getDeployListOfRmqNameServer(id)
@@ -81,18 +78,17 @@ function RmqNameServer(props) {
 	 * 添加Modal
 	 */
 	const addNameServer = () => {
-        // setvisibility(true);
-        setTableModalVisibility();
+		setTableModalVisibility();
 	};
 
 	/**
 	 * 查看日志
 	 */
-    const checkLog = (taskId) => {
-        deployTaskOutput(taskId).then(res => {
-
-        }).catch(e => message.error(e.message))
-    };
+	const checkLog = taskId => {
+		deployTaskOutput(taskId)
+			.then(res => {})
+			.catch(e => message.error(e.message));
+	};
 
 	/**
 	 * 查看配置
@@ -164,7 +160,9 @@ function RmqNameServer(props) {
 		{
 			title: "日志",
 			key: "log",
-			render: text => <YhOp onClick={() => checkLog(text.taskId)}>日志信息</YhOp>
+			render: text => (
+				<YhOp onClick={() => checkLog(text.taskId)}>日志信息</YhOp>
+			)
 		},
 		{
 			title: "配置",
@@ -215,7 +213,7 @@ function RmqNameServer(props) {
 			<YhAdd type="primary" icon="plus" onClick={addNameServer} />
 			<Table columns={columns} dataSource={tableList} rowKey="id" />
 
-            <FormMdal {...props} />
+			<FormMdal {...props} />
 
 			<ConfigDrawer
 				configVisibility={configVisibility}
@@ -226,8 +224,14 @@ function RmqNameServer(props) {
 	);
 }
 
-export default connect((state:any) => ({
-    tableModalVisibility: state.tableModalVisibility
-}), dispatch => ({
-    setTableModalVisibility: bindActionCreators(setTableModalVisibility, dispatch)
-}))(RmqNameServer)
+export default connect(
+	(state: any) => ({
+		tableModalVisibility: state.tableModalVisibility
+	}),
+	dispatch => ({
+		setTableModalVisibility: bindActionCreators(
+			setTableModalVisibility,
+			dispatch
+		)
+	})
+)(RmqNameServer);

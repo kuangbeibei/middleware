@@ -6,38 +6,22 @@ import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 
 import {
-	Descriptions,
-	Drawer,
-	Button,
 	Divider,
-	Table,
-	Modal,
 	Form,
 	Input,
-	Popconfirm,
 	message,
 	Select,
-	Icon,
-	Popover,
-	Tooltip,
-	Row,
-	Col
 } from "antd";
 
 import FormModal from "@com/Form-modal";
 
-import { FormatTime, deepCloneObject } from "@tools";
+import { deepCloneObject } from "@tools";
 
 import {
-	getDeployListOfRmqNameServer,
 	deployTask,
-	releaseTaskResources,
-	getConfigInfo,
-	deployTaskOutput
 } from "./service";
 
 import { rmqNameServerPrototype, rmqNameServerVersions } from "./data";
-
 
 function FormModalOfNameServer(props) {
     const {
@@ -82,7 +66,6 @@ function FormModalOfNameServer(props) {
 				.then(() => {
 					message.success(`NameServer创建成功`);
 					initFormModal();
-					// setLoadListCount(loadingListCount + 1);
 				})
 				.catch(e => message.error(e.message));
 		});

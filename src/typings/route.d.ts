@@ -10,6 +10,8 @@ interface IRoute {
     name: string,
     isExact: boolean,
     children?: IRoute[],
+    meta: object,
+    forEach?: any //暂时解决
 }
 
 interface IRouteMap {

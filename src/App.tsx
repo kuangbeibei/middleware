@@ -14,13 +14,7 @@ const App: React.SFC = props => {
 
 			<aside className="sidebar"></aside>
 
-			<main>
-				<section className="breadcrumbs">我是面包屑</section>
-
-				<section className="page-content">
-					{renderPageWithRoutes(middlewareRouteMap)}
-				</section>
-			</main>
+			<main>{renderPageWithRoutes(middlewareRouteMap)}</main>
 
 			<footer></footer>
 		</Router>
