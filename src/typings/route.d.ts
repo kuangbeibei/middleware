@@ -11,7 +11,6 @@ interface IRoute {
     isExact: boolean,
     children?: IRoute[],
     title: string,
-    subs?: Array<string>,
     forEach?: any //暂时解决
 }
 

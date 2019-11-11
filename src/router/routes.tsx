@@ -109,7 +109,6 @@ export const RocketmqRoutesMap: IRoute[] = [
 		name: "Rocketmq",
 		isExact: false,
 		title: "RMQ集群",
-		subs: ['rocketmq', 'rmqnameserver', 'rmqbroker', 'rmqconsole'],
 		children: [
 			{
 				key: "rmqnameserver",
