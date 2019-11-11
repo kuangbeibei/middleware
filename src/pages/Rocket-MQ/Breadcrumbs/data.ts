@@ -17,17 +17,9 @@ let rocketmqRoutes = (overallRoutes.filter(item => item.key === 'rocketmq'))[0];
 let children = rocketmqRoutes.children ? rocketmqRoutes.children : rocketmqRoutes;
 
 let breadcrumbNameMap = {};
-
-const RegExpOfParamPath = /\/:\w+/g;
-    
+  
 children.forEach(item => {
-    let {
-        path
-    } = item;
-    if (RegExpOfParamPath.test(path)) {
-        path = path.replace(RegExpOfParamPath, '');
-    } 
-    breadcrumbNameMap[path] = item.meta.title
+    breadcrumbNameMap[item.path] = item.title
 })
 
 export default breadcrumbNameMap

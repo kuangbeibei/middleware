@@ -29,25 +29,31 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 function childrenOfDynamicImport(Component, props) {
 	return Component === null ? <div>loading</div> : <Component {...props} />;
 }
+	
 
+// Mysql
 const Mysql = props => (
 	<DynamicImport load={() => import("@pages/Mysql")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
 );
 
+// Redis
 const Redis = props => (
 	<DynamicImport load={() => import("@pages/Redis")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
 );
 
+
+// Rocketmq入口
 const Rocketmq = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
 );
 
+// Rocketmq 首页
 const RocketmqHome = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Home")}>
 		{Component => childrenOfDynamicImport(Component, props)}
@@ -72,6 +78,7 @@ const RocketConsole = props => (
 	</DynamicImport>
 );
 
+
 export const MysqlRoutesMap: IRoute[] = [
 	{
 		path: "/mysql",
@@ -79,9 +86,7 @@ export const MysqlRoutesMap: IRoute[] = [
 		key: "mysql",
 		name: "Mysql",
 		isExact: false,
-		meta: {
-			title: "Mysql集群列表"
-		}
+		title: "Mysql集群列表"
 	}
 ]
 
@@ -92,9 +97,7 @@ export const RedisRoutesMap: IRoute[] = [
 		key: "redis",
 		name: "Redis",
 		isExact: false,
-		meta: {
-			title: "Redis集群列表"
-		}
+		title: "Redis集群列表"
 	},
 ]
 
@@ -105,9 +108,8 @@ export const RocketmqRoutesMap: IRoute[] = [
 		key: "rocketmq",
 		name: "Rocketmq",
 		isExact: false,
-		meta: {
-			title: "RMQ集群列表"
-		},
+		title: "RMQ集群",
+		subs: ['rocketmq', 'rmqnameserver', 'rmqbroker', 'rmqconsole'],
 		children: [
 			{
 				key: "rmqnameserver",
@@ -115,9 +117,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 				page: RocketNameServer,
 				name: "RocketNameServer",
 				isExact: false,
-				meta: {
-					title: "NameServer列表"
-				}
+				title: "NameServer列表"
 			},
 			{
 				key: "rmqbroker",
@@ -125,9 +125,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 				page: RocketBroker,
 				name: "RocketBroker",
 				isExact: false,
-				meta: {
-					title: "Broker列表"
-				}
+				title: "Broker列表"
 			},
 			{
 				key: "rmqconsole",
@@ -135,9 +133,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 				page: RocketConsole,
 				name: "RocketConsole",
 				isExact: false,
-				meta: {
-					title: "Console列表"
-				}
+				title: "Console列表"
 			},
 			{
 				key: "RocketmqHome", // 子路由首页放在最后！
@@ -145,14 +141,20 @@ export const RocketmqRoutesMap: IRoute[] = [
 				page: RocketmqHome,
 				name: "RocketmqHome",
 				isExact: false,
-				meta: {
-					title: "RMQ集群列表"
-				}
+				title: "RMQ集群"
 			}
 		]
 	}
 ]
 
-const middlewareRouteMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap)
+const middlewareRouteMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap);
+
+// Login
+
+
+// 404
+export const NotFound = props => <DynamicImport load={() => import("@pages/Not-found")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+</DynamicImport>
 
 export default middlewareRouteMap;

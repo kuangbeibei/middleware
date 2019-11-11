@@ -139,7 +139,7 @@ function RocketMqHome(props) {
 	 */
 	const columns = [
 		{
-			title: "id",
+			title: "ID",
 			key: "id",
 			render: text => <YhOp onClick={() => {
 				gotoNameServerList(text.id, text.componentType)

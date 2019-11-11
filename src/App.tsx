@@ -1,22 +1,21 @@
 import * as React from "react";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
-import middlewareRouteMap from "@router/routes";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 
-import { NavComponent, renderPageWithRoutes } from "@router/index";
+import PageEntry from "@pages/Entry";
+import {NotFound} from "@router/routes"
 
 const App: React.SFC = props => {
 	return (
 		<Router>
-			<header>
-				<div className="logo"></div>
-				<NavComponent middlewareRouteMap={middlewareRouteMap} />
-			</header>
+			<Switch>
+				{/* Login */}
 
-			<aside className="sidebar"></aside>
+				{/* Page */}
+				<PageEntry {...props} />
 
-			<main>{renderPageWithRoutes(middlewareRouteMap)}</main>
-
-			<footer></footer>
+				{/* Not Fount */}
+				<Route path="/404" component={NotFound} />
+			</Switch>
 		</Router>
 	);
 };

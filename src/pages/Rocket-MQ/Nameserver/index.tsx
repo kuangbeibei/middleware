@@ -134,7 +134,7 @@ function RmqNameServer(props) {
 
 	const columns = [
 		{
-			title: "id",
+			title: "ID",
 			key: "id",
 			dataIndex: "id",
 			render: text => <YhOp>{text}</YhOp>

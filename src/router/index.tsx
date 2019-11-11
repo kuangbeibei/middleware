@@ -9,7 +9,8 @@ import { useState, useEffect } from "react"
 import {
     Switch,
     Route,
-    Link
+    Link,
+    Redirect
 } from "react-router-dom"
 
 
@@ -62,6 +63,7 @@ function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
                     />
                 })
             }
+            <Route render={(props) => <Redirect to="/404" />} />
         </Switch>
     </>)
 }

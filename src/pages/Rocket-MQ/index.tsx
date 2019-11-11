@@ -10,6 +10,7 @@ import { renderPageWithRoutes } from "@router/index";
 import Breadcrumbs from "./Breadcrumbs"
 
 function RocketmqIndex(props) {
+	console.log('rocket mq入口文件里面 props.match, ', props.match);
 	return (
 		<>
 			<section className="breadcrumbs">
