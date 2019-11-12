@@ -1,8 +1,13 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Route,
+	Redirect,
+	Switch
+} from "react-router-dom";
 
-import PageEntry from "@pages/Entry";
-import {NotFound} from "@router/routes"
+import PageEntry from "@pages/Index";
+import Nomatch from "@pages/No-match";
 
 const App: React.SFC = props => {
 	return (
@@ -13,8 +18,10 @@ const App: React.SFC = props => {
 				{/* Page */}
 				<PageEntry {...props} />
 
-				{/* Not Fount */}
-				<Route path="/404" component={NotFound} />
+				{/* Not Found */}
+				<Route path="/nomatch" component={Nomatch} />
+				
+				<Route component={Nomatch} />
 			</Switch>
 		</Router>
 	);

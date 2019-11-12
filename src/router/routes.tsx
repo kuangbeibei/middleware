@@ -146,14 +146,28 @@ export const RocketmqRoutesMap: IRoute[] = [
 	}
 ]
 
-const middlewareRouteMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap);
-
-// Login
-
 
 // 404
-export const NotFound = props => <DynamicImport load={() => import("@pages/Not-found")}>
+export const Nomatch = props => <DynamicImport load={() => import("@pages/No-match")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 </DynamicImport>
 
-export default middlewareRouteMap;
+
+// Login
+
+const middlewareNavMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap);
+
+const middlewareRouteMap: IRoute[] = MysqlRoutesMap.concat(RedisRoutesMap, RocketmqRoutesMap, [{
+	key: "Nomatch", // 子路由首页放在最后！
+	path: "/nomatch",
+	page: Nomatch,
+	name: "Nomatch",
+	isExact: false,
+	title: "nomatch"
+}]);
+
+
+export {
+	middlewareNavMap,
+	middlewareRouteMap
+};

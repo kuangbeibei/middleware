@@ -15,9 +15,10 @@ import {
 
 
 interface INavComponentProps {
-    middlewareRouteMap: IRoute[],
+    middlewareNavMap: IRoute[],
 } 
 
+// 渲染导航栏
 const NavComponent: React.SFC<INavComponentProps> = (props) => {
     let [comparedKey, setComparedKey] = useState(location.pathname);
     useEffect(() => {
@@ -28,7 +29,7 @@ const NavComponent: React.SFC<INavComponentProps> = (props) => {
     }, [location.pathname])
 
     const {
-        middlewareRouteMap
+        middlewareNavMap
     } = props;
 
     return (
@@ -36,7 +37,7 @@ const NavComponent: React.SFC<INavComponentProps> = (props) => {
            <nav>
                 <ul>
                     {
-                        middlewareRouteMap.map((route) => {
+                        middlewareNavMap.map((route) => {
                             return <li key={route.key} className={comparedKey === route.key ? 'active' : ''}>
                                 <Link to={route.path}>{route.name}</Link>
                             </li>
@@ -48,7 +49,9 @@ const NavComponent: React.SFC<INavComponentProps> = (props) => {
     )
 }
 
-function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
+
+// 渲染页面主题内容
+function renderPageWithRoutes(middlewareRouteMap:IRoute[], props) {
     return (<>
         <Switch>
             {
@@ -63,7 +66,8 @@ function renderPageWithRoutes(middlewareRouteMap:IRoute[]) {
                     />
                 })
             }
-            <Route render={(props) => <Redirect to="/404" />} />
+            {/* 页面级 nomatch 未实现 */}
+            <Route render={() => <Redirect to="/nomatch" />} /> 
         </Switch>
     </>)
 }

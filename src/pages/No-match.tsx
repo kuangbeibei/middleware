@@ -7,18 +7,12 @@
 import * as React from "react";
 const img = require("../assets/image/404.png");
 
-function NotFound(props) {
+function Nomatch(props) {
 	return (
-		<div
-			style={{
-				height: "100%",
-				background: "#ececec",
-				overflow: "hidden"
-			}}
-		>
-			<img src={img} alt="404" />
+		<div>
+			没有匹配到的子页面
 		</div>
 	);
 }
 
-export default NotFound;
+export default Nomatch;

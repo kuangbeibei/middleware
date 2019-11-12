@@ -8,5 +8,5 @@ import thunk from "redux-thunk"
 
 import RootReducer from "./reducers"
 
-export default <T extends object>(initialState: T = Object.create({})) => createStore(RootReducer, initialState, applyMiddleware(thunk))
+export default (initialState={}) => createStore(RootReducer, initialState, applyMiddleware(thunk))
 

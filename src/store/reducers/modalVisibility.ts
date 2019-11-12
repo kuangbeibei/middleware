@@ -2,8 +2,11 @@ import {
     MODAL_VISIBILITY
 } from "../action-types"
 
+interface IModalVisibility {
+    visible: boolean
+}
 
-const initModalVisibility = {
+const initModalVisibility:IModalVisibility = {
     visible: false
 }
 

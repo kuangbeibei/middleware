@@ -1,8 +1,8 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-11-07 18:47:37 
- * @Last Modified: 2019-11-07 18:47:37 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-11-07 18:47:37
+ * @Last Modified: 2019-11-07 18:47:37
+ */
 
 import * as React from "react";
 import { useState, useEffect } from "react";
@@ -23,7 +23,8 @@ import {
 	Popover,
 	Tooltip,
 	Row,
-	Col
+	Col,
+	Breadcrumb
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
@@ -38,7 +39,7 @@ import { rmqTypes, rmqDataPrototype } from "./data";
 
 let addFlag = false;
 
-function RocketMqHome(props) {	
+function RocketMqHome(props) {
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [newItemName, setNewItemName] = useState("");
@@ -77,7 +78,8 @@ function RocketMqHome(props) {
 	 * 创建一个RMQ 类型
 	 */
 	const createRmqType = () => {
-        if (!newItemName || !newItemType) return message.info('请确保已填写名称并选择类型！')
+		if (!newItemName || !newItemType)
+			return message.info("请确保已填写名称并选择类型！");
 		createRmqComponentClusterRecord({
 			businessName: newItemName,
 			componentType: newItemType
@@ -128,12 +130,12 @@ function RocketMqHome(props) {
 	/**
 	 * 前往二级列表页
 	 */
-    const gotoNameServerList = (id, type) => {
-        addFlag = false;
-        type = type.toLowerCase();
+	const gotoNameServerList = (id, type) => {
+		addFlag = false;
+		type = type.toLowerCase();
 		props.history.push(`/rocketmq/${type}/${id}`);
-	}
-	
+	};
+
 	/**
 	 * table列表的展示表头
 	 */
@@ -141,9 +143,16 @@ function RocketMqHome(props) {
 		{
 			title: "ID",
 			key: "id",
-			render: text => <YhOp onClick={() => {
-				gotoNameServerList(text.id, text.componentType)
-			}}>{text.id}</YhOp> || ""
+			render: text =>
+				(
+					<YhOp
+						onClick={() => {
+							gotoNameServerList(text.id, text.componentType);
+						}}
+					>
+						{text.id}
+					</YhOp>
+				) || ""
 		},
 		{
 			title: "名称",
@@ -230,8 +239,18 @@ function RocketMqHome(props) {
 
 	return (
 		<>
-            <YhAdd type="primary" icon="plus" onClick={addRmqType} style={{marginBottom: 10}}/>
-			<Table columns={columns} dataSource={tableList} rowKey="id" />
+			<section className="breadcrumbs">
+				<Breadcrumb />
+			</section>
+			<section className="page-content">
+				<YhAdd
+					type="primary"
+					icon="plus"
+					onClick={addRmqType}
+					style={{ marginBottom: 10 }}
+				/>
+				<Table columns={columns} dataSource={tableList} rowKey="id" />
+			</section>
 		</>
 	);
 }
