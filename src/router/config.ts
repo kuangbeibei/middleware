@@ -11,7 +11,7 @@ export const MysqlRoutesMap: IRoute[] = [
 		key: '/mysql',
 		component: 'Mysql',
 		name: "Mysql",
-		isExact: true,
+		isExact: false,
 		breadcrumbTitle: "Mysql集群列表"
 	}
 ];
@@ -22,7 +22,7 @@ export const RedisRoutesMap: IRoute[] = [
 		key: "/redis",
 		component: 'Redis',
 		name: "Redis",
-		isExact: true,
+		isExact: false,
 		breadcrumbTitle: "Redis集群列表"
 	}
 ];
@@ -41,28 +41,28 @@ export const RocketmqRoutesMap: IRoute[] = [
 				key: "/rocketmq/rmqnameserver/:id",
 				component: 'RocketNameServer',
 				name: "RocketNameServer",
-				isExact: false,
+				isExact: true,
 				breadcrumbTitle: "NameServer列表"
 			},
 			{
 				key: "/rocketmq/rmqbroker/:id",
 				component: 'RocketBroker',
 				name: "RocketBroker",
-				isExact: false,
+				isExact: true,
 				breadcrumbTitle: "Broker列表"
 			},
 			{
 				key: "/rocketmq/rmqconsole/:id",
 				component: 'RocketConsole',
 				name: "RocketConsole",
-				isExact: false,
+				isExact: true,
 				breadcrumbTitle: "Console列表"
 			},
 			{
 				key: "/rocketmq",// 子路由首页放在最后！
 				component: 'RocketmqHome',
 				name: "RocketmqHome",
-				isExact: false,
+				isExact: true,
 				breadcrumbTitle: "RMQ集群"
 			}
 		]
