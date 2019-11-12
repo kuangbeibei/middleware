@@ -8,12 +8,12 @@
 
  import {
     RocketmqRoutesMap
-} from "@router/routes";
+} from "@router/config";
 
 const overallRoutes = RocketmqRoutesMap.slice(0);
 
 let rocketmqRoutes = (overallRoutes.filter(item => item.key === 'rocketmq'))[0];
 
-let childrenRoutes = rocketmqRoutes.children ? rocketmqRoutes.children : rocketmqRoutes;
+let childrenRoutes = rocketmqRoutes.subs ? rocketmqRoutes.subs : rocketmqRoutes;
 
 export default childrenRoutes

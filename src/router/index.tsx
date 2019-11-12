@@ -9,70 +9,39 @@ import { useState, useEffect } from "react"
 import {
     Switch,
     Route,
-    Link,
     Redirect
 } from "react-router-dom"
 
+import Allpages from "@pages/Entries"
 
-interface INavComponentProps {
-    middlewareNavMap: IRoute[],
-} 
-
-// 渲染导航栏
-const NavComponent: React.SFC<INavComponentProps> = (props) => {
-    let [comparedKey, setComparedKey] = useState(location.pathname);
-    useEffect(() => {
-        const {
-            pathname
-        } = location;
-        setComparedKey(pathname.substr(pathname.indexOf('/') + 1))
-    }, [location.pathname])
-
-    const {
-        middlewareNavMap
-    } = props;
-
-    return (
-         <>
-           <nav>
-                <ul>
-                    {
-                        middlewareNavMap.map((route) => {
-                            return <li key={route.key} className={comparedKey === route.key ? 'active' : ''}>
-                                <Link to={route.path}>{route.name}</Link>
-                            </li>
-                        })
-                    }
-                </ul>
-            </nav> 
-        </>
-    )
-}
-
-
-// 渲染页面主题内容
-function renderPageWithRoutes(middlewareRouteMap:IRoute[], props) {
+// 渲染页面主体内容，后续加上auth身份等判断
+function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
     return (<>
         <Switch>
             {
-                middlewareRouteMap.map((route) => {
-                    return <Route 
-                        path={route.path}
-                        exact={route.isExact} 
-                        key={route.key}
-                        component={(props) => {
-                            return <route.page {...props} routes={route.children} />
-                        }}
-                    />
+                middlewareRouteMap.map((r: IRoute) => {
+                    const route = (r: IRoute) => {
+                        const Component = r.component && Allpages[r.component];
+                        return <Route
+                            path={r.key}
+                            exact={r.isExact}
+                            key={r.key}
+                            component={
+                                props => <Component {...props} routes={r.subs} />
+                            }
+                        />
+                    }
+                     return r.component
+                            ? route(r)
+                            : r.subs && r.subs.map((r: IRoute) => route(r));
                 })
             }
-            {/* 页面级 nomatch 未实现 */}
+            {/* 主体路由级 nomatch 未实现 */}
             <Route render={() => <Redirect to="/nomatch" />} /> 
         </Switch>
     </>)
 }
 
 export {
-    NavComponent,
     renderPageWithRoutes
 }

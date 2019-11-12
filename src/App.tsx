@@ -6,7 +6,7 @@ import {
 	Switch
 } from "react-router-dom";
 
-import PageEntry from "@pages/Index";
+import PageIndex from "@pages/Index";
 import Nomatch from "@pages/No-match";
 
 const App: React.SFC = props => {
@@ -16,9 +16,9 @@ const App: React.SFC = props => {
 				{/* Login */}
 
 				{/* Page */}
-				<PageEntry {...props} />
+				<PageIndex {...props} />
 
-				{/* Not Found */}
+				{/* 页面路由级别 nomatch */}
 				<Route path="/nomatch" component={Nomatch} />
 				
 				<Route component={Nomatch} />

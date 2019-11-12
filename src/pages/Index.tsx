@@ -5,30 +5,29 @@
  */
 
 import * as React from "react";
-import { NavComponent, renderPageWithRoutes } from "@router/index";
-import { middlewareRouteMap, middlewareNavMap } from "@router/routes";
+import { renderPageWithRoutes } from "@router/index";
+import { middlewareRouteMap } from "@router/config";
 
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch } from "react-router-dom";
+
+import Header from "@com/UI/Header";
+import SideBar from "@com/UI/Sidebar";
+import Footer from "@com/UI/Footer";
 
 export default function PageEntry(props) {
 	return (
 		<>
-			<Switch>
-				<>
-					<header>
-						<div className="logo"></div>
-						<NavComponent middlewareNavMap={middlewareNavMap} />
-					</header>
+			<Header />
 
-					<aside className="sidebar"></aside>
+			<SideBar />
 
-					<main>
-						{renderPageWithRoutes(middlewareRouteMap, props)}
-					</main>
+			<main>
+				<Switch>
+					{renderPageWithRoutes(middlewareRouteMap, props)}
+				</Switch>
+			</main>
 
-					<footer></footer>
-				</>
-			</Switch>
+			<Footer />
 		</>
 	);
 }
