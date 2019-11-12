@@ -26,7 +26,6 @@ import {
 	Col,
 } from "antd";
 
-import CustomBreadcrumb from "@com/UI/Custom-breadcrumbs"
 import { YhOp, YhAdd } from "@styled/Button";
 
 import {
@@ -238,27 +237,16 @@ function RocketMqHome(props) {
 	];
 
 
-	const breadItems = [{
-		link: '/',
-		breadcrumbTitle: '',
-	}, {
-			link: '/',
-		breadcrumbTitle: ''
-	}]
+	
 	return (
 		<>
-			<section className="breadcrumbs">
-				<CustomBreadcrumb breadItems={breadItems}/>
-			</section>
-			<section className="page-content">
-				<YhAdd
-					type="primary"
-					icon="plus"
-					onClick={addRmqType}
-					style={{ marginBottom: 10 }}
-				/>
-				<Table columns={columns} dataSource={tableList} rowKey="id" />
-			</section>
+			<YhAdd
+				type="primary"
+				icon="plus"
+				onClick={addRmqType}
+				style={{ marginBottom: 10 }}
+			/>
+			<Table columns={columns} dataSource={tableList} rowKey="id" />
 		</>
 	);
 }

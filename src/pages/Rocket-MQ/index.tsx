@@ -7,10 +7,22 @@
 import * as React from "react";
 import { Switch } from "react-router-dom";
 import { renderPageWithRoutes } from "@router/index";
+import {
+	RocketmqRouteProps
+} from "./data"
+
+import CustomBreadcrumbs from "@com/UI/Custom-breadcrumbs"
 
 function RocketmqIndex(props) {
 	return (
-		<Switch>{renderPageWithRoutes(props.routes, props)}</Switch>
+		<>
+			<section className="breadcrumbs">
+				<CustomBreadcrumbs routeProps={RocketmqRouteProps} {...props} />
+			</section>
+			<section className="page-content">
+				<Switch>{renderPageWithRoutes(props.routes, props)}</Switch>
+			</section>
+		</>
 	);
 }
 

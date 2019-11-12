@@ -27,23 +27,52 @@ function getType(source) {
 export function deepCloneObject(source, map = new WeakMap()) {
 	if (!isObject(source)) return source;
 	const type = getType(source);
-    let cloneTarget = {};
-    
+	let cloneTarget;
+
 	// 防止循环引用
 	if (map.get(source)) {
 		return map.get(source);
-    }
-    
-    map.set(source, cloneTarget);
-    
-	if (type === "Object" || type === "Array") {
-		let keys = type === "Object" ? Object.keys(source) : undefined; // 如果支持optional chaining的话可以写成?.
-        (keys || source).forEach((val, key) => {
-			if (keys) {
-				key = val;
-			}
-			cloneTarget[key] = deepCloneObject(source[key], map); //在这里进行递归调用
-		});
 	}
+
+	map.set(source, cloneTarget);
+
+	if (type === "Object") {
+		cloneTarget = {};
+	}
+
+	if (type === "Array") {
+		cloneTarget = [];
+	}
+
+	let keys = type === "Object" ? Object.keys(source) : undefined; // 如果支持optional chaining的话可以写成?.
+	(keys || source).forEach((val, key) => {
+		if (keys) {
+			key = val;
+		}
+		cloneTarget[key] = deepCloneObject(source[key], map); //在这里进行递归调用
+	});
 	return cloneTarget;
+}
+
+// 生成key val的面包屑路由数据，使path和面包屑title一一对应
+export const paramRegExp = /\/\:\w+/;
+export function generateBreadcrumbsData(arr) {
+	const routes = deepCloneObject(arr);
+	let res = {};
+
+	function walk(data, res) {
+		return data.reduce((prev, cur) => {
+			let path = cur.key;
+			if (paramRegExp.test(path)) {
+				path = path.replace(paramRegExp, "/:");
+			}
+			prev[path] = cur.breadcrumbTitle;
+			if (cur.subs) {
+				walk(cur.subs, res);
+			}
+			return prev;
+		}, res);
+	}
+
+	return walk(routes, res);
 }

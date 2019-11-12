@@ -35,6 +35,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 		name: "Rocketmq",
 		isExact: false,
 		breadcrumbTitle: "RMQ集群",
+		component: 'Rocketmq',
 		subs: [
 			{
 				key: "/rocketmq/rmqnameserver/:id",

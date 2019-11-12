@@ -27,7 +27,7 @@ import {
 
 import ConfigDrawer from "@com/Drawer";
 import { YhOp, YhAdd } from "@styled/Button";
-import { FormatTime, deepCloneObject } from "@tools";
+import { FormatTime } from "@tools";
 
 import FormMdal from "./form-modal";
 

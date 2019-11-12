@@ -14,7 +14,7 @@
 		"paths": {
 			"@com/*": ["./src/components/*"],
 			"@pages/*": ["./src/pages/*"],
-			"@router/*": ["./src/router"],
+			"@router/*": ["./src/router/*"],
 			"@api": ["./src/utils/api"],
 			"@tools": ["./src/utils/tools"],
 			"@actions/*": ["./src/store/actions/*"],

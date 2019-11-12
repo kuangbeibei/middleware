@@ -1,19 +1,17 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-11-11 18:24:14 
- * @Last Modified: 2019-11-11 18:24:14 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-11-11 18:24:14
+ * @Last Modified: 2019-11-11 18:24:14
+ */
 
-// Rocketmq的面包屑路由
+import { RocketmqRoutesMap } from "@router/config";
+import { generateBreadcrumbsData } from "@tools";
 
- import {
-    RocketmqRoutesMap
-} from "@router/config";
-
-const overallRoutes = RocketmqRoutesMap.slice(0);
-
-let rocketmqRoutes = (overallRoutes.filter(item => item.key === 'rocketmq'))[0];
-
-let childrenRoutes = rocketmqRoutes.subs ? rocketmqRoutes.subs : rocketmqRoutes;
-
-export default childrenRoutes
+// 生成面包屑数据
+// {
+//     "/rocketmq": "RMQ集群",
+//     "/rocketmq/rmqbroker": "Broker列表",
+//     "/rocketmq/rmqconsole": "Console列表",
+//     "/rocketmq/rmqnameserver": "NameServer列表"
+// }
+export const RocketmqRouteProps = generateBreadcrumbsData(RocketmqRoutesMap);
