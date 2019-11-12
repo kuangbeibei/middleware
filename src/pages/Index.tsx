@@ -17,7 +17,7 @@ import Footer from "@com/UI/Footer";
 export default function PageEntry(props) {
 	return (
 		<>
-			<Header />
+			<Header {...props}/>
 
 			<SideBar />
 

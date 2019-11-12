@@ -69,8 +69,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 ];
 
 
-const middlewareNavMap: IRoute[] = [...MysqlRoutesMap, ...RedisRoutesMap, ...RocketmqRoutesMap];
+export const middlewareNavMap: IRoute[] = [...MysqlRoutesMap, ...RedisRoutesMap, ...RocketmqRoutesMap];
 
-const middlewareRouteMap: IRoute[] = middlewareNavMap // 暂时，因为还要加上404 和 login
+export const middlewareRouteMap: IRoute[] = middlewareNavMap // 暂时，因为还要加上404 和 login
 
-export { middlewareNavMap, middlewareRouteMap };

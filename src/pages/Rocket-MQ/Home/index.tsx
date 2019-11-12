@@ -24,9 +24,9 @@ import {
 	Tooltip,
 	Row,
 	Col,
-	Breadcrumb
 } from "antd";
 
+import CustomBreadcrumb from "@com/UI/Custom-breadcrumbs"
 import { YhOp, YhAdd } from "@styled/Button";
 
 import {
@@ -237,10 +237,18 @@ function RocketMqHome(props) {
 		}
 	];
 
+
+	const breadItems = [{
+		link: '/',
+		breadcrumbTitle: '',
+	}, {
+			link: '/',
+		breadcrumbTitle: ''
+	}]
 	return (
 		<>
 			<section className="breadcrumbs">
-				<Breadcrumb />
+				<CustomBreadcrumb breadItems={breadItems}/>
 			</section>
 			<section className="page-content">
 				<YhAdd
