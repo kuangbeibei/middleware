@@ -21,13 +21,13 @@ function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
             {
                 middlewareRouteMap.map((r: IRoute) => {
                     const route = (r: IRoute) => {
-                        const Component = r.component && Allpages[r.component];
+                        const C = r.component && Allpages[r.component];
                         return <Route
                             path={r.key}
                             exact={r.isExact}
                             key={r.key}
                             component={
-                                props => <Component {...props} routes={r.subs} />
+                                props => <C {...props} routes={r.subs} />
                             }
                         />
                     }
