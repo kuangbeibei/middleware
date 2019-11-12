@@ -18,7 +18,7 @@ const App: React.SFC = props => {
 				{/* Page */}
 				<PageIndex {...props} />
 
-				{/* 页面路由级别 nomatch */}
+				{/* 页面路由级别404 nomatch */}
 				<Route path="/nomatch" component={Nomatch} />
 				
 				<Route component={Nomatch} />

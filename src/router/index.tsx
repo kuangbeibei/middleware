@@ -31,9 +31,7 @@ function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
                             }
                         />
                     }
-                     return r.component
-                            ? route(r)
-                            : r.subs && r.subs.map((r: IRoute) => route(r));
+                     return route(r);
                 })
             }
             {/* 主体路由级 nomatch 未实现 */}

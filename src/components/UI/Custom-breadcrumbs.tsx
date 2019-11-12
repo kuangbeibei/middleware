@@ -7,7 +7,6 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Breadcrumb } from "antd";
-import { paramRegExp } from "@tools";
 
 export default function(props) {
 	const {
