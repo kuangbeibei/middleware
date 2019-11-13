@@ -31,40 +31,42 @@ export const RedisRoutesMap: IRoute[] = [
 // Rocketmq
 export const RocketmqRoutesMap: IRoute[] = [
 	{
-		key: "/rocketmq",
+		key: "/rocketmq", // 自动跳到/rocket/all这个路由
 		name: "Rocketmq",
 		isExact: false,
 		breadcrumbTitle: "RMQ集群",
 		component: 'Rocketmq',
 		subs: [
 			{
-				key: "/rocketmq/rmqnameserver/:id",
+				key: "/rocketmq/rmqnameserver/:id", // /rocketmq/:clusterId/rmqnameserver/:id
 				component: 'RocketNameServer',
 				name: "RocketNameServer",
 				isExact: true,
 				breadcrumbTitle: "NameServer列表"
 			},
 			{
-				key: "/rocketmq/rmqbroker/:id",
+				key: "/rocketmq/rmqbroker/:id", // /rocketmq/:v/rmqbroker/:id
 				component: 'RocketBroker',
 				name: "RocketBroker",
 				isExact: true,
 				breadcrumbTitle: "Broker列表"
 			},
 			{
-				key: "/rocketmq/rmqconsole/:id",
+				key: "/rocketmq/rmqconsole/:id", // /rocketmq/:clusterId/rmqconsole/:id
 				component: 'RocketConsole',
 				name: "RocketConsole",
 				isExact: true,
 				breadcrumbTitle: "Console列表"
 			},
 			{
-				key: "/rocketmq",// 子路由首页放在最后！
+				key: "/rocketmq",// 子路由首页放在最后！ // /rocketmq/:clusterId
 				component: 'RocketmqHome',
 				name: "RocketmqHome",
 				isExact: true,
 				breadcrumbTitle: "RMQ集群"
 			}
+			// 多加一层 总的集群页面
+			// rocketmq/all
 		]
 	}
 ];

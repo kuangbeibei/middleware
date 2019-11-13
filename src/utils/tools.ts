@@ -55,8 +55,9 @@ export function deepCloneObject(source, map = new WeakMap()) {
 }
 
 // 生成key val的面包屑路由数据，使path和面包屑title一一对应
-export const paramRegExp = /\/\:\w+/;
-export function generateBreadcrumbsData(arr) {
+export const paramRegExp = /\:\w+/;
+export const variable = `{variable}`
+export function flattenRoutesAndGenerateBreadcrumbsData(arr) {
 	const routes = deepCloneObject(arr);
 	let res = {};
 
@@ -64,7 +65,7 @@ export function generateBreadcrumbsData(arr) {
 		return data.reduce((prev, cur) => {
 			let path = cur.key;
 			if (paramRegExp.test(path)) {
-				path = path.replace(paramRegExp, "/:");
+				path = path.replace(paramRegExp, variable); // /rocketmq/:clusterId/rmqconsole/:id -> /rocketmq/{variable}/rmqconsole/{variable}
 			}
 			prev[path] = cur.breadcrumbTitle;
 			if (cur.subs) {

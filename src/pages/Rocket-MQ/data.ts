@@ -5,13 +5,13 @@
  */
 
 import { RocketmqRoutesMap } from "@router/config";
-import { generateBreadcrumbsData } from "@tools";
+import { flattenRoutesAndGenerateBreadcrumbsData } from "@tools";
 
 // 生成面包屑数据
 // {
 //     "/rocketmq": "RMQ集群",
-//     "/rocketmq/rmqbroker": "Broker列表",
-//     "/rocketmq/rmqconsole": "Console列表",
-//     "/rocketmq/rmqnameserver": "NameServer列表"
+//     "/rocketmq/rmqbroker/:id": "Broker列表",
+//     "/rocketmq/rmqconsole/:id": "Console列表",
+//     "/rocketmq/rmqnameserver/:id": "NameServer列表"
 // }
-export const RocketmqRouteProps = generateBreadcrumbsData(RocketmqRoutesMap);
+export const RocketmqRouteProps = flattenRoutesAndGenerateBreadcrumbsData(RocketmqRoutesMap);
