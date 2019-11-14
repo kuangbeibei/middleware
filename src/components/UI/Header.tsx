@@ -50,7 +50,7 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 export default function(props) {
 	return (
 		<header>
-			<div className="logo"></div>
+			{/* <div className="logo"></div> */}
 			<NavComponent middlewareNavMap={middlewareNavMap} />
 		</header>
 	);
