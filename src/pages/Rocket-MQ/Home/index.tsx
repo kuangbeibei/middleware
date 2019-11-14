@@ -16,11 +16,11 @@ import {
 	Select,
 	Icon,
 	Popover,
-	Tooltip,
+	Tooltip
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
-import Loading from "@com/UI/Loading"
+import Loading from "@com/UI/Loading";
 
 import {
 	getRmqComponentClusterRecords,
@@ -38,6 +38,8 @@ function RocketMqHome(props) {
 	let [newItemName, setNewItemName] = useState("");
 	let [newItemType, setNewItemType] = useState("");
 	let [loading, setloading] = useState(true);
+	let [delLoading, setDelLoading] = useState(false);
+	let [addLoading, setAddLoading] = useState(false);
 
 	useEffect(() => {
 		getRmqComponentClusterRecords().then(tableList => {
@@ -73,6 +75,7 @@ function RocketMqHome(props) {
 	 * 创建一个RMQ 类型
 	 */
 	const createRmqType = () => {
+		setAddLoading(true);
 		if (!newItemName || !newItemType)
 			return message.info("请确保已填写名称并选择类型！");
 		createRmqComponentClusterRecord({
@@ -83,10 +86,12 @@ function RocketMqHome(props) {
 				message.success(`${newItemName}集群创建成功!`);
 				setLoadListCount(loadingListCount + 1);
 				addFlag = false;
+				setAddLoading(false);
 			})
 			.catch(e => {
 				message.error(`${newItemName}集群创建失败!`);
 				addFlag = false;
+				setAddLoading(false);
 			});
 	};
 
@@ -94,6 +99,7 @@ function RocketMqHome(props) {
 	 * 删除RMQ集群
 	 */
 	const deleteRmqCluster = (id, name) => {
+		setDelLoading(true);
 		//先进行状态判断
 		if (addFlag) {
 			return message.warning("请先关闭添加集群的操作");
@@ -102,9 +108,11 @@ function RocketMqHome(props) {
 			.then(() => {
 				message.success(`${name}删除成功!`);
 				setLoadListCount(loadingListCount + 1);
+				setDelLoading(false);
 			})
 			.catch(e => {
 				message.error(`${name}删除失败!`);
+				setDelLoading(false);
 			});
 	};
 
@@ -206,9 +214,12 @@ function RocketMqHome(props) {
 						okText="是"
 						cancelText="否"
 					>
-						<Button type="primary" shape="circle">
-							<Icon type="delete" />
-						</Button>
+						<Button
+							type="primary"
+							shape="circle"
+							icon="delete"
+							loading={delLoading}
+						/>
 					</Popconfirm>
 				) : (
 					<>
@@ -217,16 +228,15 @@ function RocketMqHome(props) {
 							shape="circle"
 							style={{ marginRight: 15 }}
 							onClick={createRmqType}
-						>
-							<Icon type="check" />
-						</Button>
+							icon="check"
+							loading={addLoading}
+						/>
 						<Button
 							type="primary"
 							shape="circle"
 							onClick={delRmqType}
-						>
-							<Icon type="close" />
-						</Button>
+							icon="close"
+						/>
 					</>
 				)
 		}
@@ -240,7 +250,11 @@ function RocketMqHome(props) {
 				onClick={addRmqType}
 				style={{ marginBottom: 10 }}
 			/>
-			{loading ? <Loading /> :  <Table columns={columns} dataSource={tableList} rowKey="id" />}
+			{loading ? (
+				<Loading />
+			) : (
+				<Table columns={columns} dataSource={tableList} rowKey="id" />
+			)}
 		</>
 	);
 }
