@@ -25,7 +25,7 @@ npm run build
 
 ### 代码目录
 
-```coffee
+```js
 +-- build/                                  ---打包的文件目录
 +-- node_modules/                           ---npm包
 +-- src/                                    ---核心代码目录
