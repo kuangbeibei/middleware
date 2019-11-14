@@ -3,7 +3,7 @@
 ### 1. 安装运行 
 
 ```js
-npm install | cnpm install
+npm install
 ```
 或者
 
