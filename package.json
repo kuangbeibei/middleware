@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ENV=DEV webpack-dev-server",
+    "start": "ENV=DEV webpack-dev-server",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
