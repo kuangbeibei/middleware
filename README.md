@@ -25,7 +25,7 @@ npm run build
 
 ### 代码目录
 
-```js
+```
 +-- build/                                  ---打包的文件目录
 +-- node_modules/                           ---npm包
 +-- src/                                    ---核心代码目录
@@ -66,6 +66,19 @@ npm run build
 |   |   |   +-- ...                         ---结构大体同Mysql
 |   |   +-- Rocketmq 
 |   |   |   +-- ...                         ---结构大体同Mysql
+|   +-- router/                             ---路由
+|   |   --- config.ts                           --路由配置（包含sidebar menu）
+|   |   --- index.tsx                           --路由渲染页面文件
+|   +-- store/                              ---数据状态管理
+|   |   |   +-- ...      
+|   +-- styled-components/                  
+|   |   |   --- ...    
+|   +-- typings/                            ---ts类型定义文件
+|   |   |   --- route.d.ts                  ---路由配置变量定义文件
+|   |   |   --- ...
+|   +-- utils/                              --- 公用工具性目录
+|   |   --- api.ts                          --- axios封装http请求
+|   |   --- tools.ts                        --- 公用工具函数文件
 --- package.json
 ```
 
