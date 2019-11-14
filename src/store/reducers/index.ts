@@ -7,11 +7,11 @@
 import { combineReducers } from "redux";
 
 import tableModalVisibility from "./modalVisibility";
-import sideBarContent from "./sidebar"
+import navFlagToSidebar from "./sidebar"
 
 const RootReducer = combineReducers({
 	tableModalVisibility,
-	sideBarContent
+	navFlagToSidebar
 });
 
 export default RootReducer;

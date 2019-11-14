@@ -44,11 +44,11 @@ module.exports = WebpackMerge(
 				"@pages": ResolvePath("src/pages"),
 				"@com": ResolvePath("src/components"),
 				"@router": ResolvePath("src/router"),
-				"@types": ResolvePath("src/typings"),
 				"@api": ResolvePath("src/utils/api"),
 				"@tools": ResolvePath("src/utils/tools"),
 				"@actions": ResolvePath("src/store/actions"),
-				"@styled": ResolvePath("src/styled-components")
+				"@styled": ResolvePath("src/styled-components"),
+				"@hooks": ResolvePath("src/hooks")
 			}
 		},
 		module: {

@@ -17,7 +17,7 @@ import Footer from "@com/UI/Footer";
 export default function PageEntry(props) {
 	return (
 		<div className="container" style={{ minHeight: '100vh' }}>
-			<SideBar />
+			<SideBar {...props} />
 			<section className="content-wrap">
 				<Header {...props} />
 

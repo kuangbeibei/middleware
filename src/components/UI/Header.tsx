@@ -8,7 +8,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import setSideBarContent from "@actions/setSidebar";
+import setSideBarFlag from "@actions/setSidebar";
 
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,7 @@ import { middlewareNavMap } from "@router/config";
 interface INavComponentProps {
 	middlewareNavMap: IRoute[];
 	location: any;
-	setSideBar: Function;
+	setSideBarFlag: Function;
 }
 
 // 渲染导航栏
@@ -25,10 +25,11 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 	const {
 		location: { pathname },
 		middlewareNavMap,
-		setSideBar
+		setSideBarFlag
 	} = props;
 
 	let [comparedKey, setComparedKey] = useState(pathname);
+
 
 	useEffect(() => {
 		// 1. 处理nav导航， compare之比较路径之后的第一个斜杠后面的
@@ -39,11 +40,17 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 		} else {
 			setComparedKey(pathname.substr(start + 1));
 		}
-		// 2. 处理sidebar，dispatch Nav的type过去
-		setSideBar({
-			nav: comparedKey
-		})
-	}, [props.location.pathname]);
+		
+	}, [pathname]);
+
+	useEffect(() => {
+		if (comparedKey.indexOf("/") === -1) {
+			// 2. 处理sidebar，dispatch Nav的type过去
+			setSideBarFlag({
+				navFlag: comparedKey
+			})
+		}
+	}, [comparedKey])
 	
 
 	return (
@@ -81,6 +88,6 @@ function Header(props) {
 export default connect(
 	state => state,
 	dispatch => ({
-		setSideBar: bindActionCreators(setSideBarContent, dispatch)
+		setSideBarFlag: bindActionCreators(setSideBarFlag, dispatch)
 	})
 )(Header);

@@ -18,7 +18,8 @@
 			"@api": ["./src/utils/api"],
 			"@tools": ["./src/utils/tools"],
 			"@actions/*": ["./src/store/actions/*"],
-			"@styled/*": ["./src/styled-components/*"]
+			"@styled/*": ["./src/styled-components/*"],
+			"@hooks/*": ["./src/hooks/*"],
 		},
 	},
 	"include": [

@@ -1,11 +1,10 @@
-import { SIDEBAR_CONTENT } from "../action-types";
+import { SIDEBAR_FLAG } from "../action-types";
 
-export default function setSideBarContent({nav}) {
-    console.log('nav ,', nav);
+export default function setSideBarFlag({navFlag}) {
 	return async dispatch => {
 		dispatch({
-            type: SIDEBAR_CONTENT,
-            nav
+            type: SIDEBAR_FLAG,
+            navFlag
 		});
 	};
 }

@@ -6,13 +6,16 @@
 interface IRoute {
     key: string,
     name: string,
-    breadcrumbTitle: string,
+    breadcrumbTitle?: string,
     component?: string,
     isExact?: boolean,
     subs?: IRoute[],
     auth?: string,
     login?: boolean,
     navname?: string
+    menus?: IRoute[] & {
+        icon?: string
+    }
 }
 
 interface IRouteMap {

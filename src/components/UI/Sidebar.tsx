@@ -5,14 +5,50 @@
  */
 
 import * as React from "react";
-import { useState, useEffect } from "react";
-import {connect} from "react-redux"
+import { useState, useEffect, useLayoutEffect } from "react";
+import { connect } from "react-redux";
+
+import { Link } from "react-router-dom";
 
 import { Layout, Menu, Icon } from "antd";
-
 const { Sider } = Layout;
 
-function SiderBar() {
+import {
+	MysqlRoutesMap,
+	RedisRoutesMap,
+	RocketmqRoutesMap
+} from "@router/config";
+
+import { deepCloneObject } from "@tools";
+
+let mysqlRouteMenus = deepCloneObject(MysqlRoutesMap[0].menus);
+let redisRouteMenus = deepCloneObject(RedisRoutesMap[0].menus);
+let rocketmqMenus = deepCloneObject(RocketmqRoutesMap[0].menus);
+
+function SiderBar(props) {
+	const [menus, setmenus] = useState(Array());
+	const {
+		navFlagToSidebar: { navFlag }
+	} = props;
+
+	useEffect(() => {
+		console.log('navflag变了我才进来的');
+		switch (navFlag) {
+			case "mysql":
+				setmenus(mysqlRouteMenus);
+				break;
+			case "redis":
+				setmenus(redisRouteMenus);
+				break;
+			case "rocketmq":
+				setmenus(rocketmqMenus);
+				break;
+			default:
+				setmenus([]);
+				break;
+		}
+	}, [navFlag]);
+
 	const [collapsed, setcollapsed] = useState(false);
 
 	const onCollapse = collapsed => {
@@ -25,49 +61,31 @@ function SiderBar() {
 			collapsible
 			collapsed={collapsed}
 			onCollapse={onCollapse}
-        >
-            <div className="logo" />
-			<Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-				<Menu.Item key="1">
-					<Icon type="pie-chart" />
-					<span>Option 1</span>
-				</Menu.Item>
-				<Menu.Item key="2">
-					<Icon type="desktop" />
-					<span>Option 2</span>
-				</Menu.Item>
-				<Menu.SubMenu
-					key="sub1"
-					title={
-						<span>
-							<Icon type="user" />
-							<span>User</span>
-						</span>
-					}
-				>
-					<Menu.Item key="3">Tom</Menu.Item>
-					<Menu.Item key="4">Bill</Menu.Item>
-					<Menu.Item key="5">Alex</Menu.Item>
-				</Menu.SubMenu>
-				<Menu.SubMenu
-					key="sub2"
-					title={
-						<span>
-							<Icon type="team" />
-							<span>Team</span>
-						</span>
-					}
-				>
-					<Menu.Item key="6">Team 1</Menu.Item>
-					<Menu.Item key="8">Team 2</Menu.Item>
-				</Menu.SubMenu>
-				<Menu.Item key="9">
-					<Icon type="file" />
-					<span>File</span>
-				</Menu.Item>
+		>
+			<div className="logo" />
+
+			<Menu
+				theme="dark"
+				defaultSelectedKeys={[`/${navFlag}`]}
+				selectedKeys={[props.location.pathname]}
+				mode="inline"
+			>
+				{menus.map(menu => (
+					<Menu.Item key={menu.key}>
+						<Link to={menu.key}>
+							<Icon type={menu.icon} />
+							<span>{menu.name}</span>
+						</Link>
+					</Menu.Item>
+				))}
 			</Menu>
 		</Sider>
 	);
 }
 
-export default connect(state => state)(SiderBar)
+export default connect(
+	(state: any) => ({
+		navFlagToSidebar: state.navFlagToSidebar
+	}),
+	dispatch => ({})
+)(SiderBar);

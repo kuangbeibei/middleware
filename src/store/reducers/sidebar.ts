@@ -1,20 +1,19 @@
 import {
-    SIDEBAR_CONTENT
+    SIDEBAR_FLAG
 } from "../action-types"
 
 interface ISidebar {
-    // visible: boolean
+    navFlag: string
 }
 
-const initSidebar:ISidebar = {
-    // visible: false
+const initSidebaFlagr:ISidebar = {
+    navFlag: ''
 }
 
-export default (state = initSidebar, action) => {
-    console.log('action~~~~, ', action)
+export default (state = initSidebaFlagr, action) => {
     switch (action.type) {
-        case SIDEBAR_CONTENT:
-            // state = { visible: !state.visible };
+        case SIDEBAR_FLAG:
+            state = { navFlag: action.navFlag };
             return state
         default:
             return state
