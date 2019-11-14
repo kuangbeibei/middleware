@@ -32,7 +32,6 @@ function SiderBar(props) {
 	} = props;
 
 	useEffect(() => {
-		console.log('navflag变了我才进来的');
 		switch (navFlag) {
 			case "mysql":
 				setmenus(mysqlRouteMenus);
