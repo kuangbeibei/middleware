@@ -17,7 +17,7 @@ export const MysqlRoutesMap: IRoute[] = [
 		menus: [
 			{
 				key: '/mysql',
-				name: '集群',
+				name: '集群mysql',
 				icon: 'desktop'
 			}
 		],
@@ -36,7 +36,7 @@ export const RedisRoutesMap: IRoute[] = [
 		menus: [
 			{
 				key: '/redis',
-				name: '集群',
+				name: '集群redis',
 				icon: 'desktop'
 			}
 		],
@@ -56,7 +56,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 		menus: [ // 侧边栏菜单
 			{
 				key: '/rocketmq',
-				name: '集群',
+				name: '集群rocketmq',
 				icon: 'desktop'
 			}
 		],

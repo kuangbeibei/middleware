@@ -7,6 +7,7 @@
 
 
 import * as React from "react";
+import Loading from "@com/UI/Loading"
 
 interface IDynamicImportProps {
 	load: Function;
@@ -29,7 +30,7 @@ class DynamicImport extends React.Component<IDynamicImportProps> {
 }
 
 function childrenOfDynamicImport(Component, props) {
-	return Component === null ? <div>loading</div> : <Component {...props} />;
+	return Component === null ? <Loading /> : <Component {...props} />;
 }
 
 // Mysql

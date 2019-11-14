@@ -8,13 +8,8 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
-	Descriptions,
-	Drawer,
 	Button,
-	Divider,
 	Table,
-	Modal,
-	Form,
 	Input,
 	Popconfirm,
 	message,
@@ -22,11 +17,10 @@ import {
 	Icon,
 	Popover,
 	Tooltip,
-	Row,
-	Col,
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
+import Loading from "@com/UI/Loading"
 
 import {
 	getRmqComponentClusterRecords,
@@ -43,10 +37,12 @@ function RocketMqHome(props) {
 	let [tableList, setTableList] = useState(Array());
 	let [newItemName, setNewItemName] = useState("");
 	let [newItemType, setNewItemType] = useState("");
+	let [loading, setloading] = useState(true);
 
 	useEffect(() => {
 		getRmqComponentClusterRecords().then(tableList => {
 			setTableList(tableList);
+			setloading(false);
 		});
 	}, [loadingListCount]);
 
@@ -236,8 +232,6 @@ function RocketMqHome(props) {
 		}
 	];
 
-
-	
 	return (
 		<>
 			<YhAdd
@@ -246,7 +240,7 @@ function RocketMqHome(props) {
 				onClick={addRmqType}
 				style={{ marginBottom: 10 }}
 			/>
-			<Table columns={columns} dataSource={tableList} rowKey="id" />
+			{loading ? <Loading /> :  <Table columns={columns} dataSource={tableList} rowKey="id" />}
 		</>
 	);
 }
