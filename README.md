@@ -2,8 +2,6 @@
 
 ### 1. 安装运行 
 
->  npm install | cnpm install
-
 ```js
 npm install | cnpm install
 ```
