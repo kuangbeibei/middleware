@@ -11,7 +11,8 @@ interface IRoute {
     isExact?: boolean,
     subs?: IRoute[],
     auth?: string,
-    login?: boolean
+    login?: boolean,
+    navname?: string
 }
 
 interface IRouteMap {

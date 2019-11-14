@@ -6,12 +6,13 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import {connect} from "react-redux"
 
 import { Layout, Menu, Icon } from "antd";
 
 const { Sider } = Layout;
 
-export default function() {
+function SiderBar() {
 	const [collapsed, setcollapsed] = useState(false);
 
 	const onCollapse = collapsed => {
@@ -68,3 +69,5 @@ export default function() {
 		</Sider>
 	);
 }
+
+export default connect(state => state)(SiderBar)

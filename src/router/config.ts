@@ -12,7 +12,8 @@ export const MysqlRoutesMap: IRoute[] = [
 		component: 'Mysql',
 		name: "Mysql",
 		isExact: false,
-		breadcrumbTitle: "Mysql集群列表"
+		breadcrumbTitle: "Mysql集群列表",
+		navname: 'mysql',
 	}
 ];
 
@@ -23,7 +24,8 @@ export const RedisRoutesMap: IRoute[] = [
 		component: 'Redis',
 		name: "Redis",
 		isExact: false,
-		breadcrumbTitle: "Redis集群列表"
+		breadcrumbTitle: "Redis集群列表",
+		navname: 'redis',
 	}
 ];
 
@@ -36,6 +38,7 @@ export const RocketmqRoutesMap: IRoute[] = [
 		isExact: false,
 		breadcrumbTitle: "RMQ集群",
 		component: 'Rocketmq',
+		navname: 'rocketmq',
 		subs: [
 			{
 				key: "/rocketmq/rmqnameserver/:id", // /rocketmq/:clusterId/rmqnameserver/:id
