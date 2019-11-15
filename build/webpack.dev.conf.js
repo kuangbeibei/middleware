@@ -8,7 +8,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
-        contentBase: './dist',
+        contentBase: '../dist',
         host: '127.0.0.1',
         port: 8899,
         open: 'true',

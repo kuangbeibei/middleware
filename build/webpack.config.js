@@ -28,7 +28,7 @@ const {
 module.exports = WebpackMerge(
 	{
 		entry: {
-			index: "./src/index.tsx"
+			index: ResolvePath("../src/index.tsx")
 		},
 		output: {
 			filename:
@@ -41,14 +41,14 @@ module.exports = WebpackMerge(
 		resolve: {
 			extensions: [".ts", ".tsx", ".js", ".json"],
 			alias: {
-				"@pages": ResolvePath("src/pages"),
-				"@com": ResolvePath("src/components"),
-				"@router": ResolvePath("src/router"),
-				"@api": ResolvePath("src/utils/api"),
-				"@tools": ResolvePath("src/utils/tools"),
-				"@actions": ResolvePath("src/store/actions"),
-				"@styled": ResolvePath("src/styled-components"),
-				"@hooks": ResolvePath("src/hooks")
+				"@pages": ResolvePath("../src/pages"),
+				"@com": ResolvePath("../src/components"),
+				"@router": ResolvePath("../src/router"),
+				"@api": ResolvePath("../src/utils/api"),
+				"@tools": ResolvePath("../src/utils/tools"),
+				"@actions": ResolvePath("../src/store/actions"),
+				"@styled": ResolvePath("../src/styled-components"),
+				"@hooks": ResolvePath("../src/hooks")
 			}
 		},
 		module: {
@@ -90,7 +90,7 @@ module.exports = WebpackMerge(
 			new CleanWebpackPlugin(),
 			new Webpack.ProgressPlugin(),
 			new HtmlWebpackPlugin({
-				template: "./src/index.html",
+				template: ResolvePath("../src/index.html"),
 				filename: "index.html"
 			})
 		]
