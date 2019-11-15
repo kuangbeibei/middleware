@@ -14,33 +14,32 @@ import { Layout, Menu, Icon } from "antd";
 const { Sider } = Layout;
 
 import {
-	MysqlRoutesMap,
-	RedisRoutesMap,
-	RocketmqRoutesMap
+	// MysqlRoutesMap,
+	// RedisRoutesMap,
+	// RocketmqRoutesMap
+	middlewareRouteMap
 } from "@router/config";
 
 import { deepCloneObject } from "@tools";
 
-let mysqlRouteMenus = deepCloneObject(MysqlRoutesMap[0].menus);
-let redisRouteMenus = deepCloneObject(RedisRoutesMap[0].menus);
-let rocketmqMenus = deepCloneObject(RocketmqRoutesMap[0].menus);
+// let mysqlRouteMenus = deepCloneObject(MysqlRoutesMap[0].menus);
+// let redisRouteMenus = deepCloneObject(RedisRoutesMap[0].menus);
+// let rocketmqMenus = deepCloneObject(RocketmqRoutesMap[0].menus);
+let middlewareMenus = deepCloneObject(middlewareRouteMap[0].menus);
 
 function SiderBar(props) {
 	const [menus, setmenus] = useState(Array());
 	const {
+		location: {
+			pathname
+		},
 		navFlagToSidebar: { navFlag }
 	} = props;
 
 	useEffect(() => {
 		switch (navFlag) {
-			case "mysql":
-				setmenus(mysqlRouteMenus);
-				break;
-			case "redis":
-				setmenus(redisRouteMenus);
-				break;
-			case "rocketmq":
-				setmenus(rocketmqMenus);
+			case "middleware":
+				setmenus(middlewareMenus);
 				break;
 			default:
 				setmenus([]);
@@ -65,8 +64,8 @@ function SiderBar(props) {
 
 			<Menu
 				theme="dark"
-				defaultSelectedKeys={[`/${navFlag}`]}
-				selectedKeys={[props.location.pathname]}
+				defaultSelectedKeys={[`/middleware/mysql`]}
+				selectedKeys={[pathname]}
 				mode="inline"
 			>
 				{menus.map(menu => (

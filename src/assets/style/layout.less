@@ -63,12 +63,12 @@
                         align-self: center;
                         text-align: center;
                         cursor: pointer;
-
+                        color: @white-color;
                         a {
                             display: block;
                             width: 100%;
                             height: 100%;
-                            color: rgba(255, 255, 255, 0.65);
+                            color: @white-color;
                         }
 
                         &:hover,
@@ -128,4 +128,7 @@
 
 .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
     background-color: @active-color;
+}
+.ant-menu-dark .ant-menu-item, .ant-menu-dark .ant-menu-item-group-title, .ant-menu-dark .ant-menu-item > a {
+    color: @white-color;
 }

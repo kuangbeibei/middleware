@@ -12,10 +12,11 @@ import setSideBarFlag from "@actions/setSidebar";
 
 import { Link } from "react-router-dom";
 
-import { middlewareNavMap } from "@router/config";
+import { middlewareNavMap, allNavMap } from "@router/config";
 
 interface INavComponentProps {
-	middlewareNavMap: IRoute[];
+	// middlewareNavMap: IRoute[];
+	allNavMap: any,
 	location: any;
 	setSideBarFlag: Function;
 }
@@ -24,7 +25,8 @@ interface INavComponentProps {
 const NavComponent: React.SFC<INavComponentProps> = props => {
 	const {
 		location: { pathname },
-		middlewareNavMap,
+		// middlewareNavMap,
+		allNavMap,
 		setSideBarFlag
 	} = props;
 
@@ -45,7 +47,7 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 
 	useEffect(() => {
 		if (comparedKey.indexOf("/") === -1) {
-			// 2. 处理sidebar，dispatch Nav的type过去
+			// 2. 处理sidebar，dispatch navFlag过去
 			setSideBarFlag({
 				navFlag: comparedKey
 			})
@@ -57,17 +59,17 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 		<>
 			<nav>
 				<ul>
-					{middlewareNavMap.map(route => {
+					{allNavMap.map(route => {
 						return (
 							<li
 								key={route.key}
 								className={
-									comparedKey === route.navname
+									comparedKey === route.name
 										? "active"
 										: ""
 								}
 							>
-								<Link to={route.key}>{route.name}</Link>
+								<Link to={route.key}>{route.navname}</Link>
 							</li>
 						);
 					})}
@@ -80,7 +82,7 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 function Header(props) {
 	return (
 		<header>
-			<NavComponent middlewareNavMap={middlewareNavMap} {...props} />
+			<NavComponent allNavMap={allNavMap} {...props} />
 		</header>
 	);
 }

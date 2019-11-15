@@ -30,7 +30,9 @@ function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
 							/>
 						);
 					};
-					return route(r);
+					return r.component
+						? route(r)
+						: r.subs && r.subs.map((r: IRoute) => route(r));
 				})}
 				{/* 主体路由级 nomatch 未实现 */}
 				<Route render={() => <Redirect to="/nomatch" />} />
