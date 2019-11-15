@@ -13,12 +13,39 @@ import {
 
 import { MiddlewarePathPrefix } from "@utils/data"
 
-const generateBreadcrumbs = (pathSnippets) => {
+// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，url是实际的地址
+const generateBreadcrumbs = (routeProps, pathSnippets) => {
 	let baseUrl;
 
 	return pathSnippets.reduce((prev, cur, idx) => {
-		const generate = () => {
+		
+		if (cur === MiddlewarePathPrefix) {
+			return prev
+		}
 
+		let sliceSnippet = pathSnippets.slice(0, idx + 1);
+		generate(sliceSnippet);
+
+		function generate(sliceSnippet) {
+			let url = !baseUrl ? `/${sliceSnippet.join("/")}` : `${baseUrl}/${cur}`;
+			let breadTitle = routeProps[url];
+
+			if (!breadTitle) {
+				sliceSnippet[sliceSnippet.length - 1] = variable;
+				generate(sliceSnippet)
+			} else {
+				baseUrl = url;
+			}
+
+			prev.push(
+				<Breadcrumb.Item key={url}>
+					{idx === pathSnippets.length - 1 ? (
+						breadTitle
+					) : (
+						<Link to={url}>{breadTitle}</Link>
+					)}
+				</Breadcrumb.Item>
+			);
 		}
 
 		return prev
@@ -79,5 +106,5 @@ export default function(props) {
 	}
 	return null;
 
-	// return generateBreadcrumbs(pathSnippets) || null
+	// return generateBreadcrumbs(routeProps, pathSnippets) || null
 }
