@@ -13,10 +13,16 @@ const App: React.SFC = props => {
 	return (
 		<Router>
 			<Switch>
-				{/* Login */}
-
+				
+				{
+					/* 本地开发用 */
+					location.port === '8899' ? <Route exact path="/" render={() => <Redirect to="/middleware/mysql" push />} />  : ''
+				}
+				
 				{/* Page */}
 				<PageIndex {...props} />
+
+				{/* Login */}
 
 				{/* 页面路由级别404 nomatch */}
 				<Route path="/nomatch" component={Nomatch} />

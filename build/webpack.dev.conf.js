@@ -13,7 +13,12 @@ module.exports = {
         port: 8899,
         open: 'true',
         compress: true,
-        historyApiFallback: true, 
+        historyApiFallback: {
+            rewrites: [
+                { from: /^\/$/, to: '/middleware' },
+                { from: /^\/middleware$/, to: '/' },
+            ]
+        }, 
         overlay: {
             errors: true
         },

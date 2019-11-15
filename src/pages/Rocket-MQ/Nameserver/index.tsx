@@ -39,6 +39,7 @@ import {
 } from "./service";
 
 function RmqNameServer(props) {
+	console.log(' nameserver');
 	const {
 		match: {
 			params: { id }

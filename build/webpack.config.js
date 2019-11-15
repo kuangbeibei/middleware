@@ -44,6 +44,7 @@ module.exports = WebpackMerge(
 				"@pages": ResolvePath("../src/pages"),
 				"@com": ResolvePath("../src/components"),
 				"@router": ResolvePath("../src/router"),
+				"@utils":ResolvePath("../src/utils"),
 				"@api": ResolvePath("../src/utils/api"),
 				"@tools": ResolvePath("../src/utils/tools"),
 				"@actions": ResolvePath("../src/store/actions"),

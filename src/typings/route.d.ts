@@ -13,7 +13,6 @@ interface IRoute {
     login?: boolean;
     navname?: string;
     icon?: string;
-    menus?: IRoute[]; // 侧边栏菜单项
     subs?: IRoute[]; // 子路由
 }
 

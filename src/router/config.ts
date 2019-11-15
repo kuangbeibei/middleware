@@ -6,41 +6,38 @@
  */
 
 // Mysql
-export const MysqlRoutesMap: IRoute[] = [
+export const MysqlRoutesMap = [
 	{
 		key: "/middleware/mysql",
 		component: "Mysql",
 		name: "Mysql",
-		isExact: false,
-		breadcrumbTitle: "Mysql",
+		isExact: true,
+		breadcrumbTitle: "Mysql集群",
 		icon: "desktop",
-		menus: []
 	}
 ];
 
 // Redis
-export const RedisRoutesMap: IRoute[] = [
+export const RedisRoutesMap = [
 	{
 		key: "/middleware/redis",
 		component: "Redis",
 		name: "Redis",
-		isExact: false,
-		breadcrumbTitle: "Redis",
+		isExact: true,
+		breadcrumbTitle: "Redis集群",
 		icon: "desktop",
-		menus: []
 	}
 ];
 
 // Rocketmq
-export const RocketmqRoutesMap: IRoute[] = [
+export const RocketmqRoutesMap = [
 	{
 		key: "/middleware/rocketmq", // 自动跳到/rocket/all这个路由
 		name: "Rocketmq",
-		isExact: false,
-		breadcrumbTitle: "Rocketmq",
 		component: "Rocketmq",
+		isExact: true,
+		breadcrumbTitle: "Rocketmq",
 		icon: "desktop",
-		menus: [],
 		subs: [
 			{
 				key: "/middleware/rocketmq/rmqnameserver/:id", // /rocketmq/:clusterId/rmqnameserver/:id
@@ -68,8 +65,8 @@ export const RocketmqRoutesMap: IRoute[] = [
 				component: "RocketmqHome",
 				name: "RocketmqHome",
 				isExact: true,
-				breadcrumbTitle: "Rocketmq"
-			}
+				breadcrumbTitle: "Rocketmq集群"
+			}, 
 			// 多加一层 总的集群页面
 			// rocketmq/all
 		]
@@ -108,27 +105,25 @@ export const platformNavMap = [
 ]
 
 // 永辉云-中间件平台导航
-export const middlewareNavMap: IRoute[] = [
+export const middlewareNavMap = [
 	{
-		key: "/middleware",
+		key: "/middleware/mysql",
 		navname: "中间件",
-		isExact: true,
 		breadcrumbTitle: "中间件",
-		name: "middleware"
+		name: "middleware",
 	}
 ];
 
 export const allNavMap = [...platformNavMap, ...middlewareNavMap];
 
 // 永辉云-中间件平台所有 & 侧边栏导航
-export const middlewareRouteMap: IRoute[] = [
+export const middlewareRouteMap = [
 	{
-		key: "/middleware",
+		key: "/middleware/mysql",
 		navname: "中间件",
 		isExact: true,
 		breadcrumbTitle: "中间件",
 		name: "middleware",
-		menus: [...MysqlRoutesMap, ...RedisRoutesMap, ...RocketmqRoutesMap],
 		subs: [...MysqlRoutesMap, ...RedisRoutesMap, ...RocketmqRoutesMap]
 	}
 ];

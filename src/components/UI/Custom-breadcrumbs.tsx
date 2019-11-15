@@ -11,6 +11,10 @@ import {
 	variable 
 } from "@tools"
 
+import { MiddlewarePathPrefix } from "@utils/data"
+
+let baseUrl = MiddlewarePathPrefix;
+
 export default function(props) {
 	const {
 		location: { pathname },
@@ -23,7 +27,10 @@ export default function(props) {
 
 		let comparedUrl; // 要做累加
 		let BreadcrumbItems = pathSnippets.reduce((prev, next, idx) => { // 实现了，但这方法需要用迭代封装优化！
-
+			console.log('next ,', next);
+			if (next === baseUrl) {
+				return prev;
+			}
 			let sliceSnippet = pathSnippets.slice(0, idx + 1);
 			let url = !comparedUrl ? `/${sliceSnippet.join("/")}` : `${comparedUrl}/${next}`;
 			let title = routeProps[url];

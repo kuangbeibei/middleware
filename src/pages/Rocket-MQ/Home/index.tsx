@@ -33,6 +33,7 @@ import { rmqTypes, rmqDataPrototype } from "./data";
 let addFlag = false;
 
 function RocketMqHome(props) {
+	console.log('rmq home');
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [newItemName, setNewItemName] = useState("");
@@ -136,7 +137,7 @@ function RocketMqHome(props) {
 	const gotoNameServerList = (id, type) => {
 		addFlag = false;
 		type = type.toLowerCase();
-		props.history.push(`/rocketmq/${type}/${id}`);
+		props.history.push(`/middleware/rocketmq/${type}/${id}`);
 	};
 
 	/**
