@@ -11,7 +11,7 @@ export const MysqlRoutesMap = [
 		key: "/middleware/mysql",
 		component: "Mysql",
 		name: "Mysql",
-		isExact: true,
+		isExact: false,
 		breadcrumbTitle: "Mysql集群",
 		icon: "desktop",
 	}
@@ -23,7 +23,7 @@ export const RedisRoutesMap = [
 		key: "/middleware/redis",
 		component: "Redis",
 		name: "Redis",
-		isExact: true,
+		isExact: false,
 		breadcrumbTitle: "Redis集群",
 		icon: "desktop",
 	}
@@ -35,7 +35,7 @@ export const RocketmqRoutesMap = [
 		key: "/middleware/rocketmq", // 自动跳到/rocket/all这个路由
 		name: "Rocketmq",
 		component: "Rocketmq",
-		isExact: true,
+		isExact: false,
 		breadcrumbTitle: "Rocketmq",
 		icon: "desktop",
 		subs: [
@@ -79,27 +79,27 @@ export const RocketmqRoutesMap = [
 // 永辉云-运维端后台导航
 export const platformNavMap = [
 	{
-		key: "/platform/tenant",
+		key: "http://manager.tce.cloud.yonghui.cn/platform/tenant",
 		navname: "云平台",
 	},
 	{
-		key: "/iaas/overview/computed",
+		key: "http://manager.tce.cloud.yonghui.cn/iaas/overview/computed",
 		navname: "云资源",
 	},
 	{
-		key: "/appc/cluster-list",
+		key: "http://manager.tce.cloud.yonghui.cn/appc/cluster-list",
 		navname: "应用中心",
 	},
 	{
-		key: "/develops/delivery",
+		key: "/http://manager.tce.cloud.yonghui.cn/develops/delivery",
 		navname: "DevOps"
 	},
 	{
-		key: "/data-operation-tools/task/logtask",
+		key: "http://manager.tce.cloud.yonghui.cn/data-operation-tools/task/logtask",
 		navname: "数据化运营工具"
 	},
 	{
-		key: "/monitor/alarm/strategy",
+		key: "http://manager.tce.cloud.yonghui.cn/monitor/alarm/strategy",
 		navname: "监控"
 	}
 ]

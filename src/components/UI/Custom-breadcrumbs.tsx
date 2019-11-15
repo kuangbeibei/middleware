@@ -13,7 +13,17 @@ import {
 
 import { MiddlewarePathPrefix } from "@utils/data"
 
-let baseUrl = MiddlewarePathPrefix;
+const generateBreadcrumbs = (pathSnippets) => {
+	let baseUrl;
+
+	return pathSnippets.reduce((prev, cur, idx) => {
+		const generate = () => {
+
+		}
+
+		return prev
+	}, [])
+}
 
 export default function(props) {
 	const {
@@ -24,15 +34,13 @@ export default function(props) {
 	let pathSnippets = pathname.split("/").filter(i => i);
 
 	if (routeProps) {
-
-		let comparedUrl; // 要做累加
+		let baseUrl; // 要做累加
 		let BreadcrumbItems = pathSnippets.reduce((prev, next, idx) => { // 实现了，但这方法需要用迭代封装优化！
-			console.log('next ,', next);
-			if (next === baseUrl) {
+			if (next === MiddlewarePathPrefix) {
 				return prev;
 			}
 			let sliceSnippet = pathSnippets.slice(0, idx + 1);
-			let url = !comparedUrl ? `/${sliceSnippet.join("/")}` : `${comparedUrl}/${next}`;
+			let url = !baseUrl ? `/${sliceSnippet.join("/")}` : `${baseUrl}/${next}`;
 			let title = routeProps[url];
 			if (!title) {
 				sliceSnippet[sliceSnippet.length - 1] = variable;
@@ -40,23 +48,21 @@ export default function(props) {
 
 				title = routeProps[tempUrl];
 				if (!title) {
-					prev.push("");
-					comparedUrl += `/${next}`;
+					baseUrl += `/${next}`;
 					return prev;
 				} else {
-					comparedUrl = tempUrl;
+					baseUrl = tempUrl;
 				}
 			} else {
-				comparedUrl = url;
+				baseUrl = url;
 			}
 
-			let link = url;
 			prev.push(
-				<Breadcrumb.Item key={link}>
+				<Breadcrumb.Item key={url}>
 					{idx === pathSnippets.length - 1 ? (
 						title
 					) : (
-						<Link to={link}>{title}</Link>
+						<Link to={url}>{title}</Link>
 					)}
 				</Breadcrumb.Item>
 			);
@@ -72,4 +78,6 @@ export default function(props) {
 		);
 	}
 	return null;
+
+	// return generateBreadcrumbs(pathSnippets) || null
 }
