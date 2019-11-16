@@ -15,7 +15,7 @@
 			"@com/*": ["./src/components/*"],
 			"@pages/*": ["./src/pages/*"],
 			"@router/*": ["./src/router/*"],
-			"@utils/*": ["../src/utils/*"],
+			"@utils/*": ["./src/utils/*"],
 			"@api": ["./src/utils/api"],
 			"@tools": ["./src/utils/tools"],
 			"@actions/*": ["./src/store/actions/*"],

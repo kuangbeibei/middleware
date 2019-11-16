@@ -13,7 +13,7 @@ import {
 
 import { MiddlewarePathPrefix } from "@utils/data"
 
-// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，url是实际的地址
+// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，link是实际的地址
 const generateBreadcrumbs = (routeProps, pathSnippets) => {
 	let baseUrl;
 
@@ -24,32 +24,44 @@ const generateBreadcrumbs = (routeProps, pathSnippets) => {
 		}
 
 		let sliceSnippet = pathSnippets.slice(0, idx + 1);
-		generate(sliceSnippet);
+		let link = `/${sliceSnippet.join("/")}`;
+		baseUrl = !baseUrl ? link : `${baseUrl}/${cur}`;
 
-		function generate(sliceSnippet) {
-			let url = !baseUrl ? `/${sliceSnippet.join("/")}` : `${baseUrl}/${cur}`;
+		compareRoutes(baseUrl, 1);
+
+		function compareRoutes(url, round) {
 			let breadTitle = routeProps[url];
-
-			if (!breadTitle) {
-				sliceSnippet[sliceSnippet.length - 1] = variable;
-				generate(sliceSnippet)
-			} else {
+			if (breadTitle) {
 				baseUrl = url;
+				generate(link, breadTitle)
+			} else {
+				if (round > 1) {
+					baseUrl += `/${cur}`;
+					return prev;
+				}
+				sliceSnippet[sliceSnippet.length - 1] = variable;
+				let tempUrl = `/${sliceSnippet.join("/")}`;
+				compareRoutes(tempUrl, 2);
 			}
+		}
 
+		function generate(link, breadTitle) {
 			prev.push(
-				<Breadcrumb.Item key={url}>
+				<Breadcrumb.Item key={link}>
 					{idx === pathSnippets.length - 1 ? (
 						breadTitle
 					) : (
-						<Link to={url}>{breadTitle}</Link>
+						<Link to={link}>{breadTitle}</Link>
 					)}
 				</Breadcrumb.Item>
 			);
 		}
 
 		return prev
+
 	}, [])
+
+	
 }
 
 export default function(props) {
@@ -61,50 +73,7 @@ export default function(props) {
 	let pathSnippets = pathname.split("/").filter(i => i);
 
 	if (routeProps) {
-		let baseUrl; // 要做累加
-		let BreadcrumbItems = pathSnippets.reduce((prev, next, idx) => { // 实现了，但这方法需要用迭代封装优化！
-			if (next === MiddlewarePathPrefix) {
-				return prev;
-			}
-			let sliceSnippet = pathSnippets.slice(0, idx + 1);
-			let url = !baseUrl ? `/${sliceSnippet.join("/")}` : `${baseUrl}/${next}`;
-			let title = routeProps[url];
-			if (!title) {
-				sliceSnippet[sliceSnippet.length - 1] = variable;
-				let tempUrl = `/${sliceSnippet.join("/")}`
-
-				title = routeProps[tempUrl];
-				if (!title) {
-					baseUrl += `/${next}`;
-					return prev;
-				} else {
-					baseUrl = tempUrl;
-				}
-			} else {
-				baseUrl = url;
-			}
-
-			prev.push(
-				<Breadcrumb.Item key={url}>
-					{idx === pathSnippets.length - 1 ? (
-						title
-					) : (
-						<Link to={url}>{title}</Link>
-					)}
-				</Breadcrumb.Item>
-			);
-			return prev;
-		}, []);
-
-		return (
-			<Breadcrumb>
-				{/* 若有首页，先首页 */}
-				{/* <Breadcrumb.Item>Home</Breadcrumb.Item>*/}
-				{BreadcrumbItems}
-			</Breadcrumb>
-		);
+		return generateBreadcrumbs(routeProps, pathSnippets)
 	}
 	return null;
-
-	// return generateBreadcrumbs(routeProps, pathSnippets) || null
 }
