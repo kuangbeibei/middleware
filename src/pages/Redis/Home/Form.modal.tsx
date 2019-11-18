@@ -38,8 +38,8 @@ const initIPostParams: IPostParams = {
 };
 
 const formItemBasicLayout = {
-	labelCol: { span: 4 },
-	wrapperCol: { span: 8 }
+	labelCol: { span: 6 },
+	wrapperCol: { span: 12 },
 };
 
 const formItemInstanceLayout = {
@@ -207,7 +207,7 @@ function FormModal(props) {
 					<YHFlexDiv key={idx}>
 						<YHSmallFormItem {...formItemInstanceLayout}
 							label={
-								isEven(idx) ? `M ${Math.floor(idx/2 + 1)}` : `S ${Math.ceil(idx/2)}`
+								isEven(idx) ? `M    ${Math.floor(idx/2 + 1)}` : `S  ${Math.ceil(idx/2)}`
 							}
 						>
 							{getFieldDecorator(`params.instances[${idx}].ip`, {
@@ -295,7 +295,7 @@ function FormModal(props) {
 					</YHFlexDiv>
 				))}
 				<Divider>自定义配置项目</Divider>
-				<Form.Item {...formItemInstanceLayout} label="自定义参数">
+				<Form.Item {...formItemBasicLayout} label="自定义参数">
 					{getFieldDecorator("params.moreConf", {
 						initialValue: postParams.params.moreConf,
 						rules: [
