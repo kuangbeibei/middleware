@@ -13,7 +13,7 @@ import {
 	Select,
 } from "antd";
 
-import FormModal from "@com/Form-modal";
+import Modal from "@com/Modal";
 
 import { deepCloneObject } from "@tools";
 
@@ -90,7 +90,7 @@ function FormModalOfNameServer(props) {
 	};
 
 	return (
-		<FormModal
+		<Modal
 			modalName={`创建RMQ-NameServer`}
 			visible={tableModalVisibility.visible}
 			handleOk={handleOk}
@@ -189,7 +189,7 @@ function FormModalOfNameServer(props) {
 					)}
 				</Form.Item>
 			</Form>
-		</FormModal>
+		</Modal>
 	);
 }
 

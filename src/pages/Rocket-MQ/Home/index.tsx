@@ -33,7 +33,6 @@ import { rmqTypes, rmqDataPrototype } from "./data";
 let addFlag = false;
 
 function RocketMqHome(props) {
-	console.log('rmq home');
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [newItemName, setNewItemName] = useState("");

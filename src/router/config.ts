@@ -26,6 +26,22 @@ export const RedisRoutesMap = [
 		isExact: false,
 		breadcrumbTitle: "Redis集群",
 		icon: "desktop",
+		subs: [
+			{
+				key: "/middleware/redis/:id/instance",
+				component: "RedisInstance",
+				name: "RedisInstance",
+				isExact: true,
+				breadcrumbTitle: "Redis实例"
+			},
+			{
+				key: "/middleware/redis",
+				component: "RedisHome",
+				name: "RedisHome",
+				isExact: false,
+				breadcrumbTitle: "Redis集群"
+			}
+		]
 	}
 ];
 
@@ -64,7 +80,7 @@ export const RocketmqRoutesMap = [
 				key: "/middleware/rocketmq", // 子路由首页放在最后！ // /rocketmq/:clusterId
 				component: "RocketmqHome",
 				name: "RocketmqHome",
-				isExact: true,
+				isExact: false,
 				breadcrumbTitle: "Rocketmq集群"
 			}, 
 			// 多加一层 总的集群页面
