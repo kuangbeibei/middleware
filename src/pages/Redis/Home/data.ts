@@ -20,13 +20,28 @@ export default interface IPostParams {
 
 export const initInstancesType = [
 	{
-		id: 1,
-		name: '6机器-6实例',
+		id: 3,
+		name: '3主 - 3从',
 		defaultClassName: 'active'
 	},
 	{
-		id: 2,
-		name: '3机器-6实例',
+		id: 5,
+		name: '5主 - 5从',
 		defaultClassName: ''
-	}
+    },
+    {
+		id: 7,
+		name: '7主 - 7从',
+		defaultClassName: ''
+    },
+    {
+		id: 9,
+		name: '9主 - 9从',
+		defaultClassName: ''
+    },
+    {
+		id: 11,
+		name: '11主 - 11从',
+		defaultClassName: ''
+    },
 ]

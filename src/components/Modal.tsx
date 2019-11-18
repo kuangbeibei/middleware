@@ -10,10 +10,11 @@ import { useState, useEffect } from "react";
 import { Modal } from "antd";
 
 export default function(props) {
-	const { modalName, visible, handleOk, handleCancel } = props;
+	const { modalName, visible, handleOk, handleCancel, width } = props;
 
 	return (
 		<Modal
+			width={width || 520}
 			title={modalName}
 			visible={visible}
 			onOk={handleOk}

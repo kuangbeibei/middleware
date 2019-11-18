@@ -10,10 +10,8 @@ import { useState, useEffect } from "react";
 import {
 	Button,
 	Table,
-	Input,
 	Popconfirm,
 	message,
-	Select,
 	Icon,
 	Popover,
 	Tooltip
@@ -41,8 +39,8 @@ import ConfigModal from "./Config.modal"
 import ExtensionModal from "./Extension.modal"
 
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import setTableModalVisibility from "@actions/setModalVisibility";
+// import { bindActionCreators } from "redux";
+// import setTableModalVisibility from "@actions/setModalVisibility";
 
 import "./style.less";
 
@@ -50,7 +48,6 @@ function RedisCluster(props) {
     
     const {
         tableModalVisibility,
-		setTableModalVisibility
     } = props;
     
 	let [loading, setloading] = useState(true);
@@ -122,32 +119,31 @@ function RedisCluster(props) {
 	 * @param status
 	 */
 	const checkStatusBeforeOperate = (type, status) => {
-		// switch (type) {
-		// 	case 'mapRelations':
-		// 		if (status === 'done') {
-		// 			return taskId => getMapRelationsInfo(taskId)
-		// 		}
-		// 		return () => {
-		// 			message.info(`集群状态是${status}，无法展示拓扑图!`)
-		// 		}
-		// 	case 'delete':
-		// 		if (status === 'release' || status === 'failed' || status === 'ready') {
-		// 			return (id, name) => deleteCluster(id, name)
-		// 		}
-		// 		return () => {
-		// 			message.info(`集群状态是${status}，无法删除!`)
-		// 		}
-		// 	case 'release':
-		// 		if (status !== 'running' && status !== 'release' && status !== 'ready') {
-		// 			return taskId => releaseCluster(taskId)
-		// 		}
-		// 		return () => {
-		// 			message.info(`集群状态是${status}，已经释放!`)
-		// 		}
-		// 	default:
-		// 		return () => {}
-		// }
-		return (id, name) => {};
+		switch (type) {
+			case 'mapRelations':
+				if (status === 'done') {
+					return taskId => getMapRelationsInfo(taskId)
+				}
+				return () => {
+					message.info(`集群状态是${status}，无法展示拓扑图!`)
+				}
+			case 'delete':
+				if (status === 'release' || status === 'failed' || status === 'ready') {
+					return (id, name) => deleteCluster(id, name)
+				}
+				return () => {
+					message.info(`集群状态是${status}，无法删除!`)
+				}
+			case 'release':
+				if (status !== 'running' && status !== 'release' && status !== 'ready') {
+					return taskId => releaseCluster(taskId)
+				}
+				return () => {
+					message.info(`集群状态是${status}，已经释放!`)
+				}
+			default:
+				return () => {}
+		}
 	};
 
 	/**
@@ -439,10 +435,5 @@ export default connect(
 	(state: any) => ({
 		tableModalVisibility: state.tableModalVisibility
 	}),
-	dispatch => ({
-		setTableModalVisibility: bindActionCreators(
-			setTableModalVisibility,
-			dispatch
-		)
-	})
+	dispatch => ({})
 )(RedisCluster);

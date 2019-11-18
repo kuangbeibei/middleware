@@ -53,6 +53,11 @@ export function deepCloneObject(source, map = new WeakMap()) {
 	return cloneTarget;
 }
 
+// 判断奇偶
+export const isEven = (num) => {
+	return num%2 === 0
+}
+
 // 生成key val的面包屑路由数据，使path和面包屑title一一对应
 export const paramRegExp = /\:\w+/;
 export const variable = `{variable}`
