@@ -38,3 +38,37 @@ export async function deployTaskOutput(taskId) {
         }
     }).catch(e => e.message)
 }
+
+// 集群拓扑
+export async function deployEntryDetail(taskId) {
+    return get(`/mid/v1/deployEntryDetail/redis/${taskId}`).then(res => {
+        try {
+            return res.data.data.nodes
+        } catch (e) {
+            return res
+        }
+    }).catch(e => e.message)
+}
+
+// 删除集群
+export async function delCluster(id) {
+    return del(`/mid/v1/delete/redis/${id}`).then(res => {
+        if (res.data.code === 200) {
+            return  true
+        } else {
+            return false
+        }
+    }).catch(e => e.message)
+}
+
+
+// 释放集群
+export async function releaseCluster(taskId) {
+    return del(`/mid/v1/releaseTaskResources/redis/${taskId}`).then(res => {
+         if (res.data.code === 200) {
+            return true
+        } else {
+            return false
+        }
+    }).catch(e => e.message)
+}

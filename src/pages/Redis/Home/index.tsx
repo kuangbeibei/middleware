@@ -20,22 +20,44 @@ import {
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
-import {
-    YHSVG
-} from "@styled/svg"
 
 import Loading from "@com/UI/Loading";
 
-import { getRedisClusters, getConfigDetail, deployTaskOutput } from "./service";
+import {
+	getRedisClusters,
+	getConfigDetail,
+	deployTaskOutput,
+	delCluster,
+	releaseCluster,
+	deployEntryDetail
+} from "./service";
 
-import { FormatTime, deepCloneObject } from "@tools";
+import { FormatTime } from "@tools";
+
+import LogModal from "./Log.modal"
+import MonitorModal from "./Monitor.modal"
+import TopoModal from "./Topology.modal"
+import ConfigModal from "./Config.modal"
+import ExtensionModal from "./Extension.modal"
+
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import setTableModalVisibility from "@actions/setModalVisibility";
 
 import "./style.less";
 
-export default function(props) {
+function RedisCluster(props) {
+    
+    const {
+        tableModalVisibility,
+		setTableModalVisibility
+    } = props;
+    
 	let [loading, setloading] = useState(true);
 	let [loadingListCount, setLoadListCount] = useState(0);
-	let [tableList, setTableList] = useState(Array());
+    let [tableList, setTableList] = useState(Array());
+    let [com, setCom] = useState()
+    
 
 	useEffect(() => {
 		getRedisClusters()
@@ -44,21 +66,37 @@ export default function(props) {
 				setloading(false);
 			})
 			.catch(e => {});
-	}, [loadingListCount]);
+    }, [loadingListCount]);
+
+    useEffect(() => {
+        if (!(tableModalVisibility.visible)) {
+            setTimeout(() => {
+                setCom("")
+            }, 400)
+        }
+    }, [tableModalVisibility.visible])
+    
+    const addRedisCluster = async () => {
+        import("./Form.modal").then(component => {
+            setCom(<component.default />);
+        })
+    }
 
 	/**
 	 * 部署redis集群
 	 * @param taskId
 	 */
 	const deployCluster = (taskId, status) => {
-        if (status === 'ready' || status === 'failed') {
-            deployTaskOutput(taskId).then(res => {
-                // statusTaskIds.push(taskId);
-				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-                message.success('正在部署...', 10)
-            }).catch(e => message.error(e.message))
+		if (status === "ready" || status === "failed") {
+			deployTaskOutput(taskId)
+				.then(res => {
+					// statusTaskIds.push(taskId);
+					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					message.success("正在部署...", 10);
+				})
+				.catch(e => message.error(e.message));
 		} else {
-			message.info('集群状态不可部署！')
+			message.info("集群状态不可部署！");
 		}
 	};
 
@@ -80,7 +118,8 @@ export default function(props) {
 
 	/**
 	 * 在操作前校验status
-	 * @param type, status
+	 * @param type
+	 * @param status
 	 */
 	const checkStatusBeforeOperate = (type, status) => {
 		// switch (type) {
@@ -116,14 +155,12 @@ export default function(props) {
 	 * @param taskId
 	 */
 	const getMapRelationsInfo = taskId => {
-		// get(`/mid/v1/deployEntryDetail/redis/${taskId}`).then(res => {
-		// 	try {
-		// 		setDetailModalVisibility(true);
-		// 		setDetail(res && res.data && res.data.data && res.data.data.nodes)
-		// 	} catch (e) {
-		// 		message.error(e)
-		// 	}
-		// }).catch(e => message.error(e))
+		deployEntryDetail(taskId)
+			.then(data => {
+				// setDetailModalVisibility(true);
+				// setDetail(data)
+			})
+			.catch(e => message.error(e));
 	};
 
 	/**
@@ -131,29 +168,35 @@ export default function(props) {
 	 * @param id
 	 */
 	const deleteCluster = (id, name?) => {
-		// del(`/mid/v1/delete/redis/${id}`).then(res => {
-		// 	if (res.data.code == 200) {
-		// 		setLoadListCount(loadListCount => loadListCount + 1);
-		// 		message.success(`删除集群${name}成功!`);
-		// 	} else {
-		// 		message.success(`删除集群${name}失败! ${res.data.msg}`)
-		// 	}
-		// })
+		delCluster(id)
+			.then(res => {
+				if (res) {
+					setLoadListCount(loadListCount => loadListCount + 1);
+					message.success(`删除集群${name}成功!`);
+				} else {
+					message.error(`删除集群${name}失败! `);
+				}
+			})
+			.catch(e => message.error(e.message));
 	};
 
 	/**
 	 * 释放集群
 	 * @param taskId
 	 */
-	const releaseCluster = taskId => {
-		// del(`/mid/v1/releaseTaskResources/redis/${taskId}`).then(res => {
-		// 	message.info(`正在释放集群${taskId}...`);
-		// 	setLoadListCount(loadListCount => loadListCount + 1);
-		// 	statusTaskIds.push(res.data.data.taskId);
-		// 	setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-		// }).catch(e => {
-		// 	console.log('e', e, e.message)
-		// })
+	const releaseClusterByTaskId = (taskId, name) => {
+		releaseCluster(taskId)
+			.then(res => {
+				if (res) {
+					message.info(`正在释放集群${name}...`);
+					setLoadListCount(loadListCount => loadListCount + 1);
+					// statusTaskIds.push(res.data.data.taskId);
+					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				} else {
+					message.error(`释放集群${name}失败! `);
+				}
+			})
+			.catch(e => message.error(e.message));
 	};
 
 	const columns = [
@@ -209,8 +252,8 @@ export default function(props) {
 					</Tooltip>
 				</YhOp>
 			)
-        },
-        {
+		},
+		{
 			title: "监控状态",
 			key: "monitor",
 			render: text => (
@@ -218,7 +261,7 @@ export default function(props) {
 					color={text.status === "done" ? null : "#999"}
 					default={text.status !== "done"}
 				>
-                    <Tooltip placement="top" title={"监控状态"}>
+					<Tooltip placement="top" title={"监控状态"}>
 						<Button
 							type="link"
 							icon="bar-chart"
@@ -374,7 +417,7 @@ export default function(props) {
 			<YhAdd
 				type="primary"
 				icon="plus"
-				// onClick={addRmqType}
+				onClick={addRedisCluster}
 				style={{ marginBottom: 10 }}
 			/>
 
@@ -382,7 +425,24 @@ export default function(props) {
 				<Loading />
 			) : (
 				<Table columns={columns} dataSource={tableList} rowKey="id" />
-			)}
+                )}
+            
+            {
+                // Modal
+               com
+            }
 		</>
 	);
 }
+
+export default connect(
+	(state: any) => ({
+		tableModalVisibility: state.tableModalVisibility
+	}),
+	dispatch => ({
+		setTableModalVisibility: bindActionCreators(
+			setTableModalVisibility,
+			dispatch
+		)
+	})
+)(RedisCluster);
