@@ -10,6 +10,10 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Allpages from "@pages/Entries";
 
+const requireLogin = () => {
+	
+}
+
 const routes = (middlewareRouteMap, props) => {
 	return middlewareRouteMap.map((r: IRoute) => {
 		const route = (r: IRoute) => {
@@ -39,7 +43,7 @@ function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
 			<Switch>
 				{...routes(middlewareRouteMap, props)}
 				{/* 主体路由级 nomatch 未实现 */}
-				{/* <Route render={() => <Redirect to="/nomatch" />} /> */}
+				<Redirect to="/nomatch" />
 			</Switch>
 		</>
 	);
