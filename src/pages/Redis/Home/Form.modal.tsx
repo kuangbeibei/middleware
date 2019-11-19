@@ -26,7 +26,8 @@ import IPostParams, { initInstancesType } from "./data";
 import { isEven } from "@tools"
 
 import {
-    createCluster
+    createCluster,
+    updateCluster
 } from "./service"
 
 const initIPostParams: IPostParams = {
@@ -57,8 +58,9 @@ function FormModal(props) {
 		tableModalVisibility,
 		setTableModalVisibility,
         form: { getFieldDecorator },
+        taskId,
         detail
-	} = props;
+    } = props;
 
     let [postParams, setPostParams] = useState(Object.assign({}, initIPostParams));
     let [redisType, setRedisType] = useState(3)
@@ -68,16 +70,14 @@ function FormModal(props) {
     }, []);
     
     useEffect(() => {
-         if (detail) {
-            // 拿到instances的length
+         if (taskId) {
             const len = detail.params.instances.length;
-            console.log('detail ,', detail);
             chooseInstanceType(len/2)
             setPostParams(detail)
         } else {
             chooseInstanceType(3)
         }
-    }, [detail])
+    }, [taskId])
 
 	/**
 	 * 用户名和密码，自动填充没有写的
@@ -158,18 +158,26 @@ function FormModal(props) {
                 }
                 delete OformItems.redisType;
                 instances.forEach(i => i.port = Number(i.port));
-                createCluster(OformItems).then(data => {
+
+                save(OformItems).then(data => {
                     if (typeof data === 'boolean') {
                         setTableModalVisibility();
-                        message.success('redis集群创建成功!')
+                        message.success(`redis集群${taskId ? '修改' : '创建'}成功!`)
                     } else {
                         message.error(data.message)
                     }
-                }).catch(e => message.error(e.message))
+                }).catch(e => message.error(e.message));
             }
         })
-		
-	};
+    };
+    
+    const save = async (data) => {
+        if (taskId) {
+            return updateCluster(taskId, data)
+        } else {
+            return createCluster(data)
+        }
+    }
 
 	const handleCancel = () => {
 		setTableModalVisibility();

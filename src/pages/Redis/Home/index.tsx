@@ -88,7 +88,11 @@ function RedisCluster(props) {
         import("./Form.modal").then(component => {
             if (taskId) {
                 getClusterDetail(taskId).then(data => {
-                    setCom(<component.default {...data} />);
+                    let _data = Object.assign({}, {
+                        taskId: taskId
+                    }, data);
+                    console.log('_data ', _data);
+                    setCom(<component.default {..._data} />);
                 }).catch(e => message.error(e.message))
             } else {
                 setCom(<component.default />);

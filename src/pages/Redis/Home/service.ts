@@ -28,6 +28,17 @@ export async function createCluster(data) {
     }).catch(e => e.message)
 }
 
+//  修改
+export async function updateCluster(taskId, data) {
+    return post(`/mid/v1/updateParams/redis/${taskId}`, data).then(res => {
+        if (res.data.code === 200) {
+            return true
+        } else {
+            return res
+        }
+    }).catch(e => e.message)
+}
+
 // 部署
 export async function deployCluster(taskId) {
     return get(`/mid/v1/runTask/redis/${taskId}`).then(res => {
