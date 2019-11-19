@@ -58,7 +58,7 @@ function RedisCluster(props) {
 	}, [loadingListCount]);
 
 	useEffect(() => {
-        if (!tableModalVisibility.visible && com) {
+		if (!tableModalVisibility.visible && com) {
 			setTimeout(() => {
 				setCom("");
 				setLoadListCount(loadListCount => loadListCount + 1);
@@ -85,19 +85,21 @@ function RedisCluster(props) {
 	}, statusTaskId);
 
 	const showFormModal = async (taskId?) => {
-        import("./Form.modal").then(component => {
-			if (taskId && typeof taskId === 'number') {
+		import("./Form.modal").then(component => {
+			if (taskId && typeof taskId === "number") {
 				getClusterDetail(taskId)
 					.then(data => {
-						let _data = Object.assign(
-							{},
-							{
-								taskId: taskId
-							},
-							data
+						setCom(
+							<component.default
+								{...Object.assign(
+									{},
+									{
+										taskId: taskId
+									},
+									data
+								)}
+							/>
 						);
-						console.log("_data ", _data);
-						setCom(<component.default {..._data} />);
 					})
 					.catch(e => message.error(e.message));
 			} else {
@@ -147,7 +149,8 @@ function RedisCluster(props) {
 				if (status === "done") {
 					return taskId => getMapRelationsInfo(taskId);
 				}
-				return () => message.info(`集群状态是${status}，无法展示拓扑图!`);
+				return () =>
+					message.info(`集群状态是${status}，无法展示拓扑图!`);
 			case "delete":
 				if (
 					status === "release" ||
@@ -171,11 +174,11 @@ function RedisCluster(props) {
 					return taskId => deployCluster(taskId);
 				}
 				return message.info("集群状态不可部署！");
-            case "edit":
-                if (status !== "done" && status !== "release") {
+			case "edit":
+				if (status !== "done" && status !== "release") {
 					return taskId => showFormModal(taskId);
-                }
-                return () => message.info("集群状态不可编辑");
+				}
+				return () => message.info("集群状态不可编辑");
 			default:
 				return () => {};
 		}
@@ -187,9 +190,18 @@ function RedisCluster(props) {
 	 */
 	const getMapRelationsInfo = taskId => {
 		deployEntryDetail(taskId)
-			.then(data => {
-				// setDetailModalVisibility(true);
-				// setDetail(data)
+            .then(data => {
+                if (data.nodes && Array.isArray(data.nodes)) {
+                    import("./Topology.modal").then(component => {
+                        setCom(
+                            <component.default
+                                {...data}
+                            />
+                        );
+                    })
+                } else {
+                    return message.error(data.message)
+                }
 			})
 			.catch(e => message.error(e));
 	};

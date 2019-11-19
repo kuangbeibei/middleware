@@ -13,20 +13,15 @@ module.exports = {
         port: 8899,
         open: 'true',
         compress: true,
-        historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/middleware' },
-                { from: /^\/middleware$/, to: '/' },
-            ]
-        }, 
+        historyApiFallback: true,
         overlay: {
             errors: true
         },
         proxy: {
-            '/api': {
-                target: 'http://10.254.192.36:8080/', //curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
-                pathRewrite: {'^/api' : ''},
-            },
+            // '/api': {
+            //     target: 'http://10.254.192.36:8080/', //curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
+            //     pathRewrite: {'^/api' : ''},
+            // },
             '/mid': 'http://10.254.192.52:8080',
         }
     }

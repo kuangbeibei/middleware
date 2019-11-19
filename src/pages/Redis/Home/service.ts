@@ -76,7 +76,9 @@ export async function deployTaskOutput(taskId) {
 export async function deployEntryDetail(taskId) {
     return get(`/mid/v1/deployEntryDetail/redis/${taskId}`).then(res => {
         try {
-            return res.data.data.nodes
+            return res.data.data.nodes && {
+                nodes: res.data.data.nodes
+            }
         } catch (e) {
             return res
         }

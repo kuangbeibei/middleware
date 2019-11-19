@@ -174,7 +174,7 @@ function FormModal(props) {
     
     const save = async (data) => {
         if (taskId) {
-            return updateCluster(taskId, data)
+            return updateCluster(taskId, data.params)
         } else {
             return createCluster(data)
         }
