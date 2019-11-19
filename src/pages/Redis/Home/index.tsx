@@ -147,9 +147,7 @@ function RedisCluster(props) {
 				if (status === "done") {
 					return taskId => getMapRelationsInfo(taskId);
 				}
-				return () => {
-					message.info(`集群状态是${status}，无法展示拓扑图!`);
-				};
+				return () => message.info(`集群状态是${status}，无法展示拓扑图!`);
 			case "delete":
 				if (
 					status === "release" ||
@@ -158,9 +156,7 @@ function RedisCluster(props) {
 				) {
 					return (id, name) => deleteCluster(id, name);
 				}
-				return () => {
-					message.info(`集群状态是${status}，无法删除!`);
-				};
+				return () => message.info(`集群状态是${status}，无法删除!`);
 			case "release":
 				if (
 					status !== "running" &&
@@ -169,19 +165,17 @@ function RedisCluster(props) {
 				) {
 					return taskId => releaseCluster(taskId);
 				}
-				return () => {
-					message.info(`集群状态是${status}，已经释放!`);
-				};
+				return () => message.info(`集群状态是${status}，不可释放!`);
 			case "deploy":
 				if (status === "ready" || status === "failed") {
 					return taskId => deployCluster(taskId);
 				}
 				return message.info("集群状态不可部署！");
-			case "edit":
-				if (status !== "done" && status !== "release") {
+            case "edit":
+                if (status !== "done" && status !== "release") {
 					return taskId => showFormModal(taskId);
-				}
-				return message.info("集群状态不可编辑");
+                }
+                return () => message.info("集群状态不可编辑");
 			default:
 				return () => {};
 		}
