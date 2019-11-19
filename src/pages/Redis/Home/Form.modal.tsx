@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import {
 	Button,
 	Divider,
-	Table,
 	Form,
 	Input,
 	message,
@@ -24,7 +23,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import IPostParams, { initInstancesType } from "./data";
-import {isEven} from "@tools"
+import { isEven } from "@tools"
+
+import {
+    createCluster
+} from "./service"
 
 const initIPostParams: IPostParams = {
 	type: "redis",
@@ -51,15 +54,24 @@ function FormModal(props) {
 	const {
 		tableModalVisibility,
 		setTableModalVisibility,
-		form: { getFieldDecorator }
+        form: { getFieldDecorator },
+        editData
 	} = props;
 
-	let [postParams, setPostParams] = useState(initIPostParams);
-	let [chosedType, setChosedType] = useState(initInstancesType[0].id);
+    let [postParams, setPostParams] = useState(Object.assign({}, initIPostParams));
+    let [redisType, setRedisType] = useState(3)
 
 	useEffect(() => {
-		setTableModalVisibility();
-	}, []);
+        setTableModalVisibility();
+    }, []);
+    
+    useEffect(() => {
+         if (editData) {
+            // 拿到instances的length
+        } else {
+            chooseInstanceType(3)
+        }
+    }, [editData])
 
 	/**
 	 * 用户名和密码，自动填充没有写的
@@ -89,33 +101,15 @@ function FormModal(props) {
 	 * @param id
 	 */
 	const chooseInstanceType = id => {
-		setChosedType(id);
-		message.info(
-			`reids实例类型切换为 "${
-				initInstancesType[
-					initInstancesType.findIndex(type => type.id === id)
-				].name
-			}"`
-        );
-        switch (id) {
-            case 3:
-                createInstances(6)
-                break;
-            case 5:
-                createInstances(10)
-                break;
-            case 7:
-                createInstances(14)
-                break;
-            case 9:
-                createInstances(18)
-                break;
-            case 11:
-                createInstances(22)
-                break;
-            default:
-                break;
-        }
+		// message.info(
+		// 	`reids实例类型切换为 "${
+		// 		initInstancesType[
+		// 			initInstancesType.findIndex(type => type.id === id)
+		// 		].name
+		// 	}"`
+        // );
+        setRedisType(id);
+        createInstances(id * 2);
     };
     
     // 生成机器实例
@@ -134,8 +128,41 @@ function FormModal(props) {
         setPostParams(newPostParams);
     }
 
-	const handleOk = () => {
-		setTableModalVisibility();
+    const handleOk = () => {
+        const {
+			form: {
+				getFieldsValue,
+				validateFields,
+			}
+        } = props;
+        validateFields(err => {
+            if (err) {
+                message.warning("信息填写不完全!");
+            } else {
+                let OformItems = Object.assign({}, postParams, getFieldsValue(), {
+					type: 'redis'
+                });
+                let {
+					params: {
+						instances
+					}
+                } = OformItems;
+                if (!instances) {
+                    return message.warning("请选择集群类型并配置机器实例!")
+                }
+                delete OformItems.redisType;
+                instances.forEach(i => i.port = Number(i.port));
+                createCluster(OformItems).then(data => {
+                    if (typeof data === 'boolean') {
+                        setTableModalVisibility();
+                        message.success('redis集群创建成功!')
+                    } else {
+                        message.error(data.message)
+                    }
+                }).catch(e => message.error(e.message))
+            }
+        })
+		
 	};
 
 	const handleCancel = () => {
@@ -191,23 +218,24 @@ function FormModal(props) {
 				</Form.Item>
 				<Divider>实例配置</Divider>
 				<Form.Item {...formItemBasicLayout} label="集群类型：">
-					<Select
-						placeholder="请选择集群类型"
-						onChange={chooseInstanceType}
-					>
-						{initInstancesType.map(type => (
-							<Select.Option key={type.id} value={type.id}>
-								{`${type.name}`}
-							</Select.Option>
-						))}
-					</Select>
+                   <Select
+                        placeholder="请选择集群类型"
+                        onChange={chooseInstanceType}
+                        value={redisType}
+                    >
+                        {initInstancesType.map(type => (
+                            <Select.Option key={type.id} value={type.id}>
+                                {`${type.name}`}
+                            </Select.Option>
+                        ))}
+                    </Select>
 				</Form.Item>
 
 				{postParams.params.instances.map((instance, idx) => (
 					<YHFlexDiv key={idx}>
 						<YHSmallFormItem {...formItemInstanceLayout}
 							label={
-								isEven(idx) ? `M    ${Math.floor(idx/2 + 1)}` : `S  ${Math.ceil(idx/2)}`
+								isEven(idx) ? `M${Math.floor(idx/2 + 1)}` : `S${Math.ceil(idx/2)}`
 							}
 						>
 							{getFieldDecorator(`params.instances[${idx}].ip`, {

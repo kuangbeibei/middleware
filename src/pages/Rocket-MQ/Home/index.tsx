@@ -19,7 +19,7 @@ import {
 	Tooltip
 } from "antd";
 
-import { YhOp, YhAdd } from "@styled/Button";
+import { YhOp, YhAdd, YhId } from "@styled/Button";
 import Loading from "@com/UI/Loading";
 
 import {
@@ -148,13 +148,13 @@ function RocketMqHome(props) {
 			key: "id",
 			render: text =>
 				(
-					<YhOp
+					<YhId
 						onClick={() => {
 							gotoNameServerList(text.id, text.componentType);
 						}}
 					>
 						{text.id}
-					</YhOp>
+					</YhId>
 				) || ""
 		},
 		{

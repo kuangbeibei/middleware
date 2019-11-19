@@ -6,6 +6,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { connect } from "react-redux";
 
 import {
 	Button,
@@ -17,7 +18,7 @@ import {
 	Tooltip
 } from "antd";
 
-import { YhOp, YhAdd } from "@styled/Button";
+import { YhOp, YhAdd, YhId } from "@styled/Button";
 
 import Loading from "@com/UI/Loading";
 
@@ -32,13 +33,7 @@ import {
 
 import { FormatTime } from "@tools";
 
-import LogModal from "./Log.modal"
-import MonitorModal from "./Monitor.modal"
-import TopoModal from "./Topology.modal"
-import ConfigModal from "./Config.modal"
-import ExtensionModal from "./Extension.modal"
 
-import { connect } from "react-redux";
 // import { bindActionCreators } from "redux";
 // import setTableModalVisibility from "@actions/setModalVisibility";
 
@@ -68,7 +63,8 @@ function RedisCluster(props) {
     useEffect(() => {
         if (!(tableModalVisibility.visible)) {
             setTimeout(() => {
-                setCom("")
+                setCom("");
+                setLoadListCount(loadListCount => loadListCount + 1);
             }, 400)
         }
     }, [tableModalVisibility.visible])
@@ -197,16 +193,16 @@ function RedisCluster(props) {
 
 	const columns = [
 		{
-			title: "id",
+			title: "ID",
 			dataIndex: "id",
 			key: "id",
-			render: text => <YhOp type="info">{text}</YhOp>
+			render: text => text
 		},
 		{
 			title: "名称",
 			dataIndex: "name",
 			key: "name",
-			render: text => text
+            render: text => <YhOp type="info">{text}</YhOp>
 		},
 		{
 			title: "状态",

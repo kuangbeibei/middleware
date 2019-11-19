@@ -17,6 +17,28 @@ export async function getRedisClusters() {
     }).catch(e => e.message)
 }
 
+// 创建
+export async function createCluster(data) {
+    return post(`/mid/v1/deployTask`, data).then(res => {
+        if (res.data.code === 200) {
+            return true
+        } else {
+            return res
+        }
+    }).catch(e => e.message)
+}
+
+// 部署
+export async function deployCluster(taskId) {
+    return get(`/mid/v1/runTask/redis/${taskId}`).then(res => {
+        if (res.data.code === 200) {
+            return true
+        } else {
+            return res
+        }
+    }).catch(e => e.message)
+}
+
 // 获取某个taskId的配置详情
 export async function getConfigDetail(taskId) {
     return get(`/mid/v1/configInfo/redis/${taskId}`).then(res => {
