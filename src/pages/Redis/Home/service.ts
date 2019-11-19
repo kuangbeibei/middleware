@@ -94,3 +94,23 @@ export async function releaseCluster(taskId) {
         }
     }).catch(e => e.message)
 }
+
+// 获取某特taskId的详情
+export async function getClusterDetail(taskId) {
+    return get(`/mid/v1/params/redis/${taskId}`).then(res => {
+        try {
+            return res.data.data && {
+                detail: {
+                    params: res.data.data
+                }
+            }
+        } catch (e) {
+            return res
+        }
+    }).catch(e => e.message)
+}
+
+// 轮询状态
+export async function checkStatus(rely) {
+    return get(`/mid/v1/taskStatus/${rely}`).then(res => res).catch(e => e.message)
+}

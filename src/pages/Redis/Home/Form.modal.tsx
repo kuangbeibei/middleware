@@ -50,12 +50,14 @@ const formItemInstanceLayout = {
 	wrapperCol: { span: 6 }
 };
 
+
+
 function FormModal(props) {
 	const {
 		tableModalVisibility,
 		setTableModalVisibility,
         form: { getFieldDecorator },
-        editData
+        detail
 	} = props;
 
     let [postParams, setPostParams] = useState(Object.assign({}, initIPostParams));
@@ -66,12 +68,16 @@ function FormModal(props) {
     }, []);
     
     useEffect(() => {
-         if (editData) {
+         if (detail) {
             // 拿到instances的length
+            const len = detail.params.instances.length;
+            console.log('detail ,', detail);
+            chooseInstanceType(len/2)
+            setPostParams(detail)
         } else {
             chooseInstanceType(3)
         }
-    }, [editData])
+    }, [detail])
 
 	/**
 	 * 用户名和密码，自动填充没有写的

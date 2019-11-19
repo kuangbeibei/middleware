@@ -18,7 +18,7 @@ import {
 	Tooltip
 } from "antd";
 
-import { YhOp, YhAdd, YhId } from "@styled/Button";
+import { YhOp, YhAdd } from "@styled/Button";
 
 import Loading from "@com/UI/Loading";
 
@@ -28,28 +28,25 @@ import {
 	deployTaskOutput,
 	delCluster,
 	releaseCluster,
-	deployEntryDetail
+	deployEntryDetail,
+    checkStatus,
+    getClusterDetail
 } from "./service";
 
 import { FormatTime } from "@tools";
-
-
-// import { bindActionCreators } from "redux";
-// import setTableModalVisibility from "@actions/setModalVisibility";
+import { useIntervalWithCondition } from "@hooks/use-interval";
 
 import "./style.less";
 
 function RedisCluster(props) {
-    
-    const {
-        tableModalVisibility,
-    } = props;
-    
+	const { tableModalVisibility } = props;
+
 	let [loading, setloading] = useState(true);
 	let [loadingListCount, setLoadListCount] = useState(0);
-    let [tableList, setTableList] = useState(Array());
-    let [com, setCom] = useState()
-    
+	let [tableList, setTableList] = useState(Array());
+	let [com, setCom] = useState();
+	const statusTaskIds = Array();
+	const [statusTaskId, setStatusTaskId] = useState("");
 
 	useEffect(() => {
 		getRedisClusters()
@@ -58,39 +55,59 @@ function RedisCluster(props) {
 				setloading(false);
 			})
 			.catch(e => {});
-    }, [loadingListCount]);
+	}, [loadingListCount]);
 
-    useEffect(() => {
-        if (!(tableModalVisibility.visible)) {
-            setTimeout(() => {
-                setCom("");
-                setLoadListCount(loadListCount => loadListCount + 1);
-            }, 400)
-        }
-    }, [tableModalVisibility.visible])
-    
-    const addRedisCluster = async () => {
+	useEffect(() => {
+		if (!tableModalVisibility.visible && com) {
+			setTimeout(() => {
+				setCom("");
+				setLoadListCount(loadListCount => loadListCount + 1);
+			}, 400);
+		}
+	}, [tableModalVisibility.visible]);
+
+	/**
+	 * 当添加或释放集群时，轮询状态
+	 */
+	useIntervalWithCondition((timer, rely) => {
+		if (timer) {
+			checkStatus(rely).then(res => {
+				setLoadListCount(loadListCount => loadListCount + 1);
+				if (
+					res.data.data.status === "done" ||
+					res.data.data.status === "failed"
+				) {
+					clearInterval(timer);
+					timer = null;
+				}
+			});
+		}
+	}, statusTaskId);
+
+    const showFormModal = async (taskId?) => {
         import("./Form.modal").then(component => {
-            setCom(<component.default />);
-        })
-    }
+            if (taskId) {
+                getClusterDetail(taskId).then(data => {
+                    setCom(<component.default {...data} />);
+                }).catch(e => message.error(e.message))
+            } else {
+                setCom(<component.default />);
+            }
+		});
+	};
 
 	/**
 	 * 部署redis集群
 	 * @param taskId
 	 */
-	const deployCluster = (taskId, status) => {
-		if (status === "ready" || status === "failed") {
-			deployTaskOutput(taskId)
-				.then(res => {
-					// statusTaskIds.push(taskId);
-					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-					message.success("正在部署...", 10);
-				})
-				.catch(e => message.error(e.message));
-		} else {
-			message.info("集群状态不可部署！");
-		}
+	const deployCluster = taskId => {
+		deployTaskOutput(taskId)
+			.then(res => {
+				statusTaskIds.push(taskId);
+				setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				message.success("正在部署...", 10);
+			})
+			.catch(e => message.error(e.message));
 	};
 
 	/**
@@ -116,29 +133,42 @@ function RedisCluster(props) {
 	 */
 	const checkStatusBeforeOperate = (type, status) => {
 		switch (type) {
-			case 'mapRelations':
-				if (status === 'done') {
-					return taskId => getMapRelationsInfo(taskId)
+			case "mapRelations":
+				if (status === "done") {
+					return taskId => getMapRelationsInfo(taskId);
 				}
 				return () => {
-					message.info(`集群状态是${status}，无法展示拓扑图!`)
-				}
-			case 'delete':
-				if (status === 'release' || status === 'failed' || status === 'ready') {
-					return (id, name) => deleteCluster(id, name)
-				}
-				return () => {
-					message.info(`集群状态是${status}，无法删除!`)
-				}
-			case 'release':
-				if (status !== 'running' && status !== 'release' && status !== 'ready') {
-					return taskId => releaseCluster(taskId)
+					message.info(`集群状态是${status}，无法展示拓扑图!`);
+				};
+			case "delete":
+				if (
+					status === "release" ||
+					status === "failed" ||
+					status === "ready"
+				) {
+					return (id, name) => deleteCluster(id, name);
 				}
 				return () => {
-					message.info(`集群状态是${status}，已经释放!`)
+					message.info(`集群状态是${status}，无法删除!`);
+				};
+			case "release":
+				if (
+					status !== "running" &&
+					status !== "release" &&
+					status !== "ready"
+				) {
+					return taskId => releaseCluster(taskId);
 				}
+				return () => {
+					message.info(`集群状态是${status}，已经释放!`);
+				};
+			case "deploy":
+				if (status === "ready" || status === "failed") {
+					return taskId => deployCluster(taskId);
+				}
+				return message.info("集群状态不可部署！");
 			default:
-				return () => {}
+				return () => {};
 		}
 	};
 
@@ -202,7 +232,7 @@ function RedisCluster(props) {
 			title: "名称",
 			dataIndex: "name",
 			key: "name",
-            render: text => <YhOp type="info">{text}</YhOp>
+			render: text => <YhOp type="info">{text}</YhOp>
 		},
 		{
 			title: "状态",
@@ -290,48 +320,55 @@ function RedisCluster(props) {
 				return (
 					<span>
 						{/* 部署 */}
-						<YhOp
-							color={
-								text.status === "ready" ||
-								text.status === "failed"
-									? "#0070cc"
-									: "#999"
-							}
-							default={text.status === "ready"}
-						>
-							<Tooltip placement="top" title={"部署"}>
+						<Tooltip placement="top" title={"部署"}>
+							<YhOp>
 								<Button
-									type="primary"
+									type={
+										text.status !== "ready" &&
+										text.status !== "failed"
+											? "default"
+											: "primary"
+									}
 									shape="circle"
 									onClick={() =>
-										deployCluster(text.taskId, text.status)
+										checkStatusBeforeOperate(
+											"deploy",
+											text.status
+										)(text.taskId, text.name)
 									}
 									icon="build"
 								/>
-							</Tooltip>
-						</YhOp>
+							</YhOp>
+						</Tooltip>
 
 						{/* 扩容 */}
-						<YhOp>
-							<Tooltip placement="top" title={"扩容"}>
+						<Tooltip placement="top" title={"扩容"}>
+							<YhOp>
 								<Button
-									type="primary"
+									type={
+                                        text.status === "done" ? "primary"
+                                            : "default"
+                                    }
 									shape="circle"
-									icon="setting"
+                                    icon="setting"
 								/>
-							</Tooltip>
-						</YhOp>
+							</YhOp>
+						</Tooltip>
 
 						{/* 编辑 */}
-						<YhOp>
-							<Tooltip placement="top" title={"修改"}>
+						<Tooltip placement="top" title={"修改"}>
+							<YhOp>
 								<Button
-									type="primary"
+									type={
+                                        text.status !== "done" ? "primary"
+                                            : "default"
+                                    }
 									shape="circle"
-									icon="form"
+                                    icon="form"
+                                    onClick={() => showFormModal(text.taskId)}
 								/>
-							</Tooltip>
-						</YhOp>
+							</YhOp>
+						</Tooltip>
 
 						{/* 释放 */}
 						<Popconfirm
@@ -346,24 +383,21 @@ function RedisCluster(props) {
 							okText="是"
 							cancelText="否"
 						>
-							<YhOp
-								color={
-									text.status === "release" ||
-									text.status === "running" ||
-									text.status === "ready"
-										? "#999"
-										: null
-								}
-								default={text.status === "release"}
-							>
-								<Tooltip placement="top" title={"释放"}>
+							<Tooltip placement="top" title={"释放"}>
+								<YhOp>
 									<Button
-										type="primary"
+										type={
+											text.status !== "running" &&
+											text.status !== "release" &&
+											text.status !== "ready"
+												? "primary"
+												: "default"
+										}
 										shape="circle"
 										icon="stop"
 									/>
-								</Tooltip>
-							</YhOp>
+								</YhOp>
+							</Tooltip>
 						</Popconfirm>
 
 						{/* 删除 */}
@@ -379,24 +413,21 @@ function RedisCluster(props) {
 							okText="是"
 							cancelText="否"
 						>
-							<YhOp
-								color={
-									text.status !== "failed" &&
-									text.status !== "release" &&
-									text.status !== "ready"
-										? "#999"
-										: null
-								}
-								default={text.status === "release"}
-							>
-								<Tooltip placement="top" title={"删除"}>
+							<Tooltip placement="top" title={"删除"}>
+								<YhOp>
 									<Button
-										type="primary"
+										type={
+											text.status !== "release" &&
+											text.status !== "failed" &&
+											text.status !== "ready"
+												? "default"
+												: "primary"
+										}
 										shape="circle"
 										icon="delete"
 									/>
-								</Tooltip>
-							</YhOp>
+								</YhOp>
+							</Tooltip>
 						</Popconfirm>
 					</span>
 				);
@@ -409,7 +440,7 @@ function RedisCluster(props) {
 			<YhAdd
 				type="primary"
 				icon="plus"
-				onClick={addRedisCluster}
+				onClick={showFormModal}
 				style={{ marginBottom: 10 }}
 			/>
 
@@ -417,12 +448,12 @@ function RedisCluster(props) {
 				<Loading />
 			) : (
 				<Table columns={columns} dataSource={tableList} rowKey="id" />
-                )}
-            
-            {
-                // Modal
-               com
-            }
+			)}
+
+			{
+				// Modal
+				com
+			}
 		</>
 	);
 }
