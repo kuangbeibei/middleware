@@ -54,7 +54,9 @@ export async function deployCluster(taskId) {
 export async function getConfigDetail(taskId) {
     return get(`/mid/v1/configInfo/redis/${taskId}`).then(res => {
         try {
-            return res.data.data
+            return res.data.data && {
+                data: res.data.data
+            }
         } catch (e) {
             return res
         }

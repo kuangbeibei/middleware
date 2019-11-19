@@ -39,7 +39,7 @@ import { useIntervalWithCondition } from "@hooks/use-interval";
 import "./style.less";
 
 function RedisCluster(props) {
-	const { tableModalVisibility } = props;
+	const { tableModalVisibility, drawerVisibility } = props;
 
 	let [loading, setloading] = useState(true);
 	let [loadingListCount, setLoadListCount] = useState(0);
@@ -59,12 +59,22 @@ function RedisCluster(props) {
 
 	useEffect(() => {
 		if (!tableModalVisibility.visible && com) {
-			setTimeout(() => {
-				setCom("");
-				setLoadListCount(loadListCount => loadListCount + 1);
-			}, 400);
+			removeLayer();
 		}
 	}, [tableModalVisibility.visible]);
+
+	useEffect(() => {
+		if (!drawerVisibility.visible && com) {
+			removeLayer();
+		}
+	}, [drawerVisibility.visible]);
+
+	const removeLayer = () => {
+		setTimeout(() => {
+			setCom("");
+			setLoadListCount(loadListCount => loadListCount + 1);
+		}, 400);
+	};
 
 	/**
 	 * 当添加或释放集群时，轮询状态
@@ -128,7 +138,15 @@ function RedisCluster(props) {
 	 */
 	const getConfigDetailInfo = taskId => {
 		getConfigDetail(taskId)
-			.then(data => {})
+			.then(data => {
+				if (data.data && Array.isArray(data.data)) {
+					import("./Config.modal").then(component => {
+						setCom(<component.default {...data} />);
+					});
+				} else {
+					return message.error(data.msg);
+				}
+			})
 			.catch(e => message.error(e.message));
 	};
 
@@ -137,6 +155,60 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const getOutput = taskId => {};
+
+	/**
+	 * 调取“拓扑图”接口
+	 * @param taskId
+	 */
+	const getMapRelationsInfo = taskId => {
+		deployEntryDetail(taskId)
+			.then(data => {
+				if (data.nodes && Array.isArray(data.nodes)) {
+					import("./Topology.modal").then(component => {
+						setCom(<component.default {...data} />);
+					});
+				} else {
+					return message.error(data.message);
+				}
+			})
+			.catch(e => message.error(e));
+	};
+
+	/**
+	 * 删除集群
+	 * @param id
+	 */
+	const deleteCluster = (id, name?) => {
+		delCluster(id)
+			.then(res => {
+				if (res) {
+					setLoadListCount(loadListCount => loadListCount + 1);
+					message.success(`删除集群${name}成功!`);
+				} else {
+					message.error(`删除集群${name}失败! `);
+				}
+			})
+			.catch(e => message.error(e.message));
+	};
+
+	/**
+	 * 释放集群
+	 * @param taskId
+	 */
+	const releaseClusterByTaskId = (taskId, name) => {
+		releaseCluster(taskId)
+			.then(res => {
+				if (res) {
+					message.info(`正在释放集群${name}...`);
+					setLoadListCount(loadListCount => loadListCount + 1);
+					statusTaskIds.push(taskId);
+					setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				} else {
+					message.error(`释放集群${name}失败! `);
+				}
+			})
+			.catch(e => message.error(e.message));
+	};
 
 	/**
 	 * 在操作前校验status
@@ -182,64 +254,6 @@ function RedisCluster(props) {
 			default:
 				return () => {};
 		}
-	};
-
-	/**
-	 * 调取“拓扑图”接口
-	 * @param taskId
-	 */
-	const getMapRelationsInfo = taskId => {
-		deployEntryDetail(taskId)
-            .then(data => {
-                if (data.nodes && Array.isArray(data.nodes)) {
-                    import("./Topology.modal").then(component => {
-                        setCom(
-                            <component.default
-                                {...data}
-                            />
-                        );
-                    })
-                } else {
-                    return message.error(data.message)
-                }
-			})
-			.catch(e => message.error(e));
-	};
-
-	/**
-	 * 删除集群
-	 * @param id
-	 */
-	const deleteCluster = (id, name?) => {
-		delCluster(id)
-			.then(res => {
-				if (res) {
-					setLoadListCount(loadListCount => loadListCount + 1);
-					message.success(`删除集群${name}成功!`);
-				} else {
-					message.error(`删除集群${name}失败! `);
-				}
-			})
-			.catch(e => message.error(e.message));
-	};
-
-	/**
-	 * 释放集群
-	 * @param taskId
-	 */
-	const releaseClusterByTaskId = (taskId, name) => {
-		releaseCluster(taskId)
-			.then(res => {
-				if (res) {
-					message.info(`正在释放集群${name}...`);
-					setLoadListCount(loadListCount => loadListCount + 1);
-					statusTaskIds.push(taskId);
-					setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-				} else {
-					message.error(`释放集群${name}失败! `);
-				}
-			})
-			.catch(e => message.error(e.message));
 	};
 
 	const columns = [
@@ -489,7 +503,8 @@ function RedisCluster(props) {
 
 export default connect(
 	(state: any) => ({
-		tableModalVisibility: state.tableModalVisibility
+		tableModalVisibility: state.tableModalVisibility,
+		drawerVisibility: state.drawerVisibility
 	}),
 	dispatch => ({})
 )(RedisCluster);

@@ -7,10 +7,12 @@
 import { combineReducers } from "redux";
 
 import tableModalVisibility from "./modalVisibility";
+import drawerVisibility from "./drawerVisibility"
 import navFlagToSidebar from "./sidebar"
 
 const RootReducer = combineReducers({
 	tableModalVisibility,
+	drawerVisibility,
 	navFlagToSidebar
 });
 

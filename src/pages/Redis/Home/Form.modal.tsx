@@ -70,7 +70,6 @@ function FormModal(props) {
     }, []);
     
     useEffect(() => {
-        console.log('taskId');
          if (taskId) {
             const len = detail.params.instances.length;
             chooseInstanceType(len/2)
