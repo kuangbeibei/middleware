@@ -29,8 +29,8 @@ import {
 	delCluster,
 	releaseCluster,
 	deployEntryDetail,
-    checkStatus,
-    getClusterDetail
+	checkStatus,
+	getClusterDetail
 } from "./service";
 
 import { FormatTime } from "@tools";
@@ -58,7 +58,7 @@ function RedisCluster(props) {
 	}, [loadingListCount]);
 
 	useEffect(() => {
-		if (!tableModalVisibility.visible && com) {
+        if (!tableModalVisibility.visible && com) {
 			setTimeout(() => {
 				setCom("");
 				setLoadListCount(loadListCount => loadListCount + 1);
@@ -84,19 +84,25 @@ function RedisCluster(props) {
 		}
 	}, statusTaskId);
 
-    const showFormModal = async (taskId?) => {
+	const showFormModal = async (taskId?) => {
         import("./Form.modal").then(component => {
-            if (taskId) {
-                getClusterDetail(taskId).then(data => {
-                    let _data = Object.assign({}, {
-                        taskId: taskId
-                    }, data);
-                    console.log('_data ', _data);
-                    setCom(<component.default {..._data} />);
-                }).catch(e => message.error(e.message))
-            } else {
-                setCom(<component.default />);
-            }
+			if (taskId && typeof taskId === 'number') {
+				getClusterDetail(taskId)
+					.then(data => {
+						let _data = Object.assign(
+							{},
+							{
+								taskId: taskId
+							},
+							data
+						);
+						console.log("_data ", _data);
+						setCom(<component.default {..._data} />);
+					})
+					.catch(e => message.error(e.message));
+			} else {
+				setCom(<component.default />);
+			}
 		});
 	};
 
@@ -171,6 +177,11 @@ function RedisCluster(props) {
 					return taskId => deployCluster(taskId);
 				}
 				return message.info("集群状态不可部署！");
+			case "edit":
+				if (status !== "done" && status !== "release") {
+					return taskId => showFormModal(taskId);
+				}
+				return message.info("集群状态不可编辑");
 			default:
 				return () => {};
 		}
@@ -216,8 +227,8 @@ function RedisCluster(props) {
 				if (res) {
 					message.info(`正在释放集群${name}...`);
 					setLoadListCount(loadListCount => loadListCount + 1);
-					// statusTaskIds.push(res.data.data.taskId);
-					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					statusTaskIds.push(taskId);
+					setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
 				} else {
 					message.error(`释放集群${name}失败! `);
 				}
@@ -350,11 +361,12 @@ function RedisCluster(props) {
 							<YhOp>
 								<Button
 									type={
-                                        text.status === "done" ? "primary"
-                                            : "default"
-                                    }
+										text.status === "done"
+											? "primary"
+											: "default"
+									}
 									shape="circle"
-                                    icon="setting"
+									icon="setting"
 								/>
 							</YhOp>
 						</Tooltip>
@@ -364,12 +376,19 @@ function RedisCluster(props) {
 							<YhOp>
 								<Button
 									type={
-                                        text.status !== "done" ? "primary"
-                                            : "default"
-                                    }
+										text.status !== "done" &&
+										text.status !== "release"
+											? "primary"
+											: "default"
+									}
 									shape="circle"
-                                    icon="form"
-                                    onClick={() => showFormModal(text.taskId)}
+									icon="form"
+									onClick={() =>
+										checkStatusBeforeOperate(
+											"edit",
+											text.status
+										)(text.taskId, text.name)
+									}
 								/>
 							</YhOp>
 						</Tooltip>
@@ -444,7 +463,7 @@ function RedisCluster(props) {
 			<YhAdd
 				type="primary"
 				icon="plus"
-				onClick={showFormModal}
+				onClick={() => showFormModal()}
 				style={{ marginBottom: 10 }}
 			/>
 
