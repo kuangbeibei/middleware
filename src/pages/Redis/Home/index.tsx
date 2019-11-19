@@ -154,7 +154,19 @@ function RedisCluster(props) {
 	 * 获取日志打印数据
 	 * @param taskId
 	 */
-	const getOutput = taskId => {};
+	const getOutput = taskId => {
+		deployTaskOutput(taskId)
+			.then(data => {
+				if (data.loginfo) {
+					import("./Log.modal").then(component => {
+						setCom(<component.default {...data} />);
+					});
+				} else {
+					return message.error(data.msg);
+				}
+			})
+			.catch(e => message.error(e.message));
+	};
 
 	/**
 	 * 调取“拓扑图”接口

@@ -67,7 +67,9 @@ export async function getConfigDetail(taskId) {
 export async function deployTaskOutput(taskId) {
     return get(`/mid/v1/deployTaskOutput/${taskId}`).then(res => {
         try {
-            return res.data.data
+            return res.data.data && {
+                loginfo: res.data.data
+            }
         } catch (e) {
             return res
         }
