@@ -49,8 +49,15 @@ function TopologyModal(props) {
 						const replica = replicas[0];
 						return (
 							<div className="topology" key={instance.id}>
-								<div className="node master">{`id: ${instance.id}`}</div>
-								<div className="node slave">{`id: ${replica.id}`}</div> 
+								<div className="node master">
+									<div>{`id: ${instance.id}`}</div>
+									<div>{`address: ${instance.address}`}</div>
+									<div>{`slot: ${instance.slot}`}</div>
+								</div>
+								<div className="node slave">
+									<div>{`id: ${replica.id}`}</div>
+									<div>{`address: ${replica.address}`}</div>
+								</div> 
 							</div>
 						)
 					})
