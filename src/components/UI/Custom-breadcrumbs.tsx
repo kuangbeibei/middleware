@@ -51,7 +51,6 @@ const generateBreadcrumbs = (routeProps, pathSnippets) => {
 				let tempUrl = `/${sliceSnippet.join("/")}`;
 				compareRoutes(tempUrl, 2);
 			}
-			console.log('baseurl, ', baseUrl);
 		}
 
 		function generate(link, breadTitle) {
@@ -74,7 +73,6 @@ const generateBreadcrumbs = (routeProps, pathSnippets) => {
 }
 
 export default function (props) {
-	console.log('props,', props);
 	const {
 		location: { pathname },
 		routeProps

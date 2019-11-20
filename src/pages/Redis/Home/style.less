@@ -1,6 +1,47 @@
+@image: "../../../assets/image";
+
 button.ant-btn {
     font-size: 15px;
     i {
         font-size: 15px;
+    }
+}
+
+.topology {
+    display: flex;
+    justify-content: space-between;
+
+    .node {
+        position: relative; 
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        padding: 10px;
+        width: 420px;
+        height: 100px;
+        font-size: 16px;
+        &:after {
+            content: '';
+            position: absolute;
+            top:0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background-size: 100% 100%;
+        }
+    }
+
+    .master {
+       
+        &:after {
+            background: url("@{image}/redisMaster.png");
+        }
+       
+    }
+
+    .slave {
+        
+        &:after {
+            background: url("@{image}/redisSlave.png");
+        }
     }
 }

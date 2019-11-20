@@ -190,7 +190,7 @@ function RedisCluster(props) {
 	 */
 	const getMapRelationsInfo = taskId => {
 		deployEntryDetail(taskId)
-			.then(data => {
+            .then(data => {
 				if (data.nodes && Array.isArray(data.nodes)) {
 					import("./Topology.modal").then(component => {
 						setCom(<component.default {...data} />);
