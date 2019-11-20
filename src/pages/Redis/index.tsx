@@ -12,7 +12,8 @@ import {
     RedisRouteProps
 } from "./data"
 
-export default function(props) {
+export default function (props) {
+	console.log('RedisRouteProps ,', RedisRouteProps);
 	return (
 		<>
             <section className="breadcrumbs">
