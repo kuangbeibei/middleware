@@ -146,16 +146,7 @@ function RocketMqHome(props) {
 		{
 			title: "ID",
 			key: "id",
-			render: text =>
-				(
-					<YhId
-						onClick={() => {
-							gotoNameServerList(text.id, text.componentType);
-						}}
-					>
-						{text.id}
-					</YhId>
-				) || ""
+			render: text => text || ""
 		},
 		{
 			title: "名称",
@@ -164,7 +155,13 @@ function RocketMqHome(props) {
 			width: 280,
 			render: text =>
 				text ? (
-					text
+					<YhOp
+						onClick={() => {
+							gotoNameServerList(text.id, text.componentType);
+						}}
+					>
+						{text}
+					</YhOp>
 				) : (
 					<Input
 						placeholder="请输入集群名称"

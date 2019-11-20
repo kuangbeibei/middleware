@@ -15,7 +15,10 @@ import {
 	message,
 	Icon,
 	Popover,
-	Tooltip
+	Tooltip,
+	Divider,
+	Menu,
+	Dropdown
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
@@ -47,6 +50,7 @@ function RedisCluster(props) {
 	let [com, setCom] = useState();
 	const statusTaskIds = Array();
 	const [statusTaskId, setStatusTaskId] = useState("");
+	let [btnLoading, setBtnLoading] = useState(false);
 
 	useEffect(() => {
 		getRedisClusters()
@@ -123,11 +127,11 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const deployCluster = taskId => {
+		message.success("正在部署...");
 		deployTaskOutput(taskId)
 			.then(res => {
 				statusTaskIds.push(taskId);
 				setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-				message.success("正在部署...", 10);
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -257,7 +261,7 @@ function RedisCluster(props) {
 				if (status === "ready" || status === "failed") {
 					return taskId => deployCluster(taskId);
 				}
-				return message.info("集群状态不可部署！");
+				return () => message.info("集群状态不可部署！");
 			case "edit":
 				if (status !== "done" && status !== "release") {
 					return taskId => showFormModal(taskId);
@@ -266,6 +270,72 @@ function RedisCluster(props) {
 			default:
 				return () => {};
 		}
+	};
+
+	const handleMenuClick = text => {};
+
+	const menu = text => {
+		return (
+			<Menu onClick={handleMenuClick}>
+				<Menu.Item key="1">
+					<a
+						onClick={() =>
+							checkStatusBeforeOperate("deploy", text.status)(
+								text.taskId,
+								text.name
+							)
+						}
+					>
+						部署
+					</a>
+				</Menu.Item>
+				<Menu.Item key="2">扩容</Menu.Item>
+				<Menu.Item key="3">
+					<a
+						onClick={() =>
+							checkStatusBeforeOperate("edit", text.status)(
+								text.taskId,
+								text.name
+							)
+						}
+					>
+						编辑
+					</a>
+				</Menu.Item>
+				<Menu.Item key="4">
+					<Popconfirm
+						placement="topRight"
+						title={`确定释放集群${text.name}?`}
+						onConfirm={() =>
+							checkStatusBeforeOperate("release", text.status)(
+								text.taskId,
+								text.name
+							)
+						}
+						okText="是"
+						cancelText="否"
+					>
+						<a>释放</a>
+					</Popconfirm>
+				</Menu.Item>
+				<Menu.Item key="5">
+					<Popconfirm
+						placement="topRight"
+						title={`确定删除集群${text.name}?`}
+						onConfirm={() =>
+							checkStatusBeforeOperate("delete", text.status)(
+								text.id,
+								text.name
+							)
+						}
+						okText="是"
+						cancelText="否"
+					>
+						<a>删除</a>
+					</Popconfirm>
+				</Menu.Item>
+			</Menu>
+		);
 	};
 
 	const columns = [
@@ -362,128 +432,25 @@ function RedisCluster(props) {
 		},
 		{
 			title: "操作",
-			key: "operation",
+			key: "action",
 			render: text => {
 				return (
 					<span>
-						{/* 部署 */}
-						<Tooltip placement="top" title={"部署"}>
-							<YhOp>
-								<Button
-									type={
-										text.status !== "ready" &&
-										text.status !== "failed"
-											? "default"
-											: "primary"
-									}
-									shape="circle"
-									onClick={() =>
-										checkStatusBeforeOperate(
-											"deploy",
-											text.status
-										)(text.taskId, text.name)
-									}
-									icon="build"
-								/>
-							</YhOp>
-						</Tooltip>
-
-						{/* 扩容 */}
-						<Tooltip placement="top" title={"扩容"}>
-							<YhOp>
-								<Button
-									type={
-										text.status === "done"
-											? "primary"
-											: "default"
-									}
-									shape="circle"
-									icon="setting"
-								/>
-							</YhOp>
-						</Tooltip>
-
-						{/* 编辑 */}
-						<Tooltip placement="top" title={"修改"}>
-							<YhOp>
-								<Button
-									type={
-										text.status !== "done" &&
-										text.status !== "release"
-											? "primary"
-											: "default"
-									}
-									shape="circle"
-									icon="form"
-									onClick={() =>
-										checkStatusBeforeOperate(
-											"edit",
-											text.status
-										)(text.taskId, text.name)
-									}
-								/>
-							</YhOp>
-						</Tooltip>
-
-						{/* 释放 */}
-						<Popconfirm
-							placement="topRight"
-							title={`确定释放集群${text.name}?`}
-							onConfirm={() =>
-								checkStatusBeforeOperate(
-									"release",
-									text.status
-								)(text.taskId, text.name)
-							}
-							okText="是"
-							cancelText="否"
+						<Dropdown
+							overlay={() => menu(text)}
+							trigger={["click"]}
 						>
-							<Tooltip placement="top" title={"释放"}>
-								<YhOp>
-									<Button
-										type={
-											text.status !== "running" &&
-											text.status !== "release" &&
-											text.status !== "ready"
-												? "primary"
-												: "default"
-										}
-										shape="circle"
-										icon="stop"
-									/>
-								</YhOp>
-							</Tooltip>
-						</Popconfirm>
-
-						{/* 删除 */}
-						<Popconfirm
-							placement="topRight"
-							title={`确定删除集群${text.name}?`}
-							onConfirm={() =>
-								checkStatusBeforeOperate("delete", text.status)(
-									text.id,
-									text.name
-								)
-							}
-							okText="是"
-							cancelText="否"
-						>
-							<Tooltip placement="top" title={"删除"}>
-								<YhOp>
-									<Button
-										type={
-											text.status !== "release" &&
-											text.status !== "failed" &&
-											text.status !== "ready"
-												? "default"
-												: "primary"
-										}
-										shape="circle"
-										icon="delete"
-									/>
-								</YhOp>
-							</Tooltip>
-						</Popconfirm>
+							<Button
+								shape="circle"
+								type="default"
+								size="small"
+								loading={btnLoading}
+							>
+								<a className="ant-dropdown-link">
+									<Icon type="more" />
+								</a>
+							</Button>
+						</Dropdown>
 					</span>
 				);
 			}
