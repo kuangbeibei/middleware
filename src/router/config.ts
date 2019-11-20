@@ -28,11 +28,11 @@ export const RedisRoutesMap = [
 		icon: "desktop",
 		subs: [
 			{
-				key: "/middleware/redis/:id/instance",
+				key: "/middleware/redis/:taskId/instance",
 				component: "RedisInstance",
 				name: "RedisInstance",
 				isExact: true,
-				breadcrumbTitle: "Redis实例"
+				breadcrumbTitle: "Redis实例列表"
 			},
 			{
 				key: "/middleware/redis",

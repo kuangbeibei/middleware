@@ -96,8 +96,20 @@ function RedisCluster(props) {
 				}
 			});
 		}
-	}, statusTaskId);
+    }, statusTaskId);
+    
+    /**
+     * 前往redis节点列表页
+     * @param text 
+     */
+    const gotoInstance = taskId => {
+        props.history.push(`/middleware/redis/${taskId}/instance`)
+    }
 
+    /**
+     * 添加 / 编辑是打开modal
+     * @param taskId 
+     */
 	const showFormModal = async (taskId?) => {
 		import("./Form.modal").then(component => {
 			if (taskId && typeof taskId === "number") {
@@ -347,9 +359,8 @@ function RedisCluster(props) {
 		},
 		{
 			title: "名称",
-			dataIndex: "name",
 			key: "name",
-			render: text => <YhOp type="info">{text}</YhOp>
+			render: text => <a onClick={() => gotoInstance(text.taskId)}>{text.name}</a>
 		},
 		{
 			title: "状态",
