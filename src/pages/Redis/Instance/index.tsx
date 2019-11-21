@@ -52,7 +52,7 @@ export default function (props) {
         {
             title: "角色",
             key: "role",
-            render: (a, b, idx) => `${idx + 1} - ${isEven(idx) ? 'Master' : 'Slave'}`
+            render: (a, b, idx) => `${isEven(idx) ? idx/2 + 1 : Math.ceil(idx/2)} ` + ` - ${isEven(idx) ? 'Master' : 'Slave'}`
         },
         {
             title: "监控状态",
