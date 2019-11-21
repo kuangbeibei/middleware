@@ -14,6 +14,9 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 
 import Modal from "@com/Modal";
 import { isEven } from "@tools";
+import {
+	TopoImages
+} from "./data"
 
 
 function TopologyModal(props) {

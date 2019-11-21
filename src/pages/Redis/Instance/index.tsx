@@ -9,83 +9,96 @@ import { useState, useEffect } from "react";
 
 import { getClusterDetail } from "./service";
 
-import { Table, message, Tooltip, Button } from "antd";
+import { Table, message, Tooltip, Button, Icon } from "antd";
 
 import Loading from "@com/UI/Loading";
 
-import {
-    isEven
-} from "@tools"
+import { isEven } from "@tools";
 
-export default function (props) {
-    const {
-        match: {
-            params: { taskId }
-        }
-    } = props;
+import PasswordColumn from "./Password-unit"
 
-    let [loading, setloading] = useState(true);
-    let [tableList, setTableList] = useState(Array());
+export default function(props) {
+	const {
+		match: {
+			params: { taskId }
+		}
+	} = props;
 
-    useEffect(() => {
-        getClusterDetail(taskId)
-            .then(data => {
-                setloading(false);
-                setTableList(data.instances);
-            })
-            .catch(e => { });
-    }, []);
+	let [loading, setloading] = useState(true);
+	let [tableList, setTableList] = useState(Array());
 
-    const columns = [
-        {
-            title: "实例IP",
-            dataIndex: "ip",
-            key: "ip",
-            render: text => text
-        },
-        {
-            title: "实例port",
-            dataIndex: "port",
-            key: "port",
-            render: text => text
-        },
-        {
-            title: "角色",
-            key: "role",
-            render: (a, b, idx) => `${isEven(idx) ? idx/2 + 1 : Math.ceil(idx/2)} ` + ` - ${isEven(idx) ? 'Master' : 'Slave'}`
-        },
-        {
-            title: "监控状态",
-            dataIndex: "monitor",
-            key: "monitor",
-            render: text => <Tooltip placement="top" title={"监控状态"}>
-                <Button
-                    type="link"
-                    icon="bar-chart"
-                />
-            </Tooltip>
-        },
-        {
-            title: "用户名",
-            dataIndex: "user",
-            key: "user",
-            render: text => text
-        },
-        {
-            title: "密码",
+	useEffect(() => {
+		getClusterDetail(taskId)
+			.then(data => {
+				setloading(false);
+				setTableList(data.instances);
+			})
+			.catch(e => {});
+	}, []);
+
+	/**
+	 * 处理密码展示
+	 * @param pass
+	 */
+	const processPass = pass => {
+
+        return <PasswordColumn pass={pass} />
+	};
+
+	const columns = [
+		{
+			title: "实例IP",
+			dataIndex: "ip",
+			key: "ip",
+			render: text => text
+		},
+		{
+			title: "实例port",
+			dataIndex: "port",
+			key: "port",
+			render: text => text
+		},
+		{
+			title: "角色",
+			key: "role",
+			render: (a, b, idx) =>
+				`${isEven(idx) ? idx / 2 + 1 : Math.ceil(idx / 2)} ` +
+				` - ${isEven(idx) ? "Master" : "Slave"}`
+		},
+		{
+			title: "监控状态",
+			dataIndex: "monitor",
+			key: "monitor",
+			render: text => (
+				<Tooltip placement="top" title={"监控状态"}>
+					<Button type="link" icon="bar-chart" />
+				</Tooltip>
+			)
+		},
+		{
+			title: "用户名",
+			dataIndex: "user",
+			key: "user",
+			render: text => text
+		},
+		{
+			title: "密码",
             dataIndex: "pass",
-            key: "pass",
-            render: text => text
-        }
-    ];
+            width: 250,
+			key: "pass",
+			render: text => {
+				return processPass(text);
+			}
+		}
+	];
 
-    return (
-        <>
-            {loading ? (
-                <Loading />
-            ) : (
-                    <Table columns={columns} dataSource={tableList} rowKey="ip" />
-                )}
-        </>
-    );
+	return (
+		<>
+			{loading ? (
+				<Loading />
+			) : (
+				<Table columns={columns} dataSource={tableList} rowKey="ip" />
+			)}
+		</>
+	);
 }

@@ -21,6 +21,7 @@
 			"@actions/*": ["./src/store/actions/*"],
 			"@styled/*": ["./src/styled-components/*"],
 			"@hooks/*": ["./src/hooks/*"],
+			"@@image/*": ["./src/assets/image/*"]
 		},
 	},
 	"include": [

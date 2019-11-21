@@ -49,7 +49,8 @@ module.exports = WebpackMerge(
 				"@tools": ResolvePath("../src/utils/tools"),
 				"@actions": ResolvePath("../src/store/actions"),
 				"@styled": ResolvePath("../src/styled-components"),
-				"@hooks": ResolvePath("../src/hooks")
+				"@hooks": ResolvePath("../src/hooks"),
+				"@image": ResolvePath("../src/assets/image")
 			}
 		},
 		module: {
@@ -83,8 +84,11 @@ module.exports = WebpackMerge(
 				},
 				{
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
-					use: ["file-loader"]
-				}
+					loader: 'file-loader',
+					options: {
+						publicPath: '/',
+					},
+				},
 			]
 		},
 		plugins: [

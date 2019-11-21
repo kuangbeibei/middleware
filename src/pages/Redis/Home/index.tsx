@@ -367,7 +367,16 @@ function RedisCluster(props) {
 			dataIndex: "status",
 			key: "status",
 			render: text => text
-		},
+        },
+        {
+            title: "实例个数",
+            dataIndex: "instances",
+            key: "instances",
+            render: text => {
+                let num = (JSON.parse(text)).length / 2;
+                return `${num}主${num}从`
+            }
+        },
 		{
 			title: "配置",
 			key: "config",

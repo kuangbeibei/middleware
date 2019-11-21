@@ -45,3 +45,14 @@ export const initInstancesType = [
 		defaultClassName: ''
     },
 ]
+
+export const TopoImages = [
+	{
+		type: 'master',
+		src: '../../../assets/image/redisMaster.png'
+	},
+	{
+		type: 'slave',
+		src: '../../../assets/image/redisSlave.png'
+	}
+]
