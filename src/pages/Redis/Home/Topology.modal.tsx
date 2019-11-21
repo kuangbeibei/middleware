@@ -53,13 +53,17 @@ function TopologyModal(props) {
 						return (
 							<div className="topology" key={instance.id}>
 								<div className="node master">
-									<div>{`id: ${instance.id}`}</div>
-									<div>{`address: ${instance.address}`}</div>
-									<div>{`slot: ${instance.slot}`}</div>
+									<div className="instance-info">
+										<div>{`address: ${instance.address}`}</div>
+										<div>{`slot: ${instance.slot}`}</div>
+										<div>{`id: ${instance.id}`}</div>
+									</div>
 								</div>
 								<div className="node slave">
-									<div>{`id: ${replica.id}`}</div>
-									<div>{`address: ${replica.address}`}</div>
+									<div className="replica-info">
+										<div>{`address: ${replica.address}`}</div>
+										<div>{`id: ${replica.id}`}</div>
+									</div>
 								</div> 
 							</div>
 						)

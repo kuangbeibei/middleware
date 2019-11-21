@@ -1,60 +1,61 @@
 @image: "../../../assets/image";
 
 button.ant-btn {
-    font-size: 15px;
-    i {
-        font-size: 15px;
-    }
+	font-size: 15px;
+	i {
+		font-size: 15px;
+	}
 }
 
 .topology {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 
-    .node {
-        position: relative; 
-        margin-bottom: 20px;
-        box-sizing: border-box;
-        padding: 10px;
-        width: 420px;
-        height: 100px;
+	.node {
+		position: relative;
+		margin-bottom: 20px;
+		box-sizing: border-box;
+		padding: 10px;
+		width: 420px;
         font-size: 16px;
-        div {
-            margin-bottom: 5px;
-        }
-        &:after {
+        color: #000;
+        &:before {
             position: absolute;
-            top:0;
-            left: 0;
-            width: 60px;
-            height: 60px;
-            background-size: 100% 100%;
+            left: -170px;
+            display: block;
+            transform: scale(.3);
         }
-    }
+        .instance-info, .replica-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            div {
+                margin-bottom: 5px;
+            }
+        }
+	}
 
     .master {
-       
-        &:after {
-            content: '';
-            background: url("@{image}/redisMaster.png");
+        height: 220px;
+        &:before {
+            top: -205px;
+            content: url("@{image}/redisred.png");
         }
-       
-    }
+	}
 
-    .slave {
-        
-        &:after {
-            content: '';
-            background: url("@{image}/redisSlave.png");
+	.slave {
+        height: 200px;
+        &:before {
+            top: -165px;
+            content: url("@{image}/redisgray.png");
         }
-    }
+	}
 }
 
 .pass-column {
-    position: relative;
-    i {
-        margin-left: 3px;
-        margin-right: 3px;
-        cursor: pointer;
-    }
+	i {
+		margin-left: 3px;
+		margin-right: 3px;
+		cursor: pointer;
+	}
 }
