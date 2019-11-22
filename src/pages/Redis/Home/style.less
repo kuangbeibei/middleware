@@ -16,14 +16,19 @@ button.ant-btn {
 		margin-bottom: 20px;
 		box-sizing: border-box;
 		padding: 10px;
-		width: 420px;
+        width: 420px;
+        text-align: center;
         font-size: 16px;
         color: #000;
         &:before {
             position: absolute;
-            left: -170px;
+            left: 50%;
+            margin-left: -50%;
             display: block;
-            transform: scale(.3);
+            transform: translateX(-50px) scale(.3);
+        }
+        &:after {
+           position: absolute; 
         }
         .instance-info, .replica-info {
             position: absolute;
@@ -31,7 +36,17 @@ button.ant-btn {
             left: 0;
             div {
                 margin-bottom: 5px;
+                font-weight: bold;
+                // color: #0070cc;
             }
+        }
+        .instance-info div {
+            border: 1px dashed indianred;
+            color: indianred;
+        }
+        .replica-info div {
+            border: 1px dashed gray;
+            color: gray;
         }
 	}
 
@@ -41,6 +56,24 @@ button.ant-btn {
             top: -205px;
             content: url("@{image}/redisred.png");
         }
+        &:after {
+            content: 'M';
+            left: 100px;
+            top: 40px;
+            color: indianred;
+            font-size: 26px;
+            font-weight: bold;
+        }
+        .instance-info {
+            &:before {
+                content: url("@{image}/double-arrow-svgrepo-com.svg");
+                position: absolute;
+                left: 620px;
+                top: -10px;
+                transform: scale(0.5);
+                width: 100px;
+            }
+        }
 	}
 
 	.slave {
@@ -48,6 +81,14 @@ button.ant-btn {
         &:before {
             top: -165px;
             content: url("@{image}/redisgray.png");
+        }
+        &:after {
+            content: 'S';
+            right: 112px;
+            top: 40px;
+            color: gray;
+            font-size: 26px;
+            font-weight: bold;
         }
 	}
 }
