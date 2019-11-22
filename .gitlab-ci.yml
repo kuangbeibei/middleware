@@ -47,13 +47,13 @@ build_image:
     - master
   retry: 2
     
-k8s_cq:
-  image: registry.yonghui.cn/public/centos7-kubectl:1
-  stage: deploy
-  environment: dev
-  script:
-    - bash k8s/dev.sh ${ServiceName} ${DockerImageName}
-  tags:
-    - cmp
-  only:
-    - master
+#k8s_cq:
+  #image: registry.yonghui.cn/public/centos7-kubectl:1
+  #stage: deploy
+  #environment: dev
+  #script:
+    #- bash k8s/dev.sh ${ServiceName} ${DockerImageName}
+  #tags:
+    #- cmp
+  #only:
+    #- master
