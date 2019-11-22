@@ -22,7 +22,7 @@ build_js:
   stage: build
   script:
     - rm -rf ./build/dist/*
-    - yarn build
+    - npm run build
     - tar -czvf ${BuildFileName}.tar.gz build/dist
     - mv ${BuildFileName}.tar.gz ./build/dist/
   tags:
