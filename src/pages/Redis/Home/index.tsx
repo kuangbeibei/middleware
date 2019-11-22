@@ -273,12 +273,17 @@ function RedisCluster(props) {
 				if (status === "ready" || status === "failed") {
 					return taskId => deployCluster(taskId);
 				}
-				return () => message.info("集群状态不可部署！");
+				return () => message.info(`集群状态是${status}，不可部署！`);
 			case "edit":
 				if (status !== "done" && status !== "release") {
 					return taskId => showFormModal(taskId);
 				}
-				return () => message.info("集群状态不可编辑");
+				return () => message.info(`集群状态是${status}，不可编辑`);
+			case "monitor":
+				if (status === "done") {
+					
+				}
+				return () => message.info(`集群状态是${status}，暂无监控状态`);
 			default:
 				return () => {};
 		}
@@ -426,7 +431,7 @@ function RedisCluster(props) {
 							icon="bar-chart"
 							onClick={() =>
 								checkStatusBeforeOperate(
-									"mapRelations",
+									"monitor",
 									text.status
 								)(text.taskId, text.name)
 							}
