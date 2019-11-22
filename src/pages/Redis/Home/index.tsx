@@ -239,6 +239,19 @@ function RedisCluster(props) {
 	};
 
 	/**
+	 * 
+	 * @param type 
+	 * @param status 
+	 */
+	const checkMonitorStatus = (name, id) => {
+		import("./Monitor.modal").then(component => {
+			setCom(
+				<component.default name={name} id={id}/>
+			);
+		})
+	}
+
+	/**
 	 * 在操作前校验status
 	 * @param type
 	 * @param status
@@ -266,7 +279,7 @@ function RedisCluster(props) {
 					status !== "release" &&
 					status !== "ready"
 				) {
-					return taskId => releaseCluster(taskId);
+					return (taskId, name) => releaseClusterByTaskId(taskId, name);
 				}
 				return () => message.info(`集群状态是${status}，不可释放!`);
 			case "deploy":
@@ -281,7 +294,7 @@ function RedisCluster(props) {
 				return () => message.info(`集群状态是${status}，不可编辑`);
 			case "monitor":
 				if (status === "done") {
-					
+					return (id, name) => checkMonitorStatus(id, name)
 				}
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
 			default:
@@ -433,7 +446,7 @@ function RedisCluster(props) {
 								checkStatusBeforeOperate(
 									"monitor",
 									text.status
-								)(text.taskId, text.name)
+								)(text.id, text.name)
 							}
 						/>
 					</Tooltip>

@@ -10,11 +10,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setDrawerVisibility from "@actions/setDrawerVisibility";
 
-import { Drawer, Descriptions } from "antd";
+import { Drawer } from "antd";
+import Iframe from 'react-iframe'
 
 function MonitorDrawer(props) {
 
-    const { drawerVisibility, setDrawerVisibility, data } = props;
+    const { drawerVisibility, setDrawerVisibility, name, id } = props;
 
 	useEffect(() => {
 		setDrawerVisibility();
@@ -26,34 +27,15 @@ function MonitorDrawer(props) {
     
     return (
 		<Drawer
-			title="redis集群配置信息"
+			title="redis集群监控状态"
 			placement="right"
 			width="700px"
 			closable={false}
 			onClose={handleClose}
 			visible={drawerVisibility.visible}
 		>
-			<Descriptions bordered column={1}>
-				{data &&
-					Array.isArray(data) &&
-					data.map(configItem => {
-						let val = configItem.value.replace(/\n/g, "\n");
-						return (
-							<Descriptions.Item
-								key={configItem.enName}
-								label={configItem.name}
-							>
-								{configItem.enName === "moreConf" ||
-								configItem.enName === "instances" ||
-								configItem.enName === "defaultConf" ? (
-									<pre>{val}</pre>
-								) : (
-									<span>{configItem.value || "无"}</span>
-								)}
-							</Descriptions.Item>
-						);
-					})}
-			</Descriptions>
+			 {/* 嵌入iframe */}
+            <Iframe url="http://10.210.0.145:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=dev-mid-ware-redis-cluster&theme=light&panelId=7" width="450" height="200" />
 		</Drawer>
 	);
 }
