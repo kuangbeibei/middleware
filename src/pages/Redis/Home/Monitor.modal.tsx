@@ -1,21 +1,20 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-11-18 14:19:37 
- * @Last Modified: 2019-11-18 14:19:37 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-11-18 14:19:37
+ * @Last Modified: 2019-11-18 14:19:37
+ */
 
-import * as React from "react"
+import * as React from "react";
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setDrawerVisibility from "@actions/setDrawerVisibility";
 
 import { Drawer } from "antd";
-import Iframe from 'react-iframe'
+import Iframe from "react-iframe";
 
 function MonitorDrawer(props) {
-
-    const { drawerVisibility, setDrawerVisibility, name, id } = props;
+	const { drawerVisibility, setDrawerVisibility, name, id } = props;
 
 	useEffect(() => {
 		setDrawerVisibility();
@@ -23,9 +22,9 @@ function MonitorDrawer(props) {
 
 	const handleClose = () => {
 		setDrawerVisibility();
-    };
-    
-    return (
+	};
+
+	return (
 		<Drawer
 			title="redis集群监控状态"
 			placement="right"
@@ -34,8 +33,12 @@ function MonitorDrawer(props) {
 			onClose={handleClose}
 			visible={drawerVisibility.visible}
 		>
-			 {/* 嵌入iframe */}
-            <Iframe url="http://10.210.0.145:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=dev-mid-ware-redis-cluster&theme=light&panelId=7" width="450" height="200" />
+			{/* 嵌入iframe */}
+			<Iframe
+				url={`http://10.210.0.145:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=${name}/${id}&theme=light&panelId=7`}
+				width="450"
+				height="200"
+			/>
 		</Drawer>
 	);
 }
@@ -48,6 +51,3 @@ export default connect(
 		setDrawerVisibility: bindActionCreators(setDrawerVisibility, dispatch)
 	})
 )(MonitorDrawer);
-
-
- 

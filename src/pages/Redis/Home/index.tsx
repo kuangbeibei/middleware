@@ -243,7 +243,7 @@ function RedisCluster(props) {
 	 * @param type 
 	 * @param status 
 	 */
-	const checkMonitorStatus = (name, id) => {
+	const checkMonitorStatus = (id, name) => {
 		import("./Monitor.modal").then(component => {
 			setCom(
 				<component.default name={name} id={id}/>
