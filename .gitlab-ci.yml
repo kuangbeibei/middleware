@@ -25,6 +25,8 @@ build_js:
     - npm run build
     - tar -czvf ${BuildFileName}.tar.gz build/dist
     - mv ${BuildFileName}.tar.gz ./build/dist/
+  tags:
+    - cmp
   only:
     - develop
     - qa_test
@@ -37,6 +39,8 @@ build_image:
     - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
     - docker build --no-cache -t $DockerImageName .
     - docker push $DockerImageName
+  tags:
+    - cmp
   only:
     - develop
     - qa_test
