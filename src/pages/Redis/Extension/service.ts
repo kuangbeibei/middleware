@@ -49,3 +49,13 @@ export async function deployExtensionInstance(taskId) {
 
     }).catch(e => e.message)
 }
+
+// 删除扩容实例
+export async function deleteExtensionInstance(id) {
+    return del(`/mid/v1/delete/redisExtend/${id}`).then(res => {
+        if (res.data.code === 200) {
+            return true
+        }
+    }).catch(e => e.message)
+}
+

@@ -34,17 +34,14 @@ import { useIntervalWithCondition } from "@hooks/use-interval";
 import FormModal from "./Form.modal"
 
 import {
-	getConfigDetail,
 	deployTaskOutput,
-	delCluster,
-	releaseCluster,
-	deployEntryDetail,
 	checkStatus,
-	getClusterDetail
 } from "../Home/service";
 
 import {
-    getRedisExtendList
+    getRedisExtendList,
+    deployExtensionInstance,
+    deleteExtensionInstance
 } from "./service"
 
 function ExtensionList(props) {
@@ -92,13 +89,13 @@ function ExtensionList(props) {
 	 * @param id
 	 */
 	const deleteCluster = (id, name?) => {
-		delCluster(id)
+		deleteExtensionInstance(id)
 			.then(res => {
 				if (res) {
 					setLoadListCount(loadListCount => loadListCount + 1);
-					message.success(`删除集群${name}成功!`);
+					message.success(`删除${id}成功!`);
 				} else {
-					message.error(`删除集群${name}失败! `);
+					message.error(`删除${id}失败! `);
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -110,9 +107,9 @@ function ExtensionList(props) {
 	 */
 	const deployCluster = taskId => {
 		message.success("正在部署...");
-		deployTaskOutput(taskId)
+		deployExtensionInstance(taskId)
 			.then(res => {
-
+              
 			})
 			.catch(e => message.error(e.message));
     };
@@ -124,13 +121,13 @@ function ExtensionList(props) {
 	const getOutput = taskId => {
 		deployTaskOutput(taskId)
 			.then(data => {
-				if (data.loginfo) {
-					import("../Home/Log.modal").then(component => {
-						setCom(<component.default {...data} />);
-					});
-				} else {
-					return message.error(data.msg);
-				}
+				// if (data.loginfo) {
+				// 	import("../Home/Log.modal").then(component => {
+				// 		setCom(<component.default {...data} />);
+				// 	});
+				// } else {
+				// 	return message.error(data.msg);
+				// }
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -197,7 +194,7 @@ function ExtensionList(props) {
 				<Menu.Item key="3">
 					<Popconfirm
 						placement="topRight"
-						title={`确定删除集群${text.name}?`}
+						title={`确定删除${text.id}?`}
 						onConfirm={() =>
 							checkStatusBeforeOperate("delete", text.status)(
 								text.id,
