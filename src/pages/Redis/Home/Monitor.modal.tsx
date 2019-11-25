@@ -35,7 +35,7 @@ function MonitorDrawer(props) {
 		>
 			{/* 嵌入iframe */}
 			<Iframe
-				url={`http://10.210.0.145:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=${name}/${id}&theme=light&panelId=7`}
+				url={`http://10.210.0.144:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=dev-mid-ware-redis-cluster&theme=light&panelId=7`}
 				width="450"
 				height="200"
 			/>
