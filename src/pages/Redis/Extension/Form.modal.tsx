@@ -16,7 +16,8 @@ import {
 	Select,
 	Icon,
 	Row,
-	Col
+	Col,
+	Checkbox
 } from "antd";
 import Modal from "@com/Modal";
 import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
@@ -27,17 +28,17 @@ import IextensionFormParams from "./data";
 import { isEven, deepCloneObject } from "@utils/tools";
 
 import {
-    createExtension,
-    getExtensionDetail,
-    updateExtension
-} from "./service"
+	createExtension,
+	getExtensionDetail,
+	updateExtension
+} from "./service";
 
-import "./style.less"
+import "./style.less";
 
 const formTitleLayout = {
-    labelCol: { span: 2 },
-    wrapperCol: {span: 2}
-}
+	labelCol: { span: 2 },
+	wrapperCol: { span: 2 }
+};
 
 const formItemBasicLayout = {
 	labelCol: { span: 6 },
@@ -55,23 +56,26 @@ const initIPostParams: IextensionFormParams = {
 		redisClusterId: "",
 		timeout: 3000,
 		slot: "",
-        instances: [{
-            ip: "",
-            port: "",
-            user: "",
-            pass: "",
-            slotSources: [
-                {
-                    ip: "",
-                    port: ""
-                }
-            ]
-        }, {
-            ip: "",
-            port: "",
-            user: "",
-            pass: ""
-        }]
+		instances: [
+			{
+				ip: "",
+				port: "",
+				user: "",
+				pass: "",
+				slotSources: [
+					{
+						ip: "",
+						port: ""
+					}
+				]
+			},
+			{
+				ip: "",
+				port: "",
+				user: "",
+				pass: ""
+			}
+		]
 	}
 };
 
@@ -82,21 +86,23 @@ function FormModal(props) {
 		form: { getFieldDecorator },
 		match: {
 			params: { id }
-        },
-        taskId
-    } = props;
+		},
+		taskId
+	} = props;
 
-    useEffect(() => {
-        if (taskId) {
-            getExtensionDetail(taskId).then(data => {
-                setpostParams(data)
-            })
-        }
-    }, [taskId])
+	useEffect(() => {
+		if (taskId) {
+			getExtensionDetail(taskId).then(data => {
+				setpostParams(data);
+			});
+		}
+	}, [taskId]);
 
-    const [postParams, setpostParams] = useState(deepCloneObject(initIPostParams));
-    
-    /**
+	const [postParams, setpostParams] = useState(
+		deepCloneObject(initIPostParams)
+	);
+
+	/**
 	 * 用户名和密码，自动填充没有写的
 	 * @param value
 	 * @param type
@@ -119,65 +125,67 @@ function FormModal(props) {
 		setpostParams(newPostParams);
 	};
 
-    const handleOk = () => {
-        const {
-			form: {
-				getFieldsValue,
-				validateFields,
+	const handleOk = () => {
+		const {
+			form: { getFieldsValue, validateFields }
+		} = props;
+
+		validateFields(err => {
+			if (err) {
+				message.warning("信息填写不完全!");
+			} else {
+				let params = Object.assign(
+					{},
+					{
+						redisClusterId: Number(id),
+						timeout: 3000
+					},
+					postParams.params,
+					getFieldsValue().params
+				);
+
+				let { instances } = getFieldsValue().params;
+				instances.forEach(i => (i.port = Number(i.port)));
+				params.instances = instances;
+
+				let data = {
+					type: "redisExtend",
+					params
+				};
+
+				save(data)
+					.then(res => {
+						message.success("扩容成功!");
+						initFormModal();
+					})
+					.catch(e => message.error(e.message));
 			}
-        } = props;
+		});
+	};
 
-        validateFields(err => {
-            if (err) {
-                message.warning("信息填写不完全!");
-            } else {
-                let params = Object.assign({}, {
-                    redisClusterId: Number(id),
-                    timeout: 3000,
-                }, postParams.params, getFieldsValue().params);
-
-                let {
-                    instances
-                } = getFieldsValue().params;
-                instances.forEach(i => i.port = Number(i.port));
-                params.instances = instances;
-
-                let data = {
-                    type: 'redisExtend',
-                    params
-                };
-
-                save(data).then(res => {
-                    message.success('扩容成功!');
-                    initFormModal()
-                }).catch(e => message.error(e.message));
-            }
-        })
-    };
-
-    const save = async (data) => {
-        if (taskId) {
-            return updateExtension(data.params, taskId)
-        } else {
-            return createExtension(data)
-        }
-    }
+	const save = async data => {
+		if (taskId) {
+			return updateExtension(data.params, taskId);
+		} else {
+			return createExtension(data);
+		}
+	};
 
 	const handleCancel = () => {
-        initFormModal();
-    };
-    
-    /**
+		initFormModal();
+	};
+
+	/**
 	 * 初始化表单
 	 */
 	const initFormModal = () => {
 		const {
 			form: { resetFields }
-        } = props;
-        
-        resetFields();
-        setpostParams(deepCloneObject(initIPostParams))
-        setTableModalVisibility();
+		} = props;
+
+		resetFields();
+		setpostParams(deepCloneObject(initIPostParams));
+		setTableModalVisibility();
 	};
 
 	return (
@@ -200,100 +208,130 @@ function FormModal(props) {
 								}
 							]
 						})(<Input placeholder="请输入集群slot"></Input>)}
-                    </Form.Item>
-                    
-                    <Divider>扩容实例</Divider>
+					</Form.Item>
 
-                    {
-                        postParams.params.instances.map((instance, idx) => (
-                            <YHFlexDiv key={idx}>
-                                <YHSmallFormItem className='extensionFormItemTitle' {...formTitleLayout}>{`${isEven(idx) ? '主' : '从'}`}</YHSmallFormItem>
-                                <YHSmallFormItem {...formItemInstanceLayout} label="IP">
-                                    {getFieldDecorator(`params.instances[${idx}].ip`, {
-                                        initialValue: instance.ip,
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: "Master IP"
-                                            }
-                                        ]
-                                    })(<Input placeholder="请输入IP地址"></Input>)}
-                                </YHSmallFormItem>
-                                <YHSmallFormItem {...formItemInstanceLayout} label="Port">
-                                    {getFieldDecorator(
-                                        `params.instances[${idx}].port`,
-                                        {
-                                            initialValue: instance.port,
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: "请输入端口号"
-                                                }
-                                            ]
-                                        }
-                                    )(
-                                        <Input
-                                            placeholder="请输入端口号"
-                                            onBlur={event => {
-                                                autoCompleteInput(
-                                                    event.currentTarget.value,
-                                                    "port"
-                                                );
-                                            }}
-                                        ></Input>
-                                    )}
-                                </YHSmallFormItem>
-                                <YHSmallFormItem {...formItemInstanceLayout} label="用户名">
-                                    {getFieldDecorator(
-                                        `params.instances[${idx}].user`,
-                                        {
-                                            initialValue: instance.user,
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: "请输入用户名"
-                                                }
-                                            ]
-                                        }
-                                    )(
-                                        <Input
-                                            placeholder="请输入用户名"
-                                            onBlur={event => {
-                                                autoCompleteInput(
-                                                    event.currentTarget.value,
-                                                    "user"
-                                                );
-                                            }}
-                                        ></Input>
-                                    )}
-                                </YHSmallFormItem>
-                                <YHSmallFormItem {...formItemInstanceLayout} label="密码">
-                                    {getFieldDecorator(
-                                        `params.instances[${idx}].pass`,
-                                        {
-                                            initialValue: instance.pass,
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: "请输入密码"
-                                                }
-                                            ]
-                                        }
-                                    )(
-                                        <Input
-                                            placeholder="请输入密码"
-                                            onBlur={event => {
-                                                autoCompleteInput(
-                                                    event.currentTarget.value,
-                                                    "pass"
-                                                );
-                                            }}
-                                        ></Input>
-                                    )}
-                                </YHSmallFormItem>
-                            </YHFlexDiv>
-                        ))
-                    }
+					<Divider>扩容实例</Divider>
+
+					{postParams.params.instances.map((instance, idx) => (
+						<div key={idx}>
+							<YHFlexDiv>
+								<YHSmallFormItem
+									className="extensionFormItemTitle"
+									{...formTitleLayout}
+								>{`${
+									isEven(idx) ? "主" : "从"
+								}`}</YHSmallFormItem>
+								<YHSmallFormItem
+									{...formItemInstanceLayout}
+									label="IP"
+								>
+									{getFieldDecorator(
+										`params.instances[${idx}].ip`,
+										{
+											initialValue: instance.ip,
+											rules: [
+												{
+													required: true,
+													message: "Master IP"
+												}
+											]
+										}
+									)(
+										<Input placeholder="请输入IP地址"></Input>
+									)}
+								</YHSmallFormItem>
+								<YHSmallFormItem
+									{...formItemInstanceLayout}
+									label="Port"
+								>
+									{getFieldDecorator(
+										`params.instances[${idx}].port`,
+										{
+											initialValue: instance.port,
+											rules: [
+												{
+													required: true,
+													message: "请输入端口号"
+												}
+											]
+										}
+									)(
+										<Input
+											placeholder="请输入端口号"
+											onBlur={event => {
+												autoCompleteInput(
+													event.currentTarget.value,
+													"port"
+												);
+											}}
+										></Input>
+									)}
+								</YHSmallFormItem>
+								<YHSmallFormItem
+									{...formItemInstanceLayout}
+									label="用户名"
+								>
+									{getFieldDecorator(
+										`params.instances[${idx}].user`,
+										{
+											initialValue: instance.user,
+											rules: [
+												{
+													required: true,
+													message: "请输入用户名"
+												}
+											]
+										}
+									)(
+										<Input
+											placeholder="请输入用户名"
+											onBlur={event => {
+												autoCompleteInput(
+													event.currentTarget.value,
+													"user"
+												);
+											}}
+										></Input>
+									)}
+								</YHSmallFormItem>
+								<YHSmallFormItem
+									{...formItemInstanceLayout}
+									label="密码"
+								>
+									{getFieldDecorator(
+										`params.instances[${idx}].pass`,
+										{
+											initialValue: instance.pass,
+											rules: [
+												{
+													required: true,
+													message: "请输入密码"
+												}
+											]
+										}
+									)(
+										<Input
+											placeholder="请输入密码"
+											onBlur={event => {
+												autoCompleteInput(
+													event.currentTarget.value,
+													"pass"
+												);
+											}}
+										></Input>
+									)}
+								</YHSmallFormItem>
+							</YHFlexDiv>
+							{isEven(idx) ? (
+								<YHSmallFormItem
+									{...formItemInstanceLayout}
+									label="是否填写主机器的slot源"
+								>
+									<Checkbox />
+								</YHSmallFormItem>
+							) : null}
+						</div>
+					))}
 				</Form>
 			</Modal>
 		</>
