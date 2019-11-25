@@ -1,6 +1,6 @@
 interface Iinstances {
 	ip: string,
-	port: string,
+	port: string | number,
 	user: string,
 	pass: string
 }

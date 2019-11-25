@@ -67,13 +67,6 @@ const RedisExtension = props => (
 	</DynamicImport>
 );
 
-// Redis 扩容列表
-const RedisExtensionList = props => (
-	<DynamicImport load={() => import("@pages/Redis/Extension/List")}>
-		{Component => childrenOfDynamicImport(Component, props)}
-	</DynamicImport>
-);
-
 // Rocketmq入口
 const Rocketmq = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ")}>
@@ -112,7 +105,6 @@ export default {
 	RedisHome,
 	RedisInstance,
 	RedisExtension,
-	RedisExtensionList,
 	Rocketmq,
 	RocketmqHome,
 	RocketNameServer,

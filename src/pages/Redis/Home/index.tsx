@@ -256,8 +256,8 @@ function RedisCluster(props) {
 	 * @param type 
 	 * @param status 
 	 */
-	const gotoExtension = (taskId, name) => {
-		props.history.push(`/middleware/redis/${taskId}/extension`)
+	const gotoExtension = (id, name) => {
+		props.history.push(`/middleware/redis/${id}/extension`)
 	}
 
 	/**
@@ -308,7 +308,7 @@ function RedisCluster(props) {
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
 			case "extension":
 				if (status === "done") {
-					return (taskId, name) => gotoExtension(taskId, name)
+					return (id, name) => gotoExtension(id, name)
 				}
 				return () => message.info(`集群状态是${status}, 不可扩容`)
 			default:
@@ -334,7 +334,7 @@ function RedisCluster(props) {
 				<Menu.Item key="2">
 					<a onClick={() =>
 							checkStatusBeforeOperate("extension", text.status)(
-								text.taskId,
+								text.id,
 								text.name
 							)
 						}>
