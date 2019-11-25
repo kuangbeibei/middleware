@@ -53,6 +53,7 @@ function ExtensionList(props) {
             }
         },
         setTableModalVisibility,
+        tableModalVisibility
     } = props;
 
     let [loading, setloading] = useState(true);
@@ -69,6 +70,19 @@ function ExtensionList(props) {
 			})
             .catch(e => message.error(e.message))
     }, [loadingListCount]);
+
+    useEffect(() => {
+		if (!tableModalVisibility.visible && com) {
+			removeLayer();
+        }
+        setLoadListCount(loadListCount => loadListCount + 1);
+    }, [tableModalVisibility.visible]);
+    
+    const removeLayer = () => {
+		setTimeout(() => {
+			setCom("");
+		}, 400);
+	};
     
         
     /**
@@ -121,13 +135,13 @@ function ExtensionList(props) {
 	const getOutput = taskId => {
 		deployTaskOutput(taskId)
 			.then(data => {
-				// if (data.loginfo) {
-				// 	import("../Home/Log.modal").then(component => {
-				// 		setCom(<component.default {...data} />);
-				// 	});
-				// } else {
-				// 	return message.error(data.msg);
-				// }
+				if (data.loginfo) {
+					import("../Home/Log.modal").then(component => {
+						setCom(<component.default {...data} />);
+					});
+				} else {
+					return message.info('无日志信息');
+				}
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -288,7 +302,11 @@ function ExtensionList(props) {
 				<Table columns={columns} dataSource={tableList} rowKey="id" />
 			)}
 
-			<FormModal taskId={taskId} {...props} />
+            <FormModal taskId={taskId} {...props} />
+            
+            {
+                com
+            }
 		</>
 	);
 }
