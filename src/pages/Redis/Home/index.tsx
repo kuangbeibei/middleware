@@ -239,7 +239,7 @@ function RedisCluster(props) {
 	};
 
 	/**
-	 * 
+	 * 监控状态
 	 * @param type 
 	 * @param status 
 	 */
@@ -249,6 +249,15 @@ function RedisCluster(props) {
 				<component.default name={name} id={id}/>
 			);
 		})
+	}
+
+	/**
+	 * 跳转到扩容页面
+	 * @param type 
+	 * @param status 
+	 */
+	const gotoExtension = (taskId, name) => {
+		props.history.push(`/middleware/redis/${taskId}/extension`)
 	}
 
 	/**
@@ -297,16 +306,19 @@ function RedisCluster(props) {
 					return (id, name) => checkMonitorStatus(id, name)
 				}
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
+			case "extension":
+				if (status === "done") {
+					return (taskId, name) => gotoExtension(taskId, name)
+				}
+				return () => message.info(`集群状态是${status}, 不可扩容`)
 			default:
 				return () => {};
 		}
 	};
 
-	const handleMenuClick = text => {};
-
 	const menu = text => {
 		return (
-			<Menu onClick={handleMenuClick}>
+			<Menu>
 				<Menu.Item key="1">
 					<a
 						onClick={() =>
@@ -319,7 +331,16 @@ function RedisCluster(props) {
 						部署
 					</a>
 				</Menu.Item>
-				<Menu.Item key="2">扩容</Menu.Item>
+				<Menu.Item key="2">
+					<a onClick={() =>
+							checkStatusBeforeOperate("extension", text.status)(
+								text.taskId,
+								text.name
+							)
+						}>
+						扩容
+					</a>
+				</Menu.Item>
 				<Menu.Item key="3">
 					<a
 						onClick={() =>
