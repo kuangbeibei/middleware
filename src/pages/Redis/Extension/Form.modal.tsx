@@ -28,7 +28,8 @@ import { isEven, deepCloneObject } from "@utils/tools";
 
 import {
     createExtension,
-    getExtensionDetail
+    getExtensionDetail,
+    updateExtension
 } from "./service"
 
 import "./style.less"
@@ -139,17 +140,28 @@ function FormModal(props) {
                     instances
                 } = getFieldsValue().params;
                 instances.forEach(i => i.port = Number(i.port));
+                params.instances = instances;
 
-                createExtension({
+                let data = {
                     type: 'redisExtend',
                     params
-                }).then(res => {
+                };
+
+                save(data).then(res => {
                     message.success('扩容成功!');
                     initFormModal()
-                }).catch(e => message.error(e.message))
+                }).catch(e => message.error(e.message));
             }
         })
     };
+
+    const save = async (data) => {
+        if (taskId) {
+            return updateExtension(data.params, taskId)
+        } else {
+            return createExtension(data)
+        }
+    }
 
 	const handleCancel = () => {
         initFormModal();

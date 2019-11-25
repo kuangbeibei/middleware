@@ -23,6 +23,13 @@ export async function createExtension(data) {
     }).catch(e => e.message)
 }
 
+// 更新扩容实例
+export async function updateExtension(data, taskId) {
+    return post(`/mid/v1/updateParams/redisExtend/${taskId}`, data).then(res => {
+
+    })
+}
+
 // 获取扩容实例详情
 export async function getExtensionDetail(taskId) {
     return get(`/mid/v1/params/redisExtend/${taskId}`).then(res => {
@@ -33,5 +40,12 @@ export async function getExtensionDetail(taskId) {
         } catch (e) {
             return res
         }
+    }).catch(e => e.message)
+}
+
+// 部署扩容实例
+export async function deployExtensionInstance(taskId) {
+    return get(`/mid/v1/runTask/redisExtend/${taskId}`).then(res => {
+
     }).catch(e => e.message)
 }
