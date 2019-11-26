@@ -12,7 +12,7 @@ cache:
 stages:
   - build
   - package
-  #- deploy
+  - deploy
 
 before_script:
   - cd $CI_PROJECT_DIR
@@ -24,8 +24,11 @@ build_js:
     - rm -rf ./build/dist/*
     - npm install
     - npm run build
-    - tar -czvf ${BuildFileName}.tar.gz build/dist
+    - ls ./build/dist
+    - tar -czvf ${BuildFileName}.tar.gz ./build/dist
+    - ls
     - mv ${BuildFileName}.tar.gz ./build/dist/
+    - ls ./build/dist
   tags:
     - mw
   only:
@@ -48,11 +51,13 @@ build_image:
     - master
   retry: 2
     
-#k8s_cq:
-  #image: registry.yonghui.cn/public/centos7-kubectl:1
-  #stage: deploy
-  #environment: dev
-  #script:
-    #- bash k8s/dev.sh ${ServiceName} ${DockerImageName}
-  #only:
-    #- master
+k8s_cq:
+  image: registry.yonghui.cn/public/centos7-kubectl:1
+  stage: deploy
+  environment: dev
+  script:
+    - bash k8s/dev.sh ${ServiceName} ${DockerImageName}
+  tags:
+    - mw
+  only:
+    - master
