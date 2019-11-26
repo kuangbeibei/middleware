@@ -8,6 +8,7 @@ cache:
   key: "${CI_COMMIT_SHA}-${CI_PIPELINE_ID}"
   paths:
     - dist/
+    - node_modules/
 
 stages:
   - build
