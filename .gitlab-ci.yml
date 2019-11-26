@@ -21,11 +21,12 @@ build_js:
   image: registry.yonghui.cn/public/node:8.11-stretch
   stage: build
   script:
-    - rm -rf ./dist/*
-    - npm install
-    - npm run build
-    - tar -czvf ${BuildFileName}.tar.gz dist
-    - mv ${BuildFileName}.tar.gz ./dist/
+    # - rm -rf ./dist/*
+    # - npm install
+    # - npm run build
+    # - tar -czvf ${BuildFileName}.tar.gz dist
+    # - mv ${BuildFileName}.tar.gz ./dist/
+    - mkdir dist
   tags:
     - mw
   only:
@@ -37,7 +38,6 @@ build_image:
   image: registry.yonghui.cn/public/docker:latest
   stage: package
   script:
-    - echo $CI_PROJECT_DIR
     - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
     - docker build --no-cache -t $DockerImageName .
     - docker push $DockerImageName
