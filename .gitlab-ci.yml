@@ -21,14 +21,12 @@ build_js:
   image: registry.yonghui.cn/public/node:8.11-stretch
   stage: build
   script:
-    - rm -rf ./build/dist/*
+    - rm -rf ./dist/*
     - npm install
     - npm run build
-    - ls
-    - tar -czvf ${BuildFileName}.tar.gz ./build/dist
-    - ls
-    - mv ${BuildFileName}.tar.gz ./build/dist/
-    - ls ./build/dist
+    - tar -czvf ${BuildFileName}.tar.gz dist
+    - mv ${BuildFileName}.tar.gz ./dist/
+    - ls ./dist
   tags:
     - mw
   only:
