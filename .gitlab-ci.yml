@@ -24,7 +24,7 @@ build_js:
     - rm -rf ./build/dist/*
     - npm install
     - npm run build
-    - ls ./build/dist
+    - ls
     - tar -czvf ${BuildFileName}.tar.gz ./build/dist
     - ls
     - mv ${BuildFileName}.tar.gz ./build/dist/
