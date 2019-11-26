@@ -38,6 +38,8 @@ build_image:
   image: registry.yonghui.cn/public/docker:latest
   stage: package
   script:
+    - pwd
+    - ls
     - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
     - docker build --no-cache -t $DockerImageName .
     - docker push $DockerImageName
@@ -54,8 +56,6 @@ k8s_cq:
   stage: deploy
   environment: dev
   script:
-    - pwd
-    - ls
     - bash k8s/dev.sh ${ServiceName} ${DockerImageName}
   tags:
     - mw
