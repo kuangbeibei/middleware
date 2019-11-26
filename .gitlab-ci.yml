@@ -54,6 +54,8 @@ k8s_cq:
   stage: deploy
   environment: dev
   script:
+    - pwd
+    - ls
     - bash k8s/dev.sh ${ServiceName} ${DockerImageName}
   tags:
     - mw
