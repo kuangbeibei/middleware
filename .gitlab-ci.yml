@@ -7,7 +7,8 @@ variables:
 cache:
   key: "${CI_COMMIT_SHA}-${CI_PIPELINE_ID}"
   paths:
-    - build/dist/
+    - dist/
+    - node_modules/
 
 stages:
   - build
@@ -21,12 +22,13 @@ build_js:
   image: registry.yonghui.cn/public/node:8.11-stretch
   stage: build
   script:
-    - rm -rf ./dist/*
-    - npm install
-    - npm run build
-    - tar -czvf ${BuildFileName}.tar.gz dist
-    - mv ${BuildFileName}.tar.gz ./dist/
-    - ls ./dist
+    # - rm -rf ./dist/*
+    # - npm install
+    # - npm run build
+    # - tar -czvf ${BuildFileName}.tar.gz dist
+    # - mv ${BuildFileName}.tar.gz ./dist/
+    - mkdir dist
+    - mkdir node_modules
   tags:
     - mw
   only:
@@ -38,6 +40,7 @@ build_image:
   image: registry.yonghui.cn/public/docker:latest
   stage: package
   script:
+    - ls
     - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
     - docker build --no-cache -t $DockerImageName .
     - docker push $DockerImageName
