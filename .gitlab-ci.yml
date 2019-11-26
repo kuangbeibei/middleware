@@ -1,0 +1,57 @@
+variables:
+  BuildFileName: "mw-front-0.1-${CI_PIPELINE_ID}"
+  ServiceName: "mw-front"
+  ServiceVersion: "0.1" 
+  DockerImageName: "registry.yonghui.cn/ycloud/${ServiceName}:${ServiceVersion}-${CI_PIPELINE_ID}"
+
+cache:
+  key: "${CI_COMMIT_SHA}-${CI_PIPELINE_ID}"
+  paths:
+    - build/dist/
+
+stages:
+  - build
+  - package
+  #- deploy
+
+before_script:
+  - cd $CI_PROJECT_DIR
+
+build_js:
+  image: registry.yonghui.cn/public/node:8.11-stretch
+  stage: build
+  script:
+    - rm -rf ./build/dist/*
+    - npm run build
+    - tar -czvf ${BuildFileName}.tar.gz build/dist
+    - mv ${BuildFileName}.tar.gz ./build/dist/
+  tags:
+    - mw
+  only:
+    - dev
+    - qa_test
+    - master
+
+build_image:
+  image: registry.yonghui.cn/public/docker:latest
+  stage: package
+  script:
+    - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
+    - docker build --no-cache -t $DockerImageName .
+    - docker push $DockerImageName
+  tags:
+    - mw
+  only:
+    - dev
+    - qa_test
+    - master
+  retry: 2
+    
+#k8s_cq:
+  #image: registry.yonghui.cn/public/centos7-kubectl:1
+  #stage: deploy
+  #environment: dev
+  #script:
+    #- bash k8s/dev.sh ${ServiceName} ${DockerImageName}
+  #only:
+    #- master
