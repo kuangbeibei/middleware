@@ -35,6 +35,13 @@ export const RedisRoutesMap = [
 				breadcrumbTitle: "扩容列表"
 			},
 			{
+				key: "/middleware/redis/:taskId/detail",
+				component: "RedisDetail",
+				name: "RedisDetail",
+				isExact: true,
+				breadcrumbTitle: "详情"
+			},
+			{
 				key: "/middleware/redis/:taskId/instance",
 				component: "RedisInstance",
 				name: "RedisInstance",
