@@ -24,6 +24,12 @@ function ConfigDrawer(props) {
 		setDrawerVisibility();
 	};
 
+	const processInstancesData = (val) => {
+		return val.reduce((prev, cur, idx) => (
+			`${prev}${cur.ip}:${cur.port}\n`
+		), '')
+	}
+
 	return (
 		<Drawer
 			title="redis集群配置信息"
@@ -37,7 +43,13 @@ function ConfigDrawer(props) {
 				{data &&
 					Array.isArray(data) &&
 					data.map(configItem => {
-						let val = configItem.value.replace(/\n/g, "\n");
+						let val;
+						if (typeof configItem.value === 'string') {
+							val = configItem.value.replace(/\n/g, "\n");
+						}
+						if (Array.isArray(configItem.value)) {
+							val = processInstancesData(configItem.value)
+						}
 						return (
 							<Descriptions.Item
 								key={configItem.enName}
