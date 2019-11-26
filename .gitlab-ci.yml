@@ -7,7 +7,7 @@ variables:
 cache:
   key: "${CI_COMMIT_SHA}-${CI_PIPELINE_ID}"
   paths:
-    - build/dist/
+    - dist/
 
 stages:
   - build
@@ -26,7 +26,6 @@ build_js:
     - npm run build
     #- tar -czvf ${BuildFileName}.tar.gz dist
     #- mv ${BuildFileName}.tar.gz ./dist/
-    - ls ./dist
   tags:
     - mw
   only:
