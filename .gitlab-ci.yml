@@ -38,7 +38,7 @@ build_image:
   image: registry.yonghui.cn/public/docker:latest
   stage: package
   script:
-    - pwd
+    - cd /
     - ls
     - docker login -u ycloud -p Yc123456 http://registry.yonghui.cn
     - docker build --no-cache -t $DockerImageName .
