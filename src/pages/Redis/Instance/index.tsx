@@ -7,7 +7,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 
-import { getClusterDetail } from "./service";
+import { getConfigDetail } from "../Home/service"
 
 import { Table, message, Tooltip, Button, Icon } from "antd";
 
@@ -28,10 +28,14 @@ export default function(props) {
 	let [tableList, setTableList] = useState(Array());
 
 	useEffect(() => {
-		getClusterDetail(taskId)
+		getConfigDetail(taskId)
 			.then(data => {
 				setloading(false);
-				setTableList(data.instances);
+				let _data = data.data;
+				if (_data && Array.isArray(_data)) {
+					let instances = _data.find(item => item.enName === 'instances');
+					setTableList(instances.value)
+				}
 			})
 			.catch(e => {});
 	}, []);

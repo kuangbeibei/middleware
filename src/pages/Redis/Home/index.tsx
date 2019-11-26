@@ -239,7 +239,7 @@ function RedisCluster(props) {
 	};
 
 	/**
-	 * 
+	 * 监控状态
 	 * @param type 
 	 * @param status 
 	 */
@@ -248,6 +248,19 @@ function RedisCluster(props) {
 			setCom(
 				<component.default name={name} id={id}/>
 			);
+		})
+	}
+
+	/**
+	 * 跳转到扩容页面
+	 * @param type 
+	 * @param status 
+	 */
+	const gotoExtension = (id, taskId) => {
+		props.history.push(`/middleware/redis/${id}/extension`, {
+			query: {
+				taskId 
+			}
 		})
 	}
 
@@ -297,16 +310,19 @@ function RedisCluster(props) {
 					return (id, name) => checkMonitorStatus(id, name)
 				}
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
+			case "extension":
+				if (status === "done") {
+					return (id, taskId) => gotoExtension(id, taskId)
+				}
+				return () => message.info(`集群状态是${status}, 不可扩容`)
 			default:
 				return () => {};
 		}
 	};
 
-	const handleMenuClick = text => {};
-
 	const menu = text => {
 		return (
-			<Menu onClick={handleMenuClick}>
+			<Menu>
 				<Menu.Item key="1">
 					<a
 						onClick={() =>
@@ -319,7 +335,16 @@ function RedisCluster(props) {
 						部署
 					</a>
 				</Menu.Item>
-				<Menu.Item key="2">扩容</Menu.Item>
+				<Menu.Item key="2">
+					<a onClick={() =>
+							checkStatusBeforeOperate("extension", text.status)(
+								text.id,
+								text.taskId
+							)
+						}>
+						扩容
+					</a>
+				</Menu.Item>
 				<Menu.Item key="3">
 					<a
 						onClick={() =>
@@ -418,7 +443,7 @@ function RedisCluster(props) {
 					<Tooltip placement="top" title={"集群拓扑"}>
 						<Button
 							type="link"
-							icon="eye"
+							icon="apartment"
 							onClick={() =>
 								checkStatusBeforeOperate(
 									"mapRelations",
