@@ -256,8 +256,12 @@ function RedisCluster(props) {
 	 * @param type 
 	 * @param status 
 	 */
-	const gotoExtension = (id, name) => {
-		props.history.push(`/middleware/redis/${id}/extension`)
+	const gotoExtension = (id, taskId) => {
+		props.history.push(`/middleware/redis/${id}/extension`, {
+			query: {
+				taskId 
+			}
+		})
 	}
 
 	/**
@@ -308,7 +312,7 @@ function RedisCluster(props) {
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
 			case "extension":
 				if (status === "done") {
-					return (id, name) => gotoExtension(id, name)
+					return (id, taskId) => gotoExtension(id, taskId)
 				}
 				return () => message.info(`集群状态是${status}, 不可扩容`)
 			default:
@@ -335,7 +339,7 @@ function RedisCluster(props) {
 					<a onClick={() =>
 							checkStatusBeforeOperate("extension", text.status)(
 								text.id,
-								text.name
+								text.taskId
 							)
 						}>
 						扩容
@@ -439,7 +443,7 @@ function RedisCluster(props) {
 					<Tooltip placement="top" title={"集群拓扑"}>
 						<Button
 							type="link"
-							icon="eye"
+							icon="apartment"
 							onClick={() =>
 								checkStatusBeforeOperate(
 									"mapRelations",
