@@ -26,9 +26,9 @@ build_js:
     - tar -czvf ${BuildFileName}.tar.gz build/dist
     - mv ${BuildFileName}.tar.gz ./build/dist/
   tags:
-    - cmp
+    - mw
   only:
-    - develop
+    - dev
     - qa_test
     - master
 
@@ -40,9 +40,9 @@ build_image:
     - docker build --no-cache -t $DockerImageName .
     - docker push $DockerImageName
   tags:
-    - cmp
+    - mw
   only:
-    - develop
+    - dev
     - qa_test
     - master
   retry: 2
