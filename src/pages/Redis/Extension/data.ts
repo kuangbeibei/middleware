@@ -15,7 +15,7 @@ interface Iinstance {
 interface IParams {
     redisClusterId: string | number;
     timeout: number;
-    slot: number | string;
+    slot?: number | string;
     instances: Array<Iinstance>
 }
 

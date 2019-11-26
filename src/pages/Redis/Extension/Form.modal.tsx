@@ -93,11 +93,6 @@ function FormModal(props) {
 		match: {
 			params: { id }
 		},
-		location: {
-			state: {
-				query: { RedisClustertaskId }
-			}
-		},
 		taskId
 	} = props;
 
@@ -112,25 +107,6 @@ function FormModal(props) {
 			});
 		}
 	}, [taskId]);
-
-	useEffect(() => {
-		getConfigDetail(RedisClustertaskId).then(data => {
-			let _data = data.data;
-			if (_data && Array.isArray(_data)) {
-				let instances = _data.find(item => item.enName === "instances")
-					.value;
-				instances = instances.reduce((prev, cur, idx) => {
-					if (isEven(idx)) {
-						prev.push(cur);
-					}
-					return prev
-				}, []);
-				console.log('instances, ', instances);
-				setredisMasters(instances);
-				setredisMastersLen(instances.length);
-			}
-		});
-	}, [RedisClustertaskId]);
 
 	const [postParams, setpostParams] = useState(
 		deepCloneObject(initIPostParams)
@@ -240,17 +216,6 @@ function FormModal(props) {
 				width={"60%"}
 			>
 				<Form>
-					<Form.Item {...formItemBasicLayout} label="slot">
-						{getFieldDecorator("params.slot", {
-							initialValue: postParams.params.slot,
-							rules: [
-								{
-									required: true,
-									message: "请输入集群slot"
-								}
-							]
-						})(<Input placeholder="请输入集群slot"></Input>)}
-					</Form.Item>
 
 					<Divider>扩容实例</Divider>
 
@@ -364,35 +329,6 @@ function FormModal(props) {
 									)}
 								</YHSmallFormItem>
 							</YHFlexDiv>
-							{isEven(idx) ? (
-								<div className="slotSourceWrap">
-									<YHSmallFormItem
-										{...formSlotSourceCheckboxLayout}
-										label="选择slot源"
-										labelAlign="left"
-									>
-										<Checkbox onChange={checkboxChange} />
-									</YHSmallFormItem>
-									{checked ? (
-										<>
-											<div className="slotSourceItemWrap">
-												<Form.Item>
-													<Select>
-														<Select.Option value="4.0.14">
-															4.0.14
-														</Select.Option>
-														<Select.Option value="5.0.5">
-															5.0.5
-														</Select.Option>
-													</Select>
-												</Form.Item>
-												<Icon type="minus" />
-											</div>
-											<Icon type="plus" />
-										</>
-									) : null}
-								</div>
-							) : null}
 						</div>
 					))}
 				</Form>

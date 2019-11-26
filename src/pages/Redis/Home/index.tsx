@@ -265,11 +265,7 @@ function RedisCluster(props) {
 	 * @param status 
 	 */
 	const gotoExtension = (id, taskId) => {
-		props.history.push(`/middleware/redis/${id}/extension`, {
-			query: {
-				RedisClustertaskId: taskId
-			}
-		})
+		props.history.push(`/middleware/redis/${id}/extension`)
 	}
 
 	/**
