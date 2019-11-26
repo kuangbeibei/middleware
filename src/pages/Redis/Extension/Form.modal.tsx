@@ -37,7 +37,6 @@ import "./style.less";
 
 const formTitleLayout = {
 	labelCol: { span: 2 },
-	wrapperCol: { span: 2 }
 };
 
 const formItemBasicLayout = {
@@ -46,9 +45,14 @@ const formItemBasicLayout = {
 };
 
 const formItemInstanceLayout = {
-	labelCol: { span: 6 },
-	wrapperCol: { span: 6 }
+	labelCol: { span: 6},
+    wrapperCol: { span: 6 },
 };
+
+const formSlotSourceCheckboxLayout = {
+    labelCol: { span: 2, offset: 2},
+    wrapperCol: { span: 8 },
+}
 
 const initIPostParams: IextensionFormParams = {
 	type: "redisExtend",
@@ -100,7 +104,8 @@ function FormModal(props) {
 
 	const [postParams, setpostParams] = useState(
 		deepCloneObject(initIPostParams)
-	);
+    );
+    const [checked, setchecked] = useState(false)
 
 	/**
 	 * 用户名和密码，自动填充没有写的
@@ -186,7 +191,15 @@ function FormModal(props) {
 		resetFields();
 		setpostParams(deepCloneObject(initIPostParams));
 		setTableModalVisibility();
-	};
+    };
+    
+    const checkboxChange = (e) => {
+        if (e.target.checked) {
+            setchecked(true)
+        } else {
+            setchecked(false)
+        }
+    }
 
 	return (
 		<>
@@ -322,13 +335,32 @@ function FormModal(props) {
 									)}
 								</YHSmallFormItem>
 							</YHFlexDiv>
-							{isEven(idx) ? (
-								<YHSmallFormItem
-									{...formItemInstanceLayout}
-									label="是否填写主机器的slot源"
-								>
-									<Checkbox />
-								</YHSmallFormItem>
+                            {isEven(idx) ? (
+                                <div className="slotSourceWrap">
+                                   <YHSmallFormItem
+                                        {...formSlotSourceCheckboxLayout}
+                                        label="选择slot源"
+                                        labelAlign="left"
+                                    >
+                                        <Checkbox onChange={checkboxChange} />
+                                    </YHSmallFormItem>
+                                   {
+                                        checked ? 
+                                            <>
+                                                <div className="slotSourceItemWrap">
+                                                    <Form.Item>
+                                                        <Select>
+                                                            <Select.Option value="4.0.14">4.0.14</Select.Option>
+                                                            <Select.Option value="5.0.5">5.0.5</Select.Option>
+                                                        </Select>
+                                                    </Form.Item>
+                                                    <Icon type="minus" />
+                                                </div>
+                                                <Icon type="plus" />
+                                            </>
+                                         : null
+                                    }
+                                </div>
 							) : null}
 						</div>
 					))}
