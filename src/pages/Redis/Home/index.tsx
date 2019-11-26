@@ -104,7 +104,15 @@ function RedisCluster(props) {
      */
     const gotoInstance = taskId => {
         props.history.push(`/middleware/redis/${taskId}/instance`)
-    }
+	}
+	
+	/**
+	 * 前往redis集群详情
+	 * @param taskId 
+	 */
+	const gotoDetail = taskId => {
+		props.history.push(`/middleware/redis/${taskId}/detail`)
+	}
 
     /**
      * 添加 / 编辑是打开modal
@@ -259,7 +267,7 @@ function RedisCluster(props) {
 	const gotoExtension = (id, taskId) => {
 		props.history.push(`/middleware/redis/${id}/extension`, {
 			query: {
-				taskId 
+				RedisClustertaskId: taskId
 			}
 		})
 	}
@@ -403,7 +411,7 @@ function RedisCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			render: text => <a onClick={() => gotoInstance(text.taskId)}>{text.name}</a>
+			render: text => <a onClick={() => gotoDetail(text.taskId)}>{text.name}</a>
 		},
 		{
 			title: "状态",
@@ -413,11 +421,10 @@ function RedisCluster(props) {
         },
         {
             title: "实例个数",
-            dataIndex: "instances",
             key: "instances",
             render: text => {
-                let num = (JSON.parse(text)).length / 2;
-                return `${num}主${num}从`
+                let num = (JSON.parse(text.instances)).length / 2;
+				return <a onClick={() => gotoInstance(text.taskId)}>{`${num}主${num}从`}</a>
             }
         },
 		{
