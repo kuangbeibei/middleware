@@ -96,28 +96,28 @@ function RedisCluster(props) {
 				}
 			});
 		}
-    }, statusTaskId);
-    
-    /**
-     * 前往redis节点列表页
-     * @param text 
-     */
-    const gotoInstance = taskId => {
-        props.history.push(`/middleware/redis/${taskId}/instance`)
-	}
-	
+	}, statusTaskId);
+
+	/**
+	 * 前往redis节点列表页
+	 * @param text
+	 */
+	const gotoInstance = taskId => {
+		props.history.push(`/middleware/redis/${taskId}/instance`);
+	};
+
 	/**
 	 * 前往redis集群详情
-	 * @param taskId 
+	 * @param taskId
 	 */
 	const gotoDetail = taskId => {
-		props.history.push(`/middleware/redis/${taskId}/detail`)
-	}
+		props.history.push(`/middleware/redis/${taskId}/detail`);
+	};
 
-    /**
-     * 添加 / 编辑是打开modal
-     * @param taskId 
-     */
+	/**
+	 * 添加 / 编辑是打开modal
+	 * @param taskId
+	 */
 	const showFormModal = async (taskId?) => {
 		import("./Form.modal").then(component => {
 			if (taskId && typeof taskId === "number") {
@@ -198,7 +198,7 @@ function RedisCluster(props) {
 	 */
 	const getMapRelationsInfo = taskId => {
 		deployEntryDetail(taskId)
-            .then(data => {
+			.then(data => {
 				if (data.nodes && Array.isArray(data.nodes)) {
 					import("./Topology.modal").then(component => {
 						setCom(<component.default {...data} />);
@@ -248,25 +248,23 @@ function RedisCluster(props) {
 
 	/**
 	 * 监控状态
-	 * @param type 
-	 * @param status 
+	 * @param type
+	 * @param status
 	 */
 	const checkMonitorStatus = (id, name) => {
 		import("./Monitor.modal").then(component => {
-			setCom(
-				<component.default name={name} id={id}/>
-			);
-		})
-	}
+			setCom(<component.default name={name} id={id} />);
+		});
+	};
 
 	/**
 	 * 跳转到扩容页面
-	 * @param type 
-	 * @param status 
+	 * @param type
+	 * @param status
 	 */
 	const gotoExtension = (id, taskId) => {
-		props.history.push(`/middleware/redis/${id}/extension`)
-	}
+		props.history.push(`/middleware/redis/${id}/extension`);
+	};
 
 	/**
 	 * 在操作前校验status
@@ -296,7 +294,8 @@ function RedisCluster(props) {
 					status !== "release" &&
 					status !== "ready"
 				) {
-					return (taskId, name) => releaseClusterByTaskId(taskId, name);
+					return (taskId, name) =>
+						releaseClusterByTaskId(taskId, name);
 				}
 				return () => message.info(`集群状态是${status}，不可释放!`);
 			case "deploy":
@@ -311,14 +310,14 @@ function RedisCluster(props) {
 				return () => message.info(`集群状态是${status}，不可编辑`);
 			case "monitor":
 				if (status === "done") {
-					return (id, name) => checkMonitorStatus(id, name)
+					return (id, name) => checkMonitorStatus(id, name);
 				}
 				return () => message.info(`集群状态是${status}，暂无监控状态`);
 			case "extension":
 				if (status === "done") {
-					return (id, taskId) => gotoExtension(id, taskId)
+					return (id, taskId) => gotoExtension(id, taskId);
 				}
-				return () => message.info(`集群状态是${status}, 不可扩容`)
+				return () => message.info(`集群状态是${status}, 不可扩容`);
 			default:
 				return () => {};
 		}
@@ -340,12 +339,14 @@ function RedisCluster(props) {
 					</a>
 				</Menu.Item>
 				<Menu.Item key="2">
-					<a onClick={() =>
+					<a
+						onClick={() =>
 							checkStatusBeforeOperate("extension", text.status)(
 								text.id,
 								text.taskId
 							)
-						}>
+						}
+					>
 						扩容
 					</a>
 				</Menu.Item>
@@ -407,33 +408,27 @@ function RedisCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			render: text => <a onClick={() => gotoDetail(text.taskId)}>{text.name}</a>
+			render: text => (
+				<a onClick={() => gotoDetail(text.taskId)}>{text.name}</a>
+			)
 		},
 		{
 			title: "状态",
 			dataIndex: "status",
 			key: "status",
 			render: text => text
-        },
-        {
-            title: "实例个数",
-            key: "instances",
-            render: text => {
-                let num = (JSON.parse(text.instances)).length / 2;
-				return <a onClick={() => gotoInstance(text.taskId)}>{`${num}主${num}从`}</a>
-            }
-        },
+		},
 		{
-			title: "配置",
-			key: "config",
-			render: text => (
-				<YhOp
-					type="info"
-					onClick={() => getConfigDetailInfo(text.taskId)}
-				>
-					详情
-				</YhOp>
-			)
+			title: "实例个数",
+			key: "instances",
+			render: text => {
+				let num = JSON.parse(text.instances).length / 2;
+				return (
+					<a
+						onClick={() => gotoInstance(text.taskId)}
+					>{`${num}主${num}从`}</a>
+				);
+			}
 		},
 		{
 			title: "拓扑",
@@ -459,34 +454,15 @@ function RedisCluster(props) {
 			)
 		},
 		{
-			title: "监控状态",
-			key: "monitor",
-			render: text => (
-				<YhOp
-					color={text.status === "done" ? null : "#999"}
-					default={text.status !== "done"}
-				>
-					<Tooltip placement="top" title={"监控状态"}>
-						<Button
-							type="link"
-							icon="bar-chart"
-							onClick={() =>
-								checkStatusBeforeOperate(
-									"monitor",
-									text.status
-								)(text.id, text.name)
-							}
-						/>
-					</Tooltip>
-				</YhOp>
-			)
-		},
-		{
 			title: "部署日志",
 			key: "log",
 			render: text => (
-				<YhOp type="info" onClick={() => getOutput(text.taskId)}>
-					查看
+				<YhOp type="info">
+					<Button
+						type="link"
+						icon="code"
+						onClick={() => getOutput(text.taskId)}
+					/>
 				</YhOp>
 			)
 		},
