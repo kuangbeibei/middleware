@@ -52,17 +52,28 @@ export default function(props) {
     }
 
 	return (
-		loading ? <Loading /> : <Tabs onChange={changeTab} type="card">
-            
+		<Tabs onChange={changeTab} type="card">
 			<TabPane tab="集群基本信息" key="1">
-                <BasicInfo basicData={basicData} {...props} />
+				{
+					loading ? <Loading /> : <BasicInfo basicData={basicData} {...props} />
+				}
+                
 			</TabPane>
 			<TabPane tab="监控" key="2">
-				<MonitorInfo {...props} />
+				
+				{
+					loading ? <Loading /> : <MonitorInfo {...props} />
+				}
+                
 			</TabPane>
 			<TabPane tab="告警" key="3">
-                <AlarmBasic {...props} />
-                <AlarmCustom {...props} />
+				{
+					loading ? <Loading /> : <>
+						<AlarmBasic {...props} />
+                		<AlarmCustom {...props} />
+					</>
+				}
+                
 			</TabPane>
 		</Tabs>
 	);

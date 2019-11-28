@@ -60,6 +60,13 @@ const RedisInstance = props => (
 	</DynamicImport>
 );
 
+// Redis 实例监控
+const RedisInstanceMonitor = props => (
+	<DynamicImport load={() => import("@pages/Redis/Instance-Monitor")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+);
+
 // Redis 详情
 const RedisDetail = props => (
 	<DynamicImport load={() => import("@pages/Redis/Detail")}>
@@ -111,6 +118,7 @@ export default {
 	Redis,
 	RedisHome,
 	RedisInstance,
+	RedisInstanceMonitor,
 	RedisDetail,
 	RedisExtension,
 	Rocketmq,

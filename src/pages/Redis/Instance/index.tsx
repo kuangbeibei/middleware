@@ -64,6 +64,13 @@ export default function(props) {
 		return <PasswordColumn pass={pass} />;
 	};
 
+	/**
+	 * 跳转实例监控页面
+	 */
+	const gotoInstanceMonitor = () => {
+		props.history.push(`/middleware/redis/${taskId}/instance/monitor`)
+	}
+
 	const columns = [
 		{
 			title: "序号",
@@ -95,7 +102,7 @@ export default function(props) {
 			key: "monitor",
 			render: text => (
 				<Tooltip placement="top" title={"监控状态"}>
-					<Button type="link" icon="bar-chart" />
+					<Button type="link" icon="bar-chart" onClick={gotoInstanceMonitor}/>
 				</Tooltip>
 			)
 		},
