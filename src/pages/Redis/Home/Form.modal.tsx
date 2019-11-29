@@ -175,7 +175,11 @@ function FormModal(props) {
         if (taskId) {
             return updateCluster(taskId, data.params)
         } else {
-            return createCluster(data)
+			return createCluster(data, {
+				headers: {
+					'sel-yh-tenant-id': 'abc'
+				}
+			})
         }
     }
 

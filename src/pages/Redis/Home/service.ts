@@ -18,8 +18,8 @@ export async function getRedisClusters() {
 }
 
 // 创建
-export async function createCluster(data) {
-    return post(`/mid/v1/deployTask`, data).then(res => {
+export async function createCluster(data, config) {
+    return post(`/mid/v1/deployTask`, data, config).then(res => {
         if (res.data.code === 200) {
             return true
         } else {

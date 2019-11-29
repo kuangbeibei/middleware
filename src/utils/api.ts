@@ -4,7 +4,7 @@
  * @Last Modified: 2019-11-01 10:32:55 
  */
 
-import * as axios from "axios";
+import axios from "axios";
 
 var instance = axios["create"]();
 
@@ -16,13 +16,13 @@ interface IResult {
 
 //curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
 
-instance.interceptors.request.use(
+axios.interceptors.request.use(
 	(config: any) => {
 		config.timeout = 10000; //设置相应过期时间
-		config.headers = {
-			//request header 设置
-			// "yh-tenant-id": "lystest"
-		};
+		// config.headers = {
+		// 	//request header 设置
+		// 	// "yh-tenant-id": "lystest"
+		// };
 		return config;
 	},
 	err => {
@@ -30,7 +30,7 @@ instance.interceptors.request.use(
 	}
 );
 
-instance.interceptors.response.use(
+axios.interceptors.response.use(
 	(response: any) => {
 		if (response.status === 200) {
 			return response.data;
@@ -44,8 +44,7 @@ instance.interceptors.response.use(
 );
 
 const request = config => {
-	return instance
-		.request({ ...config })
+	return axios({ ...config })
 		.then((response: any) => {
 			const data: IResult = {
 				//等后段结构改好注视
@@ -66,7 +65,7 @@ export const get = (
 	config?: object
 ): Promise<any> => {
 	return request({
-		url: url,
+		url,
 		method: "GET",
 		params: { ...params },
 		...config
@@ -74,7 +73,7 @@ export const get = (
 };
 export const post = (url: string, params?: object, config?: object) => {
 	return request({
-		url: url,
+		url,
 		method: "POST",
 		data: params,
 		...config
@@ -82,7 +81,7 @@ export const post = (url: string, params?: object, config?: object) => {
 };
 export const del = (url: string, params?: object, config?: object) => {
 	return request({
-		url: url,
+		url,
 		method: "DELETE",
 		params: params,
 		...config
@@ -90,7 +89,7 @@ export const del = (url: string, params?: object, config?: object) => {
 };
 export const put = (url: string, params?: object, config?: object) => {
 	return request({
-		url: url,
+		url,
 		method: "PUT",
 		data: params,
 		...config
