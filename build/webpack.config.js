@@ -33,8 +33,8 @@ module.exports = WebpackMerge(
 		output: {
 			filename:
 				ENV === "DEV"
-					? "[name].bundle.js"
-					: "[name].[hash:5].bundle.js",
+					? "middleware.[name].bundle.js"
+					: "middleware.[name].[hash:5].bundle.js",
 			path: ResolvePath("../dist"),
 			chunkFilename: "[name].chunkfile.js"
 		},
@@ -74,7 +74,7 @@ module.exports = WebpackMerge(
 				},
 				{
 					test: /\.tsx?$/,
-					use: "ts-loader",
+					use: ["ts-loader"],
 					exclude: /node_modules/
 				},
 				{
@@ -96,7 +96,7 @@ module.exports = WebpackMerge(
 			new Webpack.ProgressPlugin(),
 			new HtmlWebpackPlugin({
 				template: ResolvePath("../src/index.html"),
-				filename: "index.html"
+				filename: "index.middleware.[hash:5].html"
 			})
 		]
 	},
