@@ -1,4 +1,4 @@
 {
     "presets": ["@babel/preset-react"],
-    "plugins": ["@babel/plugin-syntax-dynamic-import", "@babel/plugin-transform-arrow-functions"]
+    "plugins": ["@babel/plugin-syntax-dynamic-import"]
 }
