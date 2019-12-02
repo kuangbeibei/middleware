@@ -81,3 +81,15 @@ export function flattenRoutesAndGenerateBreadcrumbsData(arr) {
 
 	return walk(routes, res);
 }
+
+
+// 设置cookie
+export const setCookie = function (name, value, daysToLive?) {
+	let cookie = `${name}=${encodeURIComponent(value)};`
+	
+	if (typeof daysToLive === 'number') {
+		cookie += `max-age=${(daysToLive * 24 * 60 * 60)}`;
+	}
+
+	document.cookie = cookie;
+}

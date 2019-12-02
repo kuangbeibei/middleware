@@ -23,12 +23,9 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import IPostParams, { initInstancesType } from "./data";
-import { isEven } from "@tools"
+import { isEven } from "@tools";
 
-import {
-    createCluster,
-    updateCluster
-} from "./service"
+import { createCluster, updateCluster, searchTenantInfo } from "./service";
 
 const initIPostParams: IPostParams = {
 	type: "redis",
@@ -43,7 +40,7 @@ const initIPostParams: IPostParams = {
 
 const formItemBasicLayout = {
 	labelCol: { span: 6 },
-	wrapperCol: { span: 12 },
+	wrapperCol: { span: 12 }
 };
 
 const formItemInstanceLayout = {
@@ -51,33 +48,56 @@ const formItemInstanceLayout = {
 	wrapperCol: { span: 6 }
 };
 
-
-
 function FormModal(props) {
 	const {
 		tableModalVisibility,
 		setTableModalVisibility,
-        form: { getFieldDecorator },
-        taskId,
-        detail
-    } = props;
+		form: { getFieldDecorator },
+		taskId,
+		detail
+	} = props;
 
-    let [postParams, setPostParams] = useState(Object.assign({}, initIPostParams));
-    let [redisType, setRedisType] = useState(3)
+	let [postParams, setPostParams] = useState(
+		Object.assign({}, initIPostParams)
+	);
+	let [redisType, setRedisType] = useState(3);
+	const [tenantVal, setTenantVal] = useState("");
+	const [tenantRes, settenantRes] = useState(Array())
 
 	useEffect(() => {
-        setTableModalVisibility();
-    }, []);
-    
-    useEffect(() => {
-         if (taskId) {
-            const len = detail.params.instances.length;
-            chooseInstanceType(len/2)
-            setPostParams(detail)
-        } else {
-            chooseInstanceType(3)
-         }
-    }, [taskId])
+		setTableModalVisibility();
+	}, []);
+
+	useEffect(() => {
+		if (taskId) {
+			const len = detail.params.instances.length;
+			chooseInstanceType(len / 2);
+			setPostParams(detail);
+		} else {
+			chooseInstanceType(3);
+		}
+	}, [taskId]);
+
+
+	/**
+	 * 根据name或ip查找租户
+	 * @param value 
+	 */
+	const searchTenantInfoFunc = value => {
+		searchTenantInfo(value).then(data => {
+			if (Array.isArray(data)) {
+				settenantRes(data)
+			}
+		})
+	}
+
+	/**
+	 * 选择租户
+	 * @param value 
+	 */
+	const handleTenantChange = value => {
+		setTenantVal(value);
+	}
 
 	/**
 	 * 用户名和密码，自动填充没有写的
@@ -113,75 +133,83 @@ function FormModal(props) {
 		// 			initInstancesType.findIndex(type => type.id === id)
 		// 		].name
 		// 	}"`
-        // );
-        setRedisType(id);
-        createInstances(id * 2);
-    };
-    
-    // 生成机器实例
-    const createInstances = (num) => {
-        let instances = Array(num).fill({
-            ip: "",
-            port: "",
-            user: "",
-            pass: ""
-        });
-        const {
+		// );
+		setRedisType(id);
+		createInstances(id * 2);
+	};
+
+	// 生成机器实例
+	const createInstances = num => {
+		let instances = Array(num).fill({
+			ip: "",
+			port: "",
+			user: "",
+			pass: ""
+		});
+		const {
 			form: { getFieldsValue }
 		} = props;
-        let newPostParams = Object.assign({}, getFieldsValue());
-        newPostParams.params.instances = instances;
-        setPostParams(newPostParams);
-    }
+		let newPostParams = Object.assign({}, getFieldsValue());
+		newPostParams.params.instances = instances;
+		setPostParams(newPostParams);
+	};
 
-    const handleOk = () => {
-        const {
-			form: {
-				getFieldsValue,
-				validateFields,
-			}
-        } = props;
-        validateFields(err => {
-            if (err) {
-                message.warning("信息填写不完全!");
-            } else {
-                let OformItems = Object.assign({}, postParams, getFieldsValue(), {
-					type: 'redis'
-                });
-                let {
-					params: {
-						instances
+	const handleOk = () => {
+		const {
+			form: { getFieldsValue, validateFields }
+		} = props;
+		validateFields(err => {
+			if (err) {
+				message.warning("信息填写不完全!");
+			} else {
+				let OformItems = Object.assign(
+					{},
+					postParams,
+					getFieldsValue(),
+					{
+						type: "redis"
 					}
-                } = OformItems;
-                if (!instances) {
-                    return message.warning("请选择集群类型并配置机器实例!")
-                }
-                delete OformItems.redisType;
-                instances.forEach(i => i.port = Number(i.port));
+				);
+				let {
+					params: { instances }
+				} = OformItems;
+				if (!instances) {
+					return message.warning("请选择集群类型并配置机器实例!");
+				}
+				delete OformItems.redisType;
+				instances.forEach(i => (i.port = Number(i.port)));
 
-                save(OformItems).then(data => {
-                    if (typeof data === 'boolean') {
-                        setTableModalVisibility();
-                        message.success(`redis集群${taskId ? '修改' : '创建'}成功!`)
-                    } else {
-                        message.error(data.message)
-                    }
-                }).catch(e => message.error(e.message));
-            }
-        })
-    };
-    
-    const save = async (data) => {
-        if (taskId) {
-            return updateCluster(taskId, data.params)
-        } else {
+				save(OformItems)
+					.then(data => {
+						if (typeof data === "boolean") {
+							setTableModalVisibility();
+							message.success(
+								`redis集群${taskId ? "修改" : "创建"}成功!`
+							);
+						} else {
+							message.error(data.message);
+						}
+					})
+					.catch(e => message.error(e.message));
+			}
+		});
+	};
+
+	const save = async data => {
+		if (taskId) {
+			return updateCluster(taskId, data.params, {
+				headers: {
+					"sel-yh-tenant-id": tenantVal
+				}
+			});
+		} else {
 			return createCluster(data, {
 				headers: {
-					'sel-yh-tenant-id': 'abc'
+					"sel-yh-tenant-id": tenantVal
 				}
-			})
-        }
-    }
+			});
+		}
+	};
 
 	const handleCancel = () => {
 		setTableModalVisibility();
@@ -192,8 +220,8 @@ function FormModal(props) {
 			modalName={`创建Redis集群`}
 			visible={tableModalVisibility.visible}
 			handleOk={handleOk}
-            handleCancel={handleCancel}
-            width={'60%'}
+			handleCancel={handleCancel}
+			width={"60%"}
 		>
 			<Form>
 				<Divider>基础信息</Divider>
@@ -234,26 +262,50 @@ function FormModal(props) {
 						]
 					})(<Input placeholder="请输入redis集群密码"></Input>)}
 				</Form.Item>
+				<Form.Item {...formItemBasicLayout} label="租户ID">
+					<Select
+						showSearch
+						value={tenantVal}
+						placeholder={`请输入租户名称，或者IP地址，以便查询`}
+						defaultActiveFirstOption={false}
+						showArrow={false}
+						filterOption={false}
+						onSearch={value => searchTenantInfoFunc(value)}
+						notFoundContent={null}
+						onChange={handleTenantChange}
+					>
+						
+						{
+							tenantRes.length > 0 && tenantRes.map(tenant => (
+								<Select.Option key={tenant.tenant_id}>{tenant.name}</Select.Option>
+							))
+						}
+					</Select>
+				</Form.Item>
+
 				<Divider>实例配置</Divider>
 				<Form.Item {...formItemBasicLayout} label="集群类型：">
-                   <Select
-                        placeholder="请选择集群类型"
-                        onChange={chooseInstanceType}
-                        value={redisType}
-                    >
-                        {initInstancesType.map(type => (
-                            <Select.Option key={type.id} value={type.id}>
-                                {`${type.name}`}
-                            </Select.Option>
-                        ))}
-                    </Select>
+					<Select
+						placeholder="请选择集群类型"
+						onChange={chooseInstanceType}
+						value={redisType}
+					>
+						{initInstancesType.map(type => (
+							<Select.Option key={type.id} value={type.id}>
+								{`${type.name}`}
+							</Select.Option>
+						))}
+					</Select>
 				</Form.Item>
 
 				{postParams.params.instances.map((instance, idx) => (
 					<YHFlexDiv key={idx}>
-						<YHSmallFormItem {...formItemInstanceLayout}
+						<YHSmallFormItem
+							{...formItemInstanceLayout}
 							label={
-								isEven(idx) ? `M${Math.floor(idx/2 + 1)}` : `S${Math.ceil(idx/2)}`
+								isEven(idx)
+									? `M${Math.floor(idx / 2 + 1)}`
+									: `S${Math.ceil(idx / 2)}`
 							}
 						>
 							{getFieldDecorator(`params.instances[${idx}].ip`, {
@@ -266,7 +318,10 @@ function FormModal(props) {
 								]
 							})(<Input placeholder="请输入IP地址"></Input>)}
 						</YHSmallFormItem>
-						<YHSmallFormItem {...formItemInstanceLayout} label="Port">
+						<YHSmallFormItem
+							{...formItemInstanceLayout}
+							label="Port"
+						>
 							{getFieldDecorator(
 								`params.instances[${idx}].port`,
 								{
@@ -290,7 +345,10 @@ function FormModal(props) {
 								></Input>
 							)}
 						</YHSmallFormItem>
-						<YHSmallFormItem {...formItemInstanceLayout} label="用户名">
+						<YHSmallFormItem
+							{...formItemInstanceLayout}
+							label="用户名"
+						>
 							{getFieldDecorator(
 								`params.instances[${idx}].user`,
 								{
@@ -314,7 +372,10 @@ function FormModal(props) {
 								></Input>
 							)}
 						</YHSmallFormItem>
-						<YHSmallFormItem {...formItemInstanceLayout} label="密码">
+						<YHSmallFormItem
+							{...formItemInstanceLayout}
+							label="密码"
+						>
 							{getFieldDecorator(
 								`params.instances[${idx}].pass`,
 								{

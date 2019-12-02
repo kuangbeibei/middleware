@@ -503,10 +503,9 @@ function RedisCluster(props) {
 		<>
 			<YhAdd
 				type="primary"
-				icon="plus"
 				onClick={() => showFormModal()}
 				style={{ marginBottom: 10 }}
-			/>
+			>添加</YhAdd>
 
 			{loading ? (
 				<Loading />

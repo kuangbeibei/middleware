@@ -5,6 +5,9 @@
  */
 
 import axios from "axios";
+import {
+	setCookie
+} from "./tools"
 
 var instance = axios["create"]();
 
@@ -18,11 +21,9 @@ interface IResult {
 
 axios.interceptors.request.use(
 	(config: any) => {
+		// yh-manager-session=s%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8
+		setCookie('yh-manager-session', 's%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8', 100)
 		config.timeout = 10000; //设置相应过期时间
-		// config.headers = {
-		// 	//request header 设置
-		// 	// "yh-tenant-id": "lystest"
-		// };
 		return config;
 	},
 	err => {

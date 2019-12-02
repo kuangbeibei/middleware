@@ -23,6 +23,12 @@ module.exports = {
             //     pathRewrite: {'^/api' : ''},
             // },
             '/mid': 'http://10.254.192.52:8080',
+            '/api-os.api.fz.yonghui.cn': {
+                target:'http://manager.dev.yonghui.cn',
+                secure: true,
+                changeOrigin: true,
+                ws: true,
+            }
         }
     }
 }

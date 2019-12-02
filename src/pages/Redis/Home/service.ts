@@ -29,8 +29,8 @@ export async function createCluster(data, config) {
 }
 
 //  修改
-export async function updateCluster(taskId, data) {
-    return post(`/mid/v1/updateParams/redis/${taskId}`, data).then(res => {
+export async function updateCluster(taskId, data, config) {
+    return post(`/mid/v1/updateParams/redis/${taskId}`, data, config).then(res => {
         if (res.data.code === 200) {
             return true
         } else {
@@ -131,3 +131,24 @@ export async function getClusterDetail(taskId) {
 export async function checkStatus(rely) {
     return get(`/mid/v1/taskStatus/${rely}`).then(res => res).catch(e => e.message)
 }
+
+// 获取租户ID-list
+export async function getTenantInfo() {
+    return get(`http://manager.dev.yonghui.cn/api-uum//tenant/os/list`).then(res => {
+        console.log('res', res);
+    })
+}
+
+// 查找租户ID
+export async function searchTenantInfo(rely) {
+    return get(`/api-os.api.fz.yonghui.cn/admin/iaas/compute/servers/detail?all_tenants=1&name=${rely}`).then(res => {
+        try {
+            return res.data.data.servers
+        } catch (e) {
+            return res.data
+        }
+    }).catch(e => e.message)
+}
+
+
+
