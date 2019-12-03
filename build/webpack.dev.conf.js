@@ -2,7 +2,7 @@
  * @Author: kuangdan 
  * @Date: 2019-10-29 16:34:41 
  * @Last Modified: 2019-10-29 16:34:41 
- */ 
+ */
 
 module.exports = {
     mode: 'development',
@@ -13,7 +13,26 @@ module.exports = {
         port: 8899,
         open: 'true',
         compress: true,
-        historyApiFallback: true,
+        historyApiFallback: {
+            rewrites: [
+                {
+                    from: /^\/\w*$/,
+                    to: '/index.html'
+                },
+                {
+                    from: /^\/middleware\/redis/,
+                    to: '/index.html'
+                },
+                {
+                    from: /^\/middleware\/mysql/,
+                    to: '/index.html'
+                },
+                {
+                    from: /^\/middleware\/rocketmq/,
+                    to: '/index.html'
+                }
+            ]
+        },
         overlay: {
             errors: true
         },
@@ -24,7 +43,7 @@ module.exports = {
             // },
             '/mid': 'http://10.254.192.52:8080',
             '/api-os.api.fz.yonghui.cn': {
-                target:'http://manager.dev.yonghui.cn',
+                target: 'http://manager.dev.yonghui.cn',
                 secure: true,
                 changeOrigin: true,
                 ws: true,

@@ -36,11 +36,15 @@ export default function(props) {
     const changeTab = (key) => {
         setloading(true);
         switch (key) {
-            case "1":
-				getConfigDetail(taskId).then(data => {
-                    setbasicData(data.data);
-                    setloading(false);
-				});
+			case "1":
+				if (basicData.length > 0) {
+					getConfigDetail(taskId).then(data => {
+						setbasicData(data.data);
+					});
+				} else {
+					setloading(false);
+				}
+				
 				break;
             case "2":
                 setloading(false);
@@ -62,7 +66,7 @@ export default function(props) {
 			<TabPane tab="监控" key="2">
 				
 				{
-					loading ? <Loading /> : <MonitorInfo {...props} />
+					loading ? <Loading /> : <MonitorInfo basicData={basicData} {...props} />
 				}
                 
 			</TabPane>

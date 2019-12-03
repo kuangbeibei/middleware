@@ -102,16 +102,25 @@ function RedisCluster(props) {
 	 * 前往redis节点列表页
 	 * @param text
 	 */
-	const gotoInstance = taskId => {
-		props.history.push(`/middleware/redis/${taskId}/instance`);
+	const gotoInstance = (taskId, id, name) => {
+		props.history.push(`/middleware/redis/${taskId}/instance`, {
+			query: {
+				id,
+				name
+			}
+		});
 	};
 
 	/**
 	 * 前往redis集群详情
 	 * @param taskId
 	 */
-	const gotoDetail = taskId => {
-		props.history.push(`/middleware/redis/${taskId}/detail`);
+	const gotoDetail = (taskId, id) => {
+		props.history.push(`/middleware/redis/${taskId}/detail`, {
+			query: {
+				id
+			}
+		});
 	};
 
 	/**
@@ -409,7 +418,7 @@ function RedisCluster(props) {
 			title: "名称",
 			key: "name",
 			render: text => (
-				<a onClick={() => gotoDetail(text.taskId)}>{text.name}</a>
+				<a onClick={() => gotoDetail(text.taskId, text.id)}>{text.name}</a>
 			)
 		},
 		{
@@ -425,7 +434,7 @@ function RedisCluster(props) {
 				let num = JSON.parse(text.instances).length / 2;
 				return (
 					<a
-						onClick={() => gotoInstance(text.taskId)}
+						onClick={() => gotoInstance(text.taskId, text.id, text.name)}
 					>{`${num}主${num}从`}</a>
 				);
 			}

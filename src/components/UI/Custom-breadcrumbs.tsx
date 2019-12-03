@@ -15,7 +15,10 @@ import { MiddlewarePathPrefix } from "@utils/data"
 
 const numRegExp = /\d/;
 
-// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，link是实际的地址
+// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，link是实际的地址 3.得注意有query的情况 
+
+// TODO： query
+
 const generateBreadcrumbs = (routeProps, pathSnippets) => {
 	let baseUrl;
 

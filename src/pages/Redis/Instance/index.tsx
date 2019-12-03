@@ -26,6 +26,16 @@ export default function(props) {
 	const {
 		match: {
 			params: { taskId }
+		},
+		history: {
+			location: {
+				state: {
+					query: {
+						id,
+						name
+					}
+				}
+			}
 		}
 	} = props;
 
@@ -67,8 +77,16 @@ export default function(props) {
 	/**
 	 * 跳转实例监控页面
 	 */
-	const gotoInstanceMonitor = () => {
-		props.history.push(`/middleware/redis/${taskId}/instance/monitor`)
+	const gotoInstanceMonitor = (ip, port) => {
+		console.log('ip, 1111 ,', ip, 'port , 1111, ', port);
+		props.history.push(`/middleware/redis/${taskId}/instance/monitor`, {
+			query: {
+				ip,
+				port,
+				clusterId: id,
+				clusterName: name
+			}
+		})
 	}
 
 	const columns = [
@@ -98,13 +116,14 @@ export default function(props) {
 		},
 		{
 			title: "监控状态",
-			dataIndex: "monitor",
 			key: "monitor",
-			render: text => (
-				<Tooltip placement="top" title={"监控状态"}>
-					<Button type="link" icon="bar-chart" onClick={gotoInstanceMonitor}/>
-				</Tooltip>
-			)
+			render: text => {
+				return (
+					<Tooltip placement="top" title={"监控状态"}>
+						<Button type="link" icon="bar-chart" onClick={() => gotoInstanceMonitor(slicePart(text.ip), slicePart(text.port))}/>
+					</Tooltip>
+				)
+			}
 		},
 		{
 			title: "用户名",
