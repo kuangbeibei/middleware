@@ -74,29 +74,28 @@ module.exports = WebpackMerge(
 				},
 				{
 					test: /\.tsx?$/,
-					use: ["ts-loader"],
+					use: "ts-loader",
 					exclude: /node_modules/
 				},
 				{
 					test: /\.tsx?$/,
 					enforce: "pre",
-					use: ["source-map-loader"]
+					use: "source-map-loader"
 				},
 				{
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
 					loader: 'file-loader',
 					options: {
-						publicPath: '/',
+						publicPath: "/",
 					},
 				},
 			]
 		},
 		plugins: [
 			new CleanWebpackPlugin(),
-			new Webpack.ProgressPlugin(),
 			new HtmlWebpackPlugin({
 				template: ResolvePath("../src/index.html"),
-				filename: "index.middleware.[hash:5].html"
+				filename: ENV === "DEV" ? "index.html" : "middleware.index.[hash:5].html"
 			})
 		]
 	},
