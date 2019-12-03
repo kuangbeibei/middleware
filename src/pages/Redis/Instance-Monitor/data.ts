@@ -1,4 +1,4 @@
-export interface INodeData {
+export interface IData {
 	panelId: number;
 	begin: string | number;
 	end: string | number;
@@ -11,14 +11,14 @@ export interface INodeData {
 }
 
 export interface INodeMonitorData {
-	[index: number]: INodeData[];
+	[index: number]: IData[];
 }
 
-export const nodeMonitorBaseUrl =
+const nodeMonitorBaseUrl =
 	"http://10.210.0.144:3000/d-solo/E-qths1Zk/redis-dashboard-for-prometheus-redis-exporter-1-x?orgId=1";
 
 const nodePanels = [
-    [
+    [ // 按照行数来放置
         {
             id: 9,
             col: 3,
@@ -73,8 +73,133 @@ const nodePanels = [
 ];
 
 let nodeMonitorArrayData = nodePanels.map(panel => {
+    return generatePanelItem(panel, nodeMonitorBaseUrl)
+});
+
+
+const machineMonitorBaseUrl = "http://10.210.0.144:3000/d-solo/uE7cwEkZz/node-metrics?orgId=1";
+
+// http://10.210.0.144:3000/d-solo/uE7cwEkZz/node-metrics?orgId=1&refresh=30s&from=1575366039171&to=1575366339171&var-interval=30m&var-cluster=fzzj_redis_redis-3-node-6-instance_3&var-node=10.254.193.15:9100&var-maxmount=%2F&panelId=15
+// 14
+// 75
+// 167
+// 20
+// 172
+// 16
+// 166
+// 154
+
+
+// 13
+// 171
+// 164
+
+// 7
+// 156
+
+// 161
+// 168
+// 160
+
+// 157
+// 158
+
+const machinePanels = [
+    [
+        {
+            id: 15,
+            col: 3,
+        },
+        {
+            id: 14,
+            col: 3,
+        },
+        {
+            id: 75,
+            col: 3,
+        },
+        {
+            id: 167,
+            col: 3,
+        },
+        {
+            id: 20,
+            col: 3,
+        },
+        {
+            id: 172,
+            col: 3,
+        },
+        {
+            id: 16,
+            col: 3,
+        },
+        {
+            id: 166,
+            col: 3,
+        },
+        {
+            id: 154,
+            col: 3,
+        }
+    ],
+    [
+        {
+            id: 13,
+            col: 10,
+        },
+        {
+            id: 171,
+            col: 6,
+        },
+        {
+            id: 164,
+            col: 8,
+        }
+    ],
+    [
+        {
+            id: 7,
+            col: 16,
+        },
+        {
+            id: 156,
+            col: 8,
+        }
+    ],
+    [
+        {
+            id: 161,
+            col: 8,
+        },
+        {
+            id: 168,
+            col: 8,
+        },
+        {
+            id: 160,
+            col: 8,
+        }
+    ],
+    [
+        {
+            id: 157,
+            col: 12,
+        },
+        {
+            id: 158,
+            col: 12,
+        }
+    ]
+];
+
+let machineMonitorArrayData = machinePanels.map(panel => {
+    return generatePanelItem(panel, machineMonitorBaseUrl)
+})
+
+function generatePanelItem(panel, url) {
     return panel.map(p => {
-        let nodeData:INodeData = {
+        let nodeData:IData = {
             panelId: p.id,
             begin: "",
             end: "",
@@ -83,10 +208,10 @@ let nodeMonitorArrayData = nodePanels.map(panel => {
             instanceName: "",
             instanceId: "",
             col: p.col,
-            url: nodeMonitorBaseUrl,
+            url,
         };
         return nodeData
     })
-});
+}
 
-export { nodeMonitorArrayData };
+export { nodeMonitorArrayData, machineMonitorArrayData };

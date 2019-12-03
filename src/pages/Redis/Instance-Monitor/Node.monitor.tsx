@@ -11,7 +11,7 @@ import { Row, Col } from "antd";
 import Iframe from "react-iframe";
 
 import { useIntervalWithCondition } from "@hooks/use-interval";
-import { nodeMonitorArrayData, INodeData } from "./data";
+import { nodeMonitorArrayData, IData } from "./data";
 
 export default function (props) {
 	const {
@@ -39,10 +39,10 @@ export default function (props) {
 
 
 	function renderIframes(nodeMonitorArrayData) {
-		return nodeMonitorArrayData.map((ds: INodeData[], idx) => {
+		return nodeMonitorArrayData.map((ds: IData[], idx) => {
 			return <Row key={idx}>
 				{
-					ds.map((d:INodeData) => iframedom(d))
+					ds.map((d:IData) => iframedom(d))
 				}
 			</Row>
 			

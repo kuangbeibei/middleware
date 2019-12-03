@@ -78,7 +78,6 @@ export default function(props) {
 	 * 跳转实例监控页面
 	 */
 	const gotoInstanceMonitor = (ip, port) => {
-		console.log('ip, 1111 ,', ip, 'port , 1111, ', port);
 		props.history.push(`/middleware/redis/${taskId}/instance/monitor`, {
 			query: {
 				ip,
