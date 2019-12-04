@@ -25,19 +25,25 @@ module.exports = {
         watchOptions: {
             poll: true
         },
-        proxy: {
-            // '/api': {
-            //     target: 'http://10.254.192.36:8080/', //curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
-            //     pathRewrite: {'^/api' : ''},
-            // },
-            '/mid': 'http://10.254.192.52:8080',
-            '/api-os.api.fz.yonghui.cn': {
-                target: 'http://manager.dev.yonghui.cn',
+        headers: {
+            'yh-manager-session': 's%3ANf0lfE1gZH8IddkCVR317rJJ5rZHTQbs.bghjTbWyTEXSnKcbdl62HPzPpgAH9Jfx9yXcEKLj74Y',
+            'crowd.token_key': 'wr50l9OwgjoD0ttL10s4yQ00'
+        },
+        proxy: [
+            {
+                context: ['/mid'],
+                target: 'http://manager.dev.yonghui.cn/api-mid-deploy-redis.api.fz.yonghui.cn',
+            },
+            {
+                context: ['/admin'],
+                // target: 'http://manager.qa.yonghui.cn',
+                //   target: 'http://manager.tce.cloud.yonghui.cn',  //准生产
+                target: 'http://manager.dev.yonghui.cn/api-os.api.fz.yonghui.cn',
                 secure: true,
-                changeOrigin: true,
+                changeOrigin: false,
                 ws: true,
             }
-        }
+        ]
     },
     plugins: [
         new Webpack.ProgressPlugin(),

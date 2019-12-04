@@ -143,7 +143,7 @@ export async function getTenantInfo() {
 
 // 查找租户ID
 export async function searchTenantInfo(rely) {
-    return get(`/api-os.api.fz.yonghui.cn/admin/iaas/compute/servers/detail?all_tenants=1&name=${rely}`).then(res => {
+    return get(`/admin/iaas/compute/servers/detail?all_tenants=1&name=${rely}`).then(res => {
         try {
             return res.data.servers
         } catch (e) {

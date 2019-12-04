@@ -19,9 +19,11 @@ interface IResult {
 
 //curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
 
+// axios.defaults.baseURL = 'http://manager.dev.yonghui.cn/api-mid-deploy-redis.api.fz.yonghui.cn';
+
 axios.interceptors.request.use(
 	(config: any) => {
-		setCookie('yh-manager-session', 's%3ARo3Vk9KXhw5MiFR0WJc2j2iP453H50S_.eZYs7s6He61CViSg7mdQcMbPbpWMjfLAwyChwS9F2iM', 100)
+		// setCookie('yh-manager-session', 's%3ANf0lfE1gZH8IddkCVR317rJJ5rZHTQbs.bghjTbWyTEXSnKcbdl62HPzPpgAH9Jfx9yXcEKLj74Y', 100)
 		config.timeout = 10000; //设置相应过期时间
 		return config;
 	},
