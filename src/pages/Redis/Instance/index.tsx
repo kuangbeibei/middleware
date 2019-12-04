@@ -46,9 +46,8 @@ export default function(props) {
 		getConfigDetail(taskId)
 			.then(data => {
 				setloading(false);
-				let _data = data.data;
-				if (_data && Array.isArray(_data)) {
-					let instances = _data.find(
+				if (data && Array.isArray(data)) {
+					let instances = data.find(
 						item => item.enName === "instances"
 					).value;
 					

@@ -9,7 +9,7 @@ import { get, post, put, del } from '@api'
 export async function getRedisExtendList(id) {
     return get(`/mid/v1/deployList/redisExtend/1/100/${id}`).then(res => {
          try {
-            return res.data.data.redisClusters
+            return res.data.redisClusters
         } catch (e) {
             return new Error(res) 
         }
@@ -35,7 +35,7 @@ export async function getExtensionDetail(taskId) {
     return get(`/mid/v1/params/redisExtend/${taskId}`).then(res => {
         try {
             return {
-                params: res.data.data
+                params: res.data
             }
         } catch (e) {
             return res
@@ -53,7 +53,7 @@ export async function deployExtensionInstance(taskId) {
 // 删除扩容实例
 export async function deleteExtensionInstance(id) {
     return del(`/mid/v1/delete/redisExtend/${id}`).then(res => {
-        if (res.data.code === 200) {
+        if (res.code === 200) {
             return true
         }
     }).catch(e => e.message)

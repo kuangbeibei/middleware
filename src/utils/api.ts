@@ -47,13 +47,7 @@ axios.interceptors.response.use(
 const request = config => {
 	return axios({ ...config })
 		.then((response: any) => {
-			const data: IResult = {
-				//等后段结构改好注视
-				code: "S200",
-				data: response,
-				message: "success"
-			};
-			return data;
+			return response;
 		})
 		.catch(err => {
 			return err;

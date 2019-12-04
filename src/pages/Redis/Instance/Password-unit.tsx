@@ -31,6 +31,10 @@ export default function(props) {
 				<>
 					<span>*******</span>
 					<Icon type="eye" theme="twoTone" onClick={toggleEye} />
+					<CopyToClipboard text={pass}
+                            onCopy={copyPass}>
+                        <Icon type="copy" theme="twoTone" />
+                    </CopyToClipboard>
 				</>
 			) : (
 				<>

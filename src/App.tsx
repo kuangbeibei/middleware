@@ -25,7 +25,7 @@ const App: React.SFC = props => {
 				{/* Login */}
 
 				{/* 页面路由级别404 nomatch */}
-				<Redirect to="/nomatch" />
+				<Redirect to="/" />
 			</Switch>
 		</Router>
 	);
