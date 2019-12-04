@@ -116,27 +116,27 @@ export const RocketmqRoutesMap = [
 // 永辉云-运维端后台导航
 export const platformNavMap = [
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/platform/tenant",
+		key: "/platform/tenant",
 		navname: "云平台",
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/iaas/overview/computed",
+		key: "/iaas/overview/computed",
 		navname: "云资源",
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/appc/cluster-list",
+		key: "/appc/cluster-list",
 		navname: "应用中心",
 	},
 	{
-		key: "/http://manager.tce.cloud.yonghui.cn/develops/delivery",
+		key: "/develops/delivery",
 		navname: "DevOps"
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/data-operation-tools/task/logtask",
+		key: "/data-operation-tools/task/logtask",
 		navname: "数据化运营工具"
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/monitor/alarm/strategy",
+		key: "/monitor/alarm/strategy",
 		navname: "监控"
 	}
 ]

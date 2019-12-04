@@ -21,8 +21,7 @@ interface IResult {
 
 axios.interceptors.request.use(
 	(config: any) => {
-		// yh-manager-session=s%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8
-		setCookie('yh-manager-session', 's%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8', 100)
+		setCookie('yh-manager-session', 's%3ARo3Vk9KXhw5MiFR0WJc2j2iP453H50S_.eZYs7s6He61CViSg7mdQcMbPbpWMjfLAwyChwS9F2iM', 100)
 		config.timeout = 10000; //设置相应过期时间
 		return config;
 	},
