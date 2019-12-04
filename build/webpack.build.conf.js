@@ -1,7 +1,7 @@
 module.exports = {
     mode: "production",
     output: {
-        publicPath: "/middleware/"
+        publicPath: "/yhmw/"
     },
     optimization: {
         minimize: true,
