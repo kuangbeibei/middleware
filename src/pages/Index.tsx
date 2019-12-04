@@ -8,7 +8,7 @@ import * as React from "react";
 import { renderPageWithRoutes } from "@router/index";
 import { middlewareRouteMap } from "@router/config";
 
-import { Switch } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import Header from "@com/UI/Header";
 import SideBar from "@com/UI/Sidebar";
 import Footer from "@com/UI/Footer";
@@ -24,6 +24,7 @@ export default function PageEntry(props) {
 				<main>
 					<Switch>
 						{renderPageWithRoutes(middlewareRouteMap, props)}
+						<Redirect to="/" />
 					</Switch>
 				</main>
 

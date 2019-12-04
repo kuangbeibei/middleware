@@ -37,13 +37,12 @@ export default function(props) {
         setloading(true);
         switch (key) {
 			case "1":
-				if (basicData.length > 0) {
+				if (basicData.length === 0) {
 					getConfigDetail(taskId).then(data => {
-						setbasicData(data.data);
+						setbasicData(data);
 					});
-				} else {
-					setloading(false);
 				}
+				setloading(false);
 				
 				break;
             case "2":

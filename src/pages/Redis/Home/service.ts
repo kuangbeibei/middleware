@@ -10,7 +10,7 @@ import { get, post, put, del } from '@api'
 export async function getRedisClusters() {
     return get(`/mid/v1/deployList/redis/1/100`).then(res => {
         try {
-            return res.data.data.redisClusters
+            return res.data.redisClusters
         } catch (e) {
             return res
         }
@@ -20,7 +20,7 @@ export async function getRedisClusters() {
 // 创建
 export async function createCluster(data, config) {
     return post(`/mid/v1/deployTask`, data, config).then(res => {
-        if (res.data.code === 200) {
+        if (res.code === 200) {
             return true
         } else {
             return res
@@ -31,7 +31,7 @@ export async function createCluster(data, config) {
 //  修改
 export async function updateCluster(taskId, data, config) {
     return post(`/mid/v1/updateParams/redis/${taskId}`, data, config).then(res => {
-        if (res.data.code === 200) {
+        if (res.code === 200) {
             return true
         } else {
             return res
@@ -40,9 +40,9 @@ export async function updateCluster(taskId, data, config) {
 }
 
 // 部署
-export async function deployCluster(taskId) {
+export async function deployClusterApi(taskId) {
     return get(`/mid/v1/runTask/redis/${taskId}`).then(res => {
-        if (res.data.code === 200) {
+        if (res.code === 200) {
             return true
         } else {
             return res
@@ -54,9 +54,7 @@ export async function deployCluster(taskId) {
 export async function getConfigDetail(taskId) {
     return get(`/mid/v1/configInfo/redis/${taskId}`).then(res => {
         try {
-            return res.data.data && {
-                data: res.data.data
-            }
+            return res.data
         } catch (e) {
             return res
         }
@@ -67,8 +65,12 @@ export async function getConfigDetail(taskId) {
 export async function deployTaskOutput(taskId) {
     return get(`/mid/v1/deployTaskOutput/${taskId}`).then(res => {
         try {
-            return res.data.data && {
-                loginfo: res.data.data
+            if (res.data) {
+                return {
+                    loginfo: res.data
+                }
+            } else {
+                return res
             }
         } catch (e) {
             return res
@@ -80,8 +82,8 @@ export async function deployTaskOutput(taskId) {
 export async function deployEntryDetail(taskId) {
     return get(`/mid/v1/deployEntryDetail/redis/${taskId}`).then(res => {
         try {
-            return res.data.data.nodes && {
-                nodes: res.data.data.nodes
+            return res.data.nodes && {
+                nodes: res.data.nodes
             }
         } catch (e) {
             return res
@@ -92,7 +94,7 @@ export async function deployEntryDetail(taskId) {
 // 删除集群
 export async function delCluster(id) {
     return del(`/mid/v1/delete/redis/${id}`).then(res => {
-        if (res.data.code === 200) {
+        if (res.code === 200) {
             return  true
         } else {
             return false
@@ -104,7 +106,7 @@ export async function delCluster(id) {
 // 释放集群
 export async function releaseCluster(taskId) {
     return del(`/mid/v1/releaseTaskResources/redis/${taskId}`).then(res => {
-         if (res.data.code === 200) {
+         if (res.code === 200) {
             return true
         } else {
             return false
@@ -116,9 +118,9 @@ export async function releaseCluster(taskId) {
 export async function getClusterDetail(taskId) {
     return get(`/mid/v1/params/redis/${taskId}`).then(res => {
         try {
-            return res.data.data && {
+            return res.data && {
                 detail: {
-                    params: res.data.data
+                    params: res.data
                 }
             }
         } catch (e) {
@@ -143,9 +145,9 @@ export async function getTenantInfo() {
 export async function searchTenantInfo(rely) {
     return get(`/api-os.api.fz.yonghui.cn/admin/iaas/compute/servers/detail?all_tenants=1&name=${rely}`).then(res => {
         try {
-            return res.data.data.servers
+            return res.data.servers
         } catch (e) {
-            return res.data
+            return res
         }
     }).catch(e => e.message)
 }

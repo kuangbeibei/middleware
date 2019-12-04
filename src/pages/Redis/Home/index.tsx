@@ -31,6 +31,7 @@ import {
 	deployTaskOutput,
 	delCluster,
 	releaseCluster,
+	deployClusterApi,
 	deployEntryDetail,
 	checkStatus,
 	getClusterDetail
@@ -157,7 +158,7 @@ function RedisCluster(props) {
 	 */
 	const deployCluster = taskId => {
 		message.success("正在部署...");
-		deployTaskOutput(taskId)
+		deployClusterApi(taskId)
 			.then(res => {
 				statusTaskIds.push(taskId);
 				setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
