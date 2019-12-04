@@ -95,7 +95,7 @@ module.exports = WebpackMerge(
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
 				template: ResolvePath("../src/index.html"),
-				filename: ENV === "DEV" ? "index.html" : "middleware.index.[hash:5].html"
+				filename: "index.html" + "?tag=" + (new Date()).getTime()
 			})
 		]
 	},
