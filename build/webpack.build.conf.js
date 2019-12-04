@@ -1,7 +1,7 @@
 module.exports = {
     mode: "production",
     output: {
-        publicPath: "/yhmw/"
+        publicPath: "/"
     },
     optimization: {
         minimize: true,
