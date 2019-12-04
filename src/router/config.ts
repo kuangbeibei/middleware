@@ -77,28 +77,28 @@ export const RocketmqRoutesMap = [
 		icon: "desktop",
 		subs: [
 			{
-				key: "/middleware/rocketmq/rmqnameserver/:id", // /rocketmq/:clusterId/rmqnameserver/:id
+				key: "/middleware/rocketmq/rmqnameserver/:id", 
 				component: "RocketNameServer",
 				name: "RocketNameServer",
 				isExact: true,
 				breadcrumbTitle: "NameServer"
 			},
 			{
-				key: "/middleware/rocketmq/rmqbroker/:id", // /rocketmq/:v/rmqbroker/:id
+				key: "/middleware/rocketmq/rmqbroker/:id", 
 				component: "RocketBroker",
 				name: "RocketBroker",
 				isExact: true,
 				breadcrumbTitle: "Broker"
 			},
 			{
-				key: "/middleware/rocketmq/rmqconsole/:id", // /rocketmq/:clusterId/rmqconsole/:id
+				key: "/middleware/rocketmq/rmqconsole/:id", 
 				component: "RocketConsole",
 				name: "RocketConsole",
 				isExact: true,
 				breadcrumbTitle: "Console"
 			},
 			{
-				key: "/middleware/rocketmq", // 子路由首页放在最后！ // /rocketmq/:clusterId
+				key: "/middleware/rocketmq", // 子路由首页放在最后！ 
 				component: "RocketmqHome",
 				name: "RocketmqHome",
 				isExact: false,

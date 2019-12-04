@@ -1,8 +1,11 @@
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
 module.exports = {
     mode: "production",
     output: {
         publicPath: "/"
     },
+    devtool: "source-map",
     optimization: {
         minimize: true,
         namedModules: true,
@@ -20,7 +23,7 @@ module.exports = {
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
                     priority: -10,
-                    name: 'middleware.vendor.js',
+                    name: 'vendor',
                     enforce: true
                 },
                 commons: {
@@ -36,7 +39,19 @@ module.exports = {
             },
         },
         runtimeChunk: {
-            name: 'build.runtime.js'
+            name: 'build.runtime'
         }
-    }
+    },
+    module: {
+        rules: [
+            {
+                enforce: "pre",
+                test: /\.js$/,
+                loader: "source-map-loader"
+            }
+        ]
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+    ]
 };
