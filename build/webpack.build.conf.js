@@ -1,5 +1,8 @@
 module.exports = {
     mode: "production",
+    output: {
+        publicPath: "http://manager.dev.yonghui.cn/"
+    },
     optimization: {
         minimize: true,
         namedModules: true,
@@ -33,7 +36,7 @@ module.exports = {
             },
         },
         runtimeChunk: {
-            name: 'middleware.runtime.js'
+            name: 'build.runtime.js'
         }
     }
 };
