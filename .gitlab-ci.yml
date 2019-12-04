@@ -23,7 +23,7 @@ build_js:
   stage: build
   script:
     - rm -rf ./dist/*
-    - npm install
+    # - npm install
     - npm run build
     # - mv ./dist/* ./dist/
     #- tar -czvf ${BuildFileName}.tar.gz dist
