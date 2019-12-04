@@ -36,7 +36,7 @@ module.exports = WebpackMerge(
 					? "middleware.[name].bundle.js"
 					: "middleware.[name].[hash:5].bundle.js",
 			path: ResolvePath("../dist"),
-			chunkFilename: "[name].chunkfile.js"
+			chunkFilename: "middleware.[name].chunkfile.js"
 		},
 		resolve: {
 			extensions: [".ts", ".tsx", ".js", ".json"],
