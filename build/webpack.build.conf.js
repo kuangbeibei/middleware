@@ -1,7 +1,7 @@
 module.exports = {
     mode: "production",
     output: {
-        publicPath: "http://manager.dev.yonghui.cn/"
+        publicPath: "/middleware/"
     },
     optimization: {
         minimize: true,
