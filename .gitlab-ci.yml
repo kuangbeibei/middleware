@@ -23,10 +23,11 @@ build_js:
   stage: build
   script:
     - rm -rf ./dist/*
-    - npm install
+    # - npm install
     - npm run build
-    - tar -czvf ${BuildFileName}.tar.gz dist
-    - mv ${BuildFileName}.tar.gz ./dist/
+    # - mv ./dist/* ./dist/
+    #- tar -czvf ${BuildFileName}.tar.gz dist
+    #- mv ${BuildFileName}.tar.gz ./dist/
   tags:
     - mw
   only:
