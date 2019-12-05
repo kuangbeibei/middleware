@@ -54,7 +54,8 @@ function FormModal(props) {
 		setTableModalVisibility,
 		form: { getFieldDecorator },
 		taskId,
-		detail
+		detail,
+		tenantRes
 	} = props;
 
 	let [postParams, setPostParams] = useState(
@@ -72,19 +73,11 @@ function FormModal(props) {
 			const len = detail.params.instances.length;
 			chooseInstanceType(len / 2);
 			setPostParams(detail);
+			setTenantVal(detail.params['sel-yh-tenant-id'])
 		} else {
 			chooseInstanceType(3);
 		}
 	}, [taskId]);
-
-
-	/**
-	 * 根据name或ip查找租户
-	 * @param value 
-	 */
-	const searchTenantInfoFunc = value => {
-		
-	}
 
 	/**
 	 * 选择租户
@@ -101,8 +94,7 @@ function FormModal(props) {
 	 */
 	const autoCompleteInput = (value, type) => {
 		const {
-			form: { getFieldsValue },
-			tenantRes
+			form: { getFieldsValue }
 		} = props;
 
 		let newPostParams = Object.assign({}, getFieldsValue());
@@ -262,19 +254,17 @@ function FormModal(props) {
 					<Select
 						showSearch
 						value={tenantVal}
-						placeholder={`请输入租户名称，或者IP地址，以便查询`}
+						placeholder="请输入租户名称，或者IP地址，以便查询"
 						defaultActiveFirstOption={false}
-						showArrow={false}
-						filterOption={false}
-						onSearch={value => searchTenantInfoFunc(value)}
 						notFoundContent={null}
 						onChange={handleTenantChange}
+						optionFilterProp="children"
+						filterOption={(input, option) => typeof option.props.children === 'string' ? option.props.children.indexOf(input) > -1 : false}
 					>
-						
 						{
-							// tenantRes.length > 0 && tenantRes.map(tenant => (
-							// 	<Select.Option key={tenant.tenant_id}>{tenant.name}</Select.Option>
-							// ))
+							tenantRes.length > 0 && tenantRes.map(tenant => (
+								<Select.Option key={tenant.userId}>{tenant.name}</Select.Option>
+							))
 						}
 					</Select>
 				</Form.Item>

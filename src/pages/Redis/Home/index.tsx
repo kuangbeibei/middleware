@@ -19,7 +19,7 @@ import {
 	Divider,
 	Menu,
 	Dropdown,
-	Input,
+	Input
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
@@ -28,7 +28,6 @@ import Loading from "@com/UI/Loading";
 
 import {
 	getRedisClusters,
-	getConfigDetail,
 	deployTaskOutput,
 	delCluster,
 	releaseCluster,
@@ -56,15 +55,23 @@ function RedisCluster(props) {
 	let [btnLoading, setBtnLoading] = useState(false);
 	const [tenantRes, settenantRes] = useState(Array());
 
-	const getList = ({name="", status="", spec="", tenantId="", userId="" }) => {
-		getRedisClusters({ name, status, spec, tenantId, userId }).then(data => {
-			setTableList(data);
-			setloading(false);
-		})
-	}
+	const getList = ({
+		name = "",
+		status = "",
+		spec = "",
+		tenantId = "",
+		userId = ""
+	}) => {
+		getRedisClusters({ name, status, spec, tenantId, userId }).then(
+			data => {
+				setTableList(data);
+				setloading(false);
+			}
+		);
+	};
 
 	useEffect(() => {
-		getList({})
+		getList({});
 	}, [loadingListCount]);
 
 	useEffect(() => {
@@ -81,9 +88,9 @@ function RedisCluster(props) {
 
 	useEffect(() => {
 		getTenantList().then(data => {
-			settenantRes(data)
-		})
-	}, [])
+			settenantRes(data);
+		});
+	}, []);
 
 	const removeLayer = () => {
 		setTimeout(() => {
@@ -153,12 +160,18 @@ function RedisCluster(props) {
 									},
 									data
 								)}
+								tenantRes={tenantRes}
 							/>
 						);
 					})
 					.catch(e => message.error(e.message));
 			} else {
-				setCom(<component.default />);
+				setCom(
+					<component.default
+						{...Object.assign({})}
+						tenantRes={tenantRes}
+					/>
+				);
 			}
 		});
 	};
@@ -373,9 +386,8 @@ function RedisCluster(props) {
 		),
 		onFilter: (value, record) =>
 			record[dataIndex]
-				.toString()
-				.toLowerCase()
-				.includes(value.toLowerCase()),
+				? record[dataIndex].toString().includes(value)
+				: false,
 		onFilterDropdownVisibleChange: visible => {
 			// if (visible) {
 			// 	setTimeout(() => this.searchInput.select());
@@ -387,9 +399,11 @@ function RedisCluster(props) {
 	const processColumnText = (dataIndex, text) => {
 		switch (dataIndex) {
 			case "name":
-				return <a onClick={() => gotoDetail(text.taskId, text.id)}>
-					{text.name}
-				</a>
+				return (
+					<a onClick={() => gotoDetail(text.taskId, text.id)}>
+						{text.name}
+					</a>
+				);
 			case "instances":
 				let num = JSON.parse(text.instances).length / 2;
 				return (
@@ -399,23 +413,23 @@ function RedisCluster(props) {
 						}
 					>{`${num}主${num}从`}</a>
 				);
-			case "tenant":
-				return;
+			case "tenantName":
+				return text.tenantName;
 			default:
-				return text
+				return text;
 		}
-	}
+	};
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
-		if (dataIndex === 'instances') {
-			getList({spec: selectedKeys[0]})
+		if (dataIndex === "instances") {
+			getList({ spec: selectedKeys[0] });
 		}
 	};
-	
+
 	const handleReset = clearFilters => {
 		clearFilters();
-		getList({})
+		getList({});
 	};
 
 	const menu = text => {
@@ -503,26 +517,26 @@ function RedisCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			width: '20%',
+			width: "20%",
 			...getColumnSearchProps("name")
 		},
 		{
 			title: "状态",
 			dataIndex: "status",
 			key: "status",
-			width: '12%',
+			width: "12%",
 			...getColumnSearchProps("status")
 		},
 		{
 			title: "实例个数",
 			key: "instances",
-			width: '12%',
+			width: "12%",
 			...getColumnSearchProps("instances")
 		},
 		{
 			title: "拓扑",
 			key: "topology",
-			width: '12%',
+			width: "12%",
 			render: text => (
 				<YhOp
 					color={text.status === "done" ? null : "#999"}
@@ -546,7 +560,7 @@ function RedisCluster(props) {
 		{
 			title: "部署日志",
 			key: "log",
-			width: '12%',
+			width: "12%",
 			render: text => (
 				<YhOp type="info">
 					<Button
@@ -559,22 +573,21 @@ function RedisCluster(props) {
 		},
 		{
 			title: "租户",
-			keyIndex: "tenantName",
 			key: "tenantName",
-			width: '12%',
+			width: "12%",
 			...getColumnSearchProps("tenantName")
 		},
 		{
 			title: "创建时间",
 			dataIndex: "createTime",
 			key: "createTime",
-			width: '14%',
+			width: "14%",
 			render: text => FormatTime(text)
 		},
 		{
 			title: "操作",
 			key: "action",
-			width: '12%',
+			width: "12%",
 			render: text => {
 				return (
 					<span>
