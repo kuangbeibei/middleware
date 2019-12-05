@@ -415,6 +415,9 @@ function RedisCluster(props) {
 				);
 			case "tenantName":
 				return text.tenantName;
+			case "status":
+				console.log('status text', text); // 对状态进行处理
+				return text
 			default:
 				return text;
 		}
