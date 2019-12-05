@@ -73,7 +73,7 @@ export default function(props) {
 				{
 					loading ? <Loading /> : <>
 						<AlarmBasic {...props} />
-                		<AlarmCustom {...props} />
+                		{/* <AlarmCustom {...props} /> */}
 					</>
 				}
                 

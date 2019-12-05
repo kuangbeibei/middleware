@@ -5,6 +5,10 @@
  */
 
 import * as React from "react";
+import {
+	useState,
+	useEffect
+} from "react";
 
 import {
 	Button,
@@ -19,7 +23,16 @@ import {
 	Dropdown
 } from "antd";
 
-export default function(props) {
+import {
+	getAlarmBasicList
+} from "./service"
+
+export default function (props) {
+	useEffect(() => {
+		getAlarmBasicList().then(res => {
+
+		})
+	}, [])
 	const columns = [
 		{
 			title: "Name",
