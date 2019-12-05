@@ -11,8 +11,8 @@ import {
 
 
 // 获取redis集群列表
-export async function getRedisClusters() {
-    return getApi(ProductApiUrl.ProductMidApiUrl)(`/mid/v1/deployList/redis/1/100`).then(res => {
+export async function getRedisClusters({ name="", status="", spec="", tenantId="", userId="" }) {
+    return getApi(ProductApiUrl.ProductMidApiUrl)(`/mid/v1/deployList/redis/1/100?name=${name}&status=${status}&spec=${spec}&tenantId=${tenantId}&userId=${userId}`).then(res => {
         try {
             return res.data.redisClusters
         } catch (e) {
@@ -146,10 +146,12 @@ export async function getTenantInfo() {
 }
 
 // 查找租户ID
-export async function searchTenantInfo(rely) {
-    return getApi(ProductApiUrl.ProductManagerApiUrl)(`/admin/iaas/compute/servers/detail?all_tenants=1&name=${rely}`).then(res => {
+export async function getTenantList() {
+    return getApi(ProductApiUrl.ProductUumApiUrl)(`/tenant/os/list`).then(res => {
         try {
-            return res.data.servers
+            if (res.data && Array.isArray(res.data)) {
+                return res.data
+            }
         } catch (e) {
             return res
         }

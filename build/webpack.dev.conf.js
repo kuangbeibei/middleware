@@ -27,7 +27,7 @@ module.exports = {
         },
         proxy: [
             {
-                context: ['/api-mid', '/admin'],
+                context: ['/api-uum', '/api-mid'],
                 // target: 'http://manager.dev.yonghui.cn/api-mid-deploy-redis.api.fz.yonghui.cn',
                 target: 'http://manager.dev.yonghui.cn/',
                 secure: true,

@@ -25,7 +25,7 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 import IPostParams, { initInstancesType } from "./data";
 import { isEven } from "@tools";
 
-import { createCluster, updateCluster, searchTenantInfo } from "./service";
+import { createCluster, updateCluster } from "./service";
 
 const initIPostParams: IPostParams = {
 	type: "redis",
@@ -62,7 +62,6 @@ function FormModal(props) {
 	);
 	let [redisType, setRedisType] = useState(3);
 	const [tenantVal, setTenantVal] = useState("");
-	const [tenantRes, settenantRes] = useState(Array())
 
 	useEffect(() => {
 		setTableModalVisibility();
@@ -84,11 +83,7 @@ function FormModal(props) {
 	 * @param value 
 	 */
 	const searchTenantInfoFunc = value => {
-		searchTenantInfo(value).then(data => {
-			if (Array.isArray(data)) {
-				settenantRes(data)
-			}
-		})
+		
 	}
 
 	/**
@@ -106,7 +101,8 @@ function FormModal(props) {
 	 */
 	const autoCompleteInput = (value, type) => {
 		const {
-			form: { getFieldsValue }
+			form: { getFieldsValue },
+			tenantRes
 		} = props;
 
 		let newPostParams = Object.assign({}, getFieldsValue());
@@ -276,9 +272,9 @@ function FormModal(props) {
 					>
 						
 						{
-							tenantRes.length > 0 && tenantRes.map(tenant => (
-								<Select.Option key={tenant.tenant_id}>{tenant.name}</Select.Option>
-							))
+							// tenantRes.length > 0 && tenantRes.map(tenant => (
+							// 	<Select.Option key={tenant.tenant_id}>{tenant.name}</Select.Option>
+							// ))
 						}
 					</Select>
 				</Form.Item>
