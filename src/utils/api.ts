@@ -5,11 +5,6 @@
  */
 
 import axios from "axios";
-import {
-	setCookie
-} from "./tools"
-
-var instance = axios["create"]();
 
 interface IResult {
 	code: string;
@@ -17,13 +12,8 @@ interface IResult {
 	message: string;
 }
 
-//curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
-
-// axios.defaults.baseURL = 'http://manager.dev.yonghui.cn/api-mid-deploy-redis.api.fz.yonghui.cn';
-
 axios.interceptors.request.use(
 	(config: any) => {
-		// setCookie('yh-manager-session', 's%3ANf0lfE1gZH8IddkCVR317rJJ5rZHTQbs.bghjTbWyTEXSnKcbdl62HPzPpgAH9Jfx9yXcEKLj74Y', 100)
 		config.timeout = 10000; //设置相应过期时间
 		return config;
 	},
@@ -67,6 +57,7 @@ export const get = (
 		...config
 	});
 };
+
 export const post = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -75,6 +66,7 @@ export const post = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
 export const del = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -83,6 +75,7 @@ export const del = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
 export const put = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -91,3 +84,10 @@ export const put = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
+export const getApi = ProductApiUrl => (url, params?, config?) => get(ProductApiUrl + url, params, config);
+export const postApi = ProductApiUrl => (url, params?, config?) => post(ProductApiUrl + url, params, config);
+export const delApi = ProductApiUrl => (url, params?, config?) => del(ProductApiUrl + url, params, config);
+export const putApi = ProductApiUrl => (url, params?, config?) => put(ProductApiUrl + url, params, config);
+
+

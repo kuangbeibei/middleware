@@ -20,7 +20,7 @@ function RocketmqIndex(props) {
 				<CustomBreadcrumbs routeProps={RocketmqRouteProps} {...props} />
 			</section>
 			<section className="page-content">
-				<Switch>{renderPageWithRoutes(props.routes, props)}</Switch>
+				{renderPageWithRoutes(props.routes, props)}
 			</section>
 		</>
 	);

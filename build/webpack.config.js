@@ -8,7 +8,6 @@
 const path = require("path");
 
 // 第三方模块
-const Webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackMerge = require("webpack-merge");
 
@@ -93,7 +92,7 @@ module.exports = WebpackMerge(
 		plugins: [
 			new HtmlWebpackPlugin({
 				template: ResolvePath("../src/index.html"),
-				filename: "index.html" + "?tag=" + new Date().getTime()
+				filename: `index.html?tag=${new Date().getTime()}`
 			})
 		],
 	},

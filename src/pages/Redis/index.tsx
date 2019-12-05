@@ -5,7 +5,6 @@
  */
 
 import * as React from "react";
-import { Switch } from "react-router-dom";
 import { renderPageWithRoutes } from "@router/index";
 import CustomBreadcrumbs from "@com/UI/Custom-breadcrumbs";
 import {
