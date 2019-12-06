@@ -40,6 +40,7 @@ export default function(props) {
 			dataSource={tablelist}
 			bordered
 			title={() => "基本告警"}
+			rowKey="name"
 		/>
 	);
 }

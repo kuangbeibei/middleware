@@ -187,7 +187,7 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const deployCluster = taskId => {
-		message.success("正在部署...");
+		message.success("正在部署...", 5);
 		deployClusterApi(taskId)
 			.then(res => {
 				statusTaskIds.push(taskId);

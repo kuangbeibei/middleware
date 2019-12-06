@@ -32,6 +32,8 @@ import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
 
 import FormModal from "./Form.modal"
+import StatusControl from "@com/Status.control"
+import OperationControl from "@com/Operation.control"
 
 import {
 	deployTaskOutput,
@@ -236,7 +238,7 @@ function ExtensionList(props) {
 			title: "状态",
 			dataIndex: "status",
 			key: "status",
-			render: text => text
+			render: text => <StatusControl text={text} />
         },
         {
             title: "实例个数",
@@ -266,24 +268,7 @@ function ExtensionList(props) {
 			title: "操作",
 			key: "action",
 			render: text => {
-				return (
-					<span>
-						<Dropdown
-							overlay={() => menu(text)}
-							trigger={["click"]}
-						>
-							<Button
-								shape="circle"
-								type="default"
-								size="small"
-							>
-								<a className="ant-dropdown-link">
-									<Icon type="more" />
-								</a>
-							</Button>
-						</Dropdown>
-					</span>
-				);
+				return  <OperationControl {...props} text={text} menu={menu} />
 			}
 		}
 	];
