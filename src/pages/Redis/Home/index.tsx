@@ -25,7 +25,8 @@ import {
 import { YhOp, YhAdd } from "@styled/Button";
 
 import Loading from "@com/UI/Loading";
-import StatusControm from "@com/Status.control"
+import StatusControl from "@com/Status.control"
+import OperationControl from "@com/Operation.control"
 
 import {
 	getRedisClusters,
@@ -53,7 +54,6 @@ function RedisCluster(props) {
 	let [com, setCom] = useState();
 	const statusTaskIds = Array();
 	const [statusTaskId, setStatusTaskId] = useState("");
-	let [btnLoading, setBtnLoading] = useState(false);
 	const [tenantRes, settenantRes] = useState(Array());
 
 	const getList = ({
@@ -422,7 +422,7 @@ function RedisCluster(props) {
 			case "tenantName":
 				return text.tenantName;
 			case "status":
-				return <StatusControm text={text} />
+				return <StatusControl text={text} />
 			default:
 				return text;
 		}
@@ -597,25 +597,7 @@ function RedisCluster(props) {
 			key: "action",
 			width: "12%",
 			render: text => {
-				return (
-					<span>
-						<Dropdown
-							overlay={() => menu(text)}
-							trigger={["click"]}
-						>
-							<Button
-								shape="circle"
-								type="default"
-								size="small"
-								loading={btnLoading}
-							>
-								<a className="ant-dropdown-link">
-									<Icon type="more" />
-								</a>
-							</Button>
-						</Dropdown>
-					</span>
-				);
+				return  <OperationControl {...props} text={text} menu={menu} />
 			}
 		}
 	];
