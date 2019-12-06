@@ -16,7 +16,7 @@ export const YhText = styled["span"]`
 		} else if (p.type === "warning") {
 			return "#fa8c16";
 		} else if (p.type === "info") {
-			return "#002329";
+			return "#bfbfbf";
 		} else if (p.type === "ready") {
 			return "#52c41a";
 		}
