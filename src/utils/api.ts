@@ -31,7 +31,12 @@ axios.interceptors.response.use(
 		}
 	},
 	err => {
-		return Promise.reject(err);
+		if (err.response.status === 401) {
+			location.href = `${location.origin}/login`;
+			return 
+		} else {
+			return Promise.reject(err);
+		}
 	}
 );
 
