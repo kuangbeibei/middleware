@@ -28,7 +28,7 @@ export default function (props) {
         const {
             status
         } = text;
-        if (status === 'running') {
+        if (status === 'running' || status === 'init') {
             setbtnLoading(true);
         } else {
             setbtnLoading(false);

@@ -62,7 +62,8 @@ function ExtensionList(props) {
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
     let [com, setCom] = useState();
-    let [taskId, setTaskId] = useState("");
+	let [taskId, setTaskId] = useState("");
+	const [statusTaskId, setStatusTaskId] = useState("");
 
     useEffect(() => {
 		getRedisExtendList(id)
@@ -78,7 +79,31 @@ function ExtensionList(props) {
 			removeLayer();
         }
         setLoadListCount(loadListCount => loadListCount + 1);
-    }, [tableModalVisibility.visible]);
+	}, [tableModalVisibility.visible]);
+	
+	/**
+	 * 当添加或释放集群时，轮询状态
+	 */
+	useIntervalWithCondition((timer, rely) => {
+		if (timer) {
+			checkStatus(rely).then(res => {
+				setLoadListCount(loadListCount => loadListCount + 1);
+				const {
+					data: {
+						status
+					}
+				} = res;
+				if (
+					status === "done" ||
+					status === "failed"
+				) {
+					clearInterval(timer);
+					timer = null;
+					setStatusTaskId("")
+				}
+			});
+		}
+	}, statusTaskId);
     
     const removeLayer = () => {
 		setTimeout(() => {
@@ -122,10 +147,10 @@ function ExtensionList(props) {
 	 * @param taskId
 	 */
 	const deployCluster = taskId => {
-		message.success("正在部署...");
+		message.success("正在部署...", 5);
 		deployExtensionInstance(taskId)
 			.then(res => {
-              
+				setStatusTaskId(taskId)
 			})
 			.catch(e => message.error(e.message));
     };

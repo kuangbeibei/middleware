@@ -52,7 +52,7 @@ function RedisCluster(props) {
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [com, setCom] = useState();
-	const statusTaskIds = Array();
+	// const statusTaskIds = Array();
 	const [statusTaskId, setStatusTaskId] = useState("");
 	const [tenantRes, settenantRes] = useState(Array());
 
@@ -118,6 +118,7 @@ function RedisCluster(props) {
 				) {
 					clearInterval(timer);
 					timer = null;
+					setStatusTaskId("")
 				}
 			});
 		}
@@ -190,8 +191,9 @@ function RedisCluster(props) {
 		message.success("正在部署...", 5);
 		deployClusterApi(taskId)
 			.then(res => {
-				statusTaskIds.push(taskId);
-				setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				// statusTaskIds.push(taskId);
+				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				setStatusTaskId(taskId)
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -208,7 +210,7 @@ function RedisCluster(props) {
 						setCom(<component.default {...data} />);
 					});
 				} else {
-					return message.error(data.msg);
+					return message.info('无日志信息');
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -257,10 +259,11 @@ function RedisCluster(props) {
 		releaseCluster(taskId)
 			.then(res => {
 				if (res) {
-					message.info(`正在释放集群${name}...`);
+					message.info(`正在释放集群${name}...`, 5);
 					setLoadListCount(loadListCount => loadListCount + 1);
-					statusTaskIds.push(taskId);
-					setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					// statusTaskIds.push(taskId);
+					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					setStatusTaskId(taskId)
 				} else {
 					message.error(`释放集群${name}失败! `);
 				}

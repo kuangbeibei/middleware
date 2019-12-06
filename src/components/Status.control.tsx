@@ -27,13 +27,13 @@ export default function (props) {
     const showWithStatus = status => {
         switch (status) {
             case 'done':
-                return <YhText type="success">{transEnStatusToChinese(status)}</YhText>
+                return <YhText type="success">{status}</YhText>
             case 'failed':
-                return <YhText type="fail">{transEnStatusToChinese(status)}</YhText>;
+                return <YhText type="fail">{status}</YhText>;
             case 'ready':
-                return <YhText type="ready">{transEnStatusToChinese(status)}</YhText>;
+                return <YhText type="ready">{status}</YhText>;
             case 'release':
-                return <YhText type="info">{transEnStatusToChinese(status)}</YhText>;
+                return <YhText type="info">{status}</YhText>;
             default:
                 return <Icon type="loading" />
         }
