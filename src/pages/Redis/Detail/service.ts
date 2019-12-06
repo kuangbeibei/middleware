@@ -12,6 +12,10 @@ import {
 
 export const getAlarmBasicList = (clusterType = "redis") => {
     return getApi(ProductApiUrl.ProductAlarmApiUrl)(`/mw/strategy/list?clusterType=${clusterType}`).then(res => {
-        
-    })
+        try {
+            return res.data.records
+        } catch (e) {
+            return res
+        }
+    }).catch(e => e.message)
 }

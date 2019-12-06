@@ -5,76 +5,39 @@
  */
 
 import * as React from "react";
-import {
-	useState,
-	useEffect
-} from "react";
+import { useState, useEffect } from "react";
 
-import {
-	Button,
-	Table,
-	Popconfirm,
-	message,
-	Icon,
-	Popover,
-	Tooltip,
-	Divider,
-	Menu,
-	Dropdown
-} from "antd";
+import { Button, Table } from "antd";
 
-import {
-	getAlarmBasicList
-} from "./service"
+import { getAlarmBasicList } from "./service";
 
-export default function (props) {
+export default function(props) {
+	const [tablelist, settablelist] = useState(Array());
+
 	useEffect(() => {
-		getAlarmBasicList().then(res => {
+		getAlarmBasicList().then(data => {
+			settablelist(data);
+		});
+	}, []);
 
-		})
-	}, [])
 	const columns = [
 		{
-			title: "Name",
-			dataIndex: "name",
-			render: text => <a>{text}</a>
-		},
-		{
-			title: "Cash Assets",
-			className: "column-money",
-			dataIndex: "money"
-		},
-		{
-			title: "Address",
-			dataIndex: "address"
+			title: "告警名称",
+			key: "name",
+			render: text => (
+				<a onClick={() => gotoAlarmDetail(text)}>{text.name}</a>
+			)
 		}
 	];
 
-	const data = [
-		{
-			key: "1",
-			name: "John Brown",
-			money: "￥300,000.00",
-			address: "New York No. 1 Lake Park"
-		},
-		{
-			key: "2",
-			name: "Jim Green",
-			money: "￥1,256,000.00",
-			address: "London No. 1 Lake Park"
-		},
-		{
-			key: "3",
-			name: "Joe Black",
-			money: "￥120,000.00",
-			address: "Sidney No. 1 Lake Park"
-		}
-	];
+	const gotoAlarmDetail = text => {
+		location.href = `${location.origin}/monitor/alarm/strategyDetail/${text.id}?regionUrl=.api.fz.yonghui.cn`;
+	};
 
 	return (
 		<Table
 			columns={columns}
-			dataSource={data}
+			dataSource={tablelist}
 			bordered
 			title={() => "基本告警"}
 		/>
