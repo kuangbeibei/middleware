@@ -5,7 +5,7 @@
  */
 // 格式化时间
 export function FormatTime(t) {
-	return t.replace("T", " ").replace(/\+\d*\:00/, "");
+	return t.replace("T", " ").replace("Z", "").replace(/\+\d*\:00/, "");
 }
 
 // 判断是否是对象

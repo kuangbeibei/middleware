@@ -51,9 +51,13 @@ export default function (props, data, type) {
 		return (
 			<Col span={d.col} key={d.panelId}>
 				<div className="iframe-item" style={{ height: `${height}px` }}>
-					<Iframe
+					{
+						type === 'cluster' ? <Iframe
+						url={`${d.url}&refresh=30s&from=1574835182181&to=1574921582181&var-cluster=fzzj_redis_${clusterName}_${clusterId}&theme=light&panelId=${d.panelId}`}
+					/> : <Iframe
 						url={`${d.url}&refresh=30s&from=1574835182181&to=1574921582181&var-cluster=fzzj_redis_${clusterName}_${clusterId}&var-instance=${ip}:${type === 'machine' ? '9100' : port}&theme=light&panelId=${d.panelId}`}
 					/>
+					}
 				</div>
 			</Col>
 		);

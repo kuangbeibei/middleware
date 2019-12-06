@@ -278,8 +278,12 @@ function ExtensionList(props) {
 			title: "部署日志",
 			key: "log",
 			render: text => (
-				<YhOp type="info" onClick={() => getOutput(text.taskId)}>
-					查看
+				<YhOp type="info">
+					<Button
+						type="link"
+						icon="code"
+						onClick={() => getOutput(text.taskId)}
+					/>
 				</YhOp>
 			)
 		},

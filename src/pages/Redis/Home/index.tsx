@@ -425,7 +425,10 @@ function RedisCluster(props) {
 			case "tenantName":
 				return text.tenantName;
 			case "status":
-				return <StatusControl text={text} />
+				if (text.status === 'running') {
+					setStatusTaskId(text.taskId)
+				}
+				return <StatusControl text={text.status} />
 			default:
 				return text;
 		}
@@ -528,26 +531,25 @@ function RedisCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			width: "20%",
+			width: "24%",
 			...getColumnSearchProps("name")
 		},
 		{
 			title: "状态",
-			dataIndex: "status",
 			key: "status",
-			width: "12%",
+			width: "13%",
 			...getColumnSearchProps("status")
 		},
 		{
 			title: "实例个数",
 			key: "instances",
-			width: "12%",
+			width: "13%",
 			...getColumnSearchProps("instances")
 		},
 		{
 			title: "拓扑",
 			key: "topology",
-			width: "12%",
+			width: "8%",
 			render: text => (
 				<YhOp
 					color={text.status === "done" ? null : "#999"}
@@ -571,7 +573,7 @@ function RedisCluster(props) {
 		{
 			title: "部署日志",
 			key: "log",
-			width: "12%",
+			width: "8%",
 			render: text => (
 				<YhOp type="info">
 					<Button
@@ -585,7 +587,7 @@ function RedisCluster(props) {
 		{
 			title: "租户",
 			key: "tenantName",
-			width: "12%",
+			width: "14%",
 			...getColumnSearchProps("tenantName")
 		},
 		{
