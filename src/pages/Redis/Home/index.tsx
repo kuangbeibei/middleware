@@ -25,6 +25,7 @@ import {
 import { YhOp, YhAdd } from "@styled/Button";
 
 import Loading from "@com/UI/Loading";
+import StatusControm from "@com/Status.control"
 
 import {
 	getRedisClusters,
@@ -106,9 +107,14 @@ function RedisCluster(props) {
 		if (timer) {
 			checkStatus(rely).then(res => {
 				setLoadListCount(loadListCount => loadListCount + 1);
+				const {
+					data: {
+						status
+					}
+				} = res;
 				if (
-					res.data.data.status === "done" ||
-					res.data.data.status === "failed"
+					status === "done" ||
+					status === "failed"
 				) {
 					clearInterval(timer);
 					timer = null;
@@ -416,8 +422,7 @@ function RedisCluster(props) {
 			case "tenantName":
 				return text.tenantName;
 			case "status":
-				console.log('status text', text); // 对状态进行处理
-				return text
+				return <StatusControm text={text} />
 			default:
 				return text;
 		}

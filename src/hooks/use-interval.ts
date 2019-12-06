@@ -9,7 +9,7 @@ export function useIntervalWithCondition(callback, rely, t?) {
 		if (rely) {
 			timerId = setInterval(() => {
 				tick(timerId, rely)
-			}, t || 5000);
+			}, t || 2000);
 		}
 		
 		return () => clearInterval(timerId);

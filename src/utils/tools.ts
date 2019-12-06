@@ -93,3 +93,17 @@ export const setCookie = function (name, value, daysToLive?) {
 
 	document.cookie = cookie;
 }
+
+// 集群状态字段转换为中文
+import {
+	clusterStatus
+} from "./data"
+export const transEnStatusToChinese = status => {
+	let keys = Object.keys(clusterStatus);
+	let res = keys.find(key => key === status);
+	if (res) {
+		return clusterStatus[res].text
+	} else {
+		return status
+	}
+}
