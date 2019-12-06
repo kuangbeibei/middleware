@@ -69,6 +69,6 @@ deploy_sh:
   script:
     - bash k8s/prod.sh ${ServiceName} ${DockerImageName}
   tags:
-    - cmp
+    - mw
   only:
     - master
