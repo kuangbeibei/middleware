@@ -14,10 +14,7 @@ const App: React.SFC = props => {
 		<Router>
 			<Switch>
 				
-				{
-					/* 本地开发用 */
-					location.port === '8899' ? <Route exact path="/" render={() => <Redirect to="/middleware/mysql" push />} />  : ''
-				}
+				<Route exact path="/middleware" render={() => <Redirect to="/middleware/mysql" push />} />
 				
 				{/* Page */}
 				<PageIndex {...props} />
