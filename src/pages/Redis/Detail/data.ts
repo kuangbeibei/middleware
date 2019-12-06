@@ -22,9 +22,7 @@ export const clusterPanels = [
 		{
 			id: 3,
 			col: 3
-		}
-	],
-	[
+		},
 		{
 			id: 4,
 			col: 3
@@ -32,7 +30,7 @@ export const clusterPanels = [
 		{
 			id: 2,
 			col: 3
-		}
+		},
 	],
 	[
 		{
@@ -42,9 +40,7 @@ export const clusterPanels = [
 		{
 			id: 9,
 			col: 3
-		}
-	],
-	[
+		},
 		{
 			id: 6,
 			col: 3
