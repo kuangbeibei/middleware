@@ -39,12 +39,11 @@ export default function (props) {
         <Dropdown
             overlay={() => menu(text)}
             trigger={["click"]}
+            disabled={btnLoading}
         >
             <Button
                 shape="circle"
-                // type="default"
                 size="small"
-                loading = {btnLoading}
             >
                 <a className="ant-dropdown-link">
                     <Icon type="more" />
