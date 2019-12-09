@@ -22,16 +22,16 @@ export default function (props) {
         menu
     } = props;
 
-    const [btnLoading, setbtnLoading] = useState(false);
+    const [disabled, setdisabled] = useState(false);
 
     useEffect(() => {
         const {
             status
         } = text;
         if (status === 'running' || status === 'init') {
-            setbtnLoading(true);
+            setdisabled(true);
         } else {
-            setbtnLoading(false);
+            setdisabled(false);
         }
     }, [text.status])
 
@@ -39,12 +39,11 @@ export default function (props) {
         <Dropdown
             overlay={() => menu(text)}
             trigger={["click"]}
+            disabled={disabled}
         >
             <Button
                 shape="circle"
-                // type="default"
                 size="small"
-                loading = {btnLoading}
             >
                 <a className="ant-dropdown-link">
                     <Icon type="more" />
