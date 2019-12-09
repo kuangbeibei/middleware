@@ -144,10 +144,11 @@ button.ant-btn {
 }
 
 .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
-    background-color: @active-color;
+    // background-color: @active-color;
+    background: rgb(51, 51, 51);
 }
-.ant-menu-dark .ant-menu-item, .ant-menu-dark .ant-menu-item-group-title, .ant-menu-dark .ant-menu-item > a {
-    color: @white-color;
+.ant-menu-dark .ant-menu-item-selected .anticon, .ant-menu-dark .ant-menu-item-selected .anticon + span {
+    color: @active-color;
 }
 
 .ant-breadcrumb {
