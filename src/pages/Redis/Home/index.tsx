@@ -141,10 +141,12 @@ function RedisCluster(props) {
 	 * 前往redis集群详情
 	 * @param taskId
 	 */
-	const gotoDetail = (taskId, id) => {
+	const gotoDetail = (taskId, id, name) => {
 		props.history.push(`/middleware/redis/${taskId}/detail`, {
 			query: {
-				id
+				id,
+				clusterId: id,
+				clusterName: name
 			}
 		});
 	};
@@ -409,7 +411,7 @@ function RedisCluster(props) {
 		switch (dataIndex) {
 			case "name":
 				return (
-					<a onClick={() => gotoDetail(text.taskId, text.id)}>
+					<a onClick={() => gotoDetail(text.taskId, text.id, text.name)}>
 						{text.name}
 					</a>
 				);
