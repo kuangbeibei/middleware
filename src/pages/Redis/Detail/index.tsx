@@ -40,10 +40,11 @@ export default function(props) {
 				if (basicData.length === 0) {
 					getConfigDetail(taskId).then(data => {
 						setbasicData(data);
+						setloading(false);
 					});
+				} else {
+					setloading(false);
 				}
-				setloading(false);
-				
 				break;
             case "2":
                 setloading(false);
