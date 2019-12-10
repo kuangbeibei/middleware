@@ -250,7 +250,7 @@ function FormModal(props) {
 						]
 					})(<Input placeholder="请输入redis集群密码"></Input>)}
 				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="租户ID">
+				<Form.Item {...formItemBasicLayout} label="租户">
 					<Select
 						showSearch
 						value={tenantVal}
