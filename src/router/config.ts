@@ -14,6 +14,15 @@ export const MysqlRoutesMap = [
 		isExact: false,
 		breadcrumbTitle: "Mysql集群",
 		icon: "desktop",
+		subs: [
+			{
+				key: "/middleware/mysql",
+				component: "MysqlHome",
+				name: "MysqlHome",
+				isExact: false,
+				breadcrumbTitle: "Mysql集群"
+			}
+		]
 	}
 ];
 
