@@ -5,29 +5,10 @@
  */
 
 import * as React from "react";
-import Iframe from "react-iframe";
+import {clustersMonitorArrayData} from "./data"
+import CommonMonitor from "../Instance-Monitor/common.monitor"
+
 
 export default function (props) {
-	const {
-		basicData,
-		history: {
-			location: {
-				state: {
-					query: {
-						id
-					}
-				}
-			}
-		}
-	} = props;
-	
-	let nameData = basicData.find(d => d.enName === 'name');
-
-	return (
-		<Iframe
-			url={`http://10.210.0.144:3000/d-solo/QmihNwJZz/redisji-qun-tong-ji-xin-xi?orgId=1&from=1574394266859&to=1574415866859&var-cluster=fzzj_redis_${nameData.value}_${id}&theme=light&panelId=7`}
-			width="450"
-			height="200"
-		/>
-	);
+	return CommonMonitor(props, clustersMonitorArrayData, 'cluster')
 }

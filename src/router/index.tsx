@@ -42,8 +42,6 @@ function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
 		<>
 			<Switch>
 				{...routes(middlewareRouteMap, props)}
-				{/* 主体路由级 nomatch 未实现 */}
-				<Redirect to="/" />
 			</Switch>
 		</>
 	);

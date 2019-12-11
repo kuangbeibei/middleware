@@ -5,7 +5,7 @@
  */
 // 格式化时间
 export function FormatTime(t) {
-	return t.replace("T", " ").replace(/\+\d*\:00/, "");
+	return t.replace("T", " ").replace("Z", "").replace(/\+\d*\:00/, "");
 }
 
 // 判断是否是对象
@@ -92,4 +92,18 @@ export const setCookie = function (name, value, daysToLive?) {
 	}
 
 	document.cookie = cookie;
+}
+
+// 集群状态字段转换为中文
+import {
+	clusterStatus
+} from "./data"
+export const transEnStatusToChinese = status => {
+	let keys = Object.keys(clusterStatus);
+	let res = keys.find(key => key === status);
+	if (res) {
+		return clusterStatus[res].text
+	} else {
+		return status
+	}
 }

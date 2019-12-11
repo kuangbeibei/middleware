@@ -22,10 +22,7 @@ export default function PageEntry(props) {
 				<Header {...props} />
 
 				<main>
-					<Switch>
-						{renderPageWithRoutes(middlewareRouteMap, props)}
-						<Redirect to="/" />
-					</Switch>
+					{renderPageWithRoutes(middlewareRouteMap, props)}
 				</main>
 
 				<Footer />

@@ -53,6 +53,10 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 			})
 		}
 	}, [comparedKey])
+
+	const gotoNav = (pathname) => {
+		location.href = `${location.origin}${pathname}`
+	}
 	
 
 	return (
@@ -69,7 +73,8 @@ const NavComponent: React.SFC<INavComponentProps> = props => {
 										: ""
 								}
 							>
-								<Link to={route.key}>{route.navname}</Link>
+
+								<a onClick={() => gotoNav(route.key)}>{route.navname}</a>
 							</li>
 						);
 					})}

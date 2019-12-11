@@ -79,31 +79,6 @@ let nodeMonitorArrayData = nodePanels.map(panel => {
 
 const machineMonitorBaseUrl = "http://10.210.0.144:3000/d-solo/uE7cwEkZz/node-metrics?orgId=1";
 
-// http://10.210.0.144:3000/d-solo/uE7cwEkZz/node-metrics?orgId=1&refresh=30s&from=1575366039171&to=1575366339171&var-interval=30m&var-cluster=fzzj_redis_redis-3-node-6-instance_3&var-node=10.254.193.15:9100&var-maxmount=%2F&panelId=15
-// 14
-// 75
-// 167
-// 20
-// 172
-// 16
-// 166
-// 154
-
-
-// 13
-// 171
-// 164
-
-// 7
-// 156
-
-// 161
-// 168
-// 160
-
-// 157
-// 158
-
 const machinePanels = [
     [
         {
@@ -197,7 +172,7 @@ let machineMonitorArrayData = machinePanels.map(panel => {
     return generatePanelItem(panel, machineMonitorBaseUrl)
 })
 
-function generatePanelItem(panel, url) {
+export function generatePanelItem(panel, url) {
     return panel.map(p => {
         let nodeData:IData = {
             panelId: p.id,

@@ -18,23 +18,26 @@ import {
 	Tooltip,
 	Divider,
 	Menu,
-	Dropdown
+	Dropdown,
+	Input
 } from "antd";
 
 import { YhOp, YhAdd } from "@styled/Button";
 
 import Loading from "@com/UI/Loading";
+import StatusControl from "@com/Status.control"
+import OperationControl from "@com/Operation.control"
 
 import {
 	getRedisClusters,
-	getConfigDetail,
 	deployTaskOutput,
 	delCluster,
 	releaseCluster,
 	deployClusterApi,
 	deployEntryDetail,
 	checkStatus,
-	getClusterDetail
+	getClusterDetail,
+	getTenantList
 } from "./service";
 
 import { FormatTime } from "@tools";
@@ -49,17 +52,27 @@ function RedisCluster(props) {
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [com, setCom] = useState();
-	const statusTaskIds = Array();
+	// const statusTaskIds = Array();
 	const [statusTaskId, setStatusTaskId] = useState("");
-	let [btnLoading, setBtnLoading] = useState(false);
+	const [tenantRes, settenantRes] = useState(Array());
 
-	useEffect(() => {
-		getRedisClusters()
-			.then(data => {
+	const getList = ({
+		name = "",
+		status = "",
+		spec = "",
+		tenantId = "",
+		userId = ""
+	}) => {
+		getRedisClusters({ name, status, spec, tenantId, userId }).then(
+			data => {
 				setTableList(data);
 				setloading(false);
-			})
-			.catch(e => {});
+			}
+		);
+	};
+
+	useEffect(() => {
+		getList({});
 	}, [loadingListCount]);
 
 	useEffect(() => {
@@ -73,6 +86,12 @@ function RedisCluster(props) {
 			removeLayer();
 		}
 	}, [drawerVisibility.visible]);
+
+	useEffect(() => {
+		getTenantList().then(data => {
+			settenantRes(data);
+		});
+	}, []);
 
 	const removeLayer = () => {
 		setTimeout(() => {
@@ -88,12 +107,18 @@ function RedisCluster(props) {
 		if (timer) {
 			checkStatus(rely).then(res => {
 				setLoadListCount(loadListCount => loadListCount + 1);
+				const {
+					data: {
+						status
+					}
+				} = res;
 				if (
-					res.data.data.status === "done" ||
-					res.data.data.status === "failed"
+					status === "done" ||
+					status === "failed"
 				) {
 					clearInterval(timer);
 					timer = null;
+					setStatusTaskId("")
 				}
 			});
 		}
@@ -116,10 +141,12 @@ function RedisCluster(props) {
 	 * 前往redis集群详情
 	 * @param taskId
 	 */
-	const gotoDetail = (taskId, id) => {
+	const gotoDetail = (taskId, id, name) => {
 		props.history.push(`/middleware/redis/${taskId}/detail`, {
 			query: {
-				id
+				id,
+				clusterId: id,
+				clusterName: name
 			}
 		});
 	};
@@ -142,12 +169,18 @@ function RedisCluster(props) {
 									},
 									data
 								)}
+								tenantRes={tenantRes}
 							/>
 						);
 					})
 					.catch(e => message.error(e.message));
 			} else {
-				setCom(<component.default />);
+				setCom(
+					<component.default
+						{...Object.assign({})}
+						tenantRes={tenantRes}
+					/>
+				);
 			}
 		});
 	};
@@ -157,29 +190,12 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const deployCluster = taskId => {
-		message.success("正在部署...");
+		message.success("正在部署...", 5);
 		deployClusterApi(taskId)
 			.then(res => {
-				statusTaskIds.push(taskId);
-				setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-			})
-			.catch(e => message.error(e.message));
-	};
-
-	/**
-	 * 获取redis集群配置详情接口
-	 * @param taskId
-	 */
-	const getConfigDetailInfo = taskId => {
-		getConfigDetail(taskId)
-			.then(data => {
-				if (data.data && Array.isArray(data.data)) {
-					import("./Config.modal").then(component => {
-						setCom(<component.default {...data} />);
-					});
-				} else {
-					return message.error(data.msg);
-				}
+				// statusTaskIds.push(taskId);
+				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+				setStatusTaskId(taskId)
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -196,7 +212,7 @@ function RedisCluster(props) {
 						setCom(<component.default {...data} />);
 					});
 				} else {
-					return message.error(data.msg);
+					return message.info('无日志信息');
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -245,10 +261,11 @@ function RedisCluster(props) {
 		releaseCluster(taskId)
 			.then(res => {
 				if (res) {
-					message.info(`正在释放集群${name}...`);
+					message.info(`正在释放集群${name}...`, 5);
 					setLoadListCount(loadListCount => loadListCount + 1);
-					statusTaskIds.push(taskId);
-					setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					// statusTaskIds.push(taskId);
+					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
+					setStatusTaskId(taskId)
 				} else {
 					message.error(`释放集群${name}失败! `);
 				}
@@ -331,6 +348,104 @@ function RedisCluster(props) {
 			default:
 				return () => {};
 		}
+	};
+
+	const getColumnSearchProps = dataIndex => ({
+		filterDropdown: ({
+			setSelectedKeys,
+			selectedKeys,
+			confirm,
+			clearFilters
+		}) => (
+			<div style={{ padding: 8 }}>
+				<Input
+					placeholder={`搜索 ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={e =>
+						setSelectedKeys(e.target.value ? [e.target.value] : [])
+					}
+					onPressEnter={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
+					style={{ width: 188, marginBottom: 8, display: "block" }}
+				/>
+				<Button
+					type="primary"
+					onClick={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
+					icon="search"
+					size="small"
+					style={{ width: 90, marginRight: 8 }}
+				>
+					搜索
+				</Button>
+				<Button
+					onClick={() => handleReset(clearFilters)}
+					size="small"
+					style={{ width: 90 }}
+				>
+					重置
+				</Button>
+			</div>
+		),
+		filterIcon: filtered => (
+			<Icon
+				type="search"
+				style={{ color: filtered ? "#1890ff" : undefined }}
+			/>
+		),
+		onFilter: (value, record) =>
+			record[dataIndex]
+				? record[dataIndex].toString().includes(value)
+				: false,
+		onFilterDropdownVisibleChange: visible => {
+			// if (visible) {
+			// 	setTimeout(() => this.searchInput.select());
+			// }
+		},
+		render: text => processColumnText(dataIndex, text)
+	});
+
+	const processColumnText = (dataIndex, text) => {
+		switch (dataIndex) {
+			case "name":
+				return (
+					<a onClick={() => gotoDetail(text.taskId, text.id, text.name)}>
+						{text.name}
+					</a>
+				);
+			case "instances":
+				let num = JSON.parse(text.instances).length / 2;
+				return (
+					<a
+						onClick={() =>
+							gotoInstance(text.taskId, text.id, text.name)
+						}
+					>{`${num}主${num}从`}</a>
+				);
+			case "tenantName":
+				return text.tenantName;
+			case "status":
+				if (text.status === 'running') {
+					setStatusTaskId(text.taskId)
+				}
+				return <StatusControl text={text.status} />
+			default:
+				return text;
+		}
+	};
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		if (dataIndex === "instances") {
+			getList({ spec: selectedKeys[0] });
+		}
+	};
+
+	const handleReset = clearFilters => {
+		clearFilters();
+		getList({});
 	};
 
 	const menu = text => {
@@ -418,31 +533,25 @@ function RedisCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			render: text => (
-				<a onClick={() => gotoDetail(text.taskId, text.id)}>{text.name}</a>
-			)
+			width: "24%",
+			...getColumnSearchProps("name")
 		},
 		{
 			title: "状态",
-			dataIndex: "status",
 			key: "status",
-			render: text => text
+			width: "13%",
+			...getColumnSearchProps("status")
 		},
 		{
 			title: "实例个数",
 			key: "instances",
-			render: text => {
-				let num = JSON.parse(text.instances).length / 2;
-				return (
-					<a
-						onClick={() => gotoInstance(text.taskId, text.id, text.name)}
-					>{`${num}主${num}从`}</a>
-				);
-			}
+			width: "13%",
+			...getColumnSearchProps("instances")
 		},
 		{
 			title: "拓扑",
 			key: "topology",
+			width: "8%",
 			render: text => (
 				<YhOp
 					color={text.status === "done" ? null : "#999"}
@@ -466,6 +575,7 @@ function RedisCluster(props) {
 		{
 			title: "部署日志",
 			key: "log",
+			width: "8%",
 			render: text => (
 				<YhOp type="info">
 					<Button
@@ -477,34 +587,24 @@ function RedisCluster(props) {
 			)
 		},
 		{
+			title: "租户",
+			key: "tenantName",
+			width: "14%",
+			...getColumnSearchProps("tenantName")
+		},
+		{
 			title: "创建时间",
 			dataIndex: "createTime",
 			key: "createTime",
+			width: "14%",
 			render: text => FormatTime(text)
 		},
 		{
 			title: "操作",
 			key: "action",
+			width: "12%",
 			render: text => {
-				return (
-					<span>
-						<Dropdown
-							overlay={() => menu(text)}
-							trigger={["click"]}
-						>
-							<Button
-								shape="circle"
-								type="default"
-								size="small"
-								loading={btnLoading}
-							>
-								<a className="ant-dropdown-link">
-									<Icon type="more" />
-								</a>
-							</Button>
-						</Dropdown>
-					</span>
-				);
+				return  <OperationControl {...props} text={text} menu={menu} />
 			}
 		}
 	];
@@ -515,7 +615,9 @@ function RedisCluster(props) {
 				type="primary"
 				onClick={() => showFormModal()}
 				style={{ marginBottom: 10 }}
-			>添加</YhAdd>
+			>
+				添加
+			</YhAdd>
 
 			{loading ? (
 				<Loading />

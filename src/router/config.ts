@@ -14,6 +14,15 @@ export const MysqlRoutesMap = [
 		isExact: false,
 		breadcrumbTitle: "Mysql集群",
 		icon: "desktop",
+		subs: [
+			{
+				key: "/middleware/mysql",
+				component: "MysqlHome",
+				name: "MysqlHome",
+				isExact: false,
+				breadcrumbTitle: "Mysql集群"
+			}
+		]
 	}
 ];
 
@@ -77,28 +86,28 @@ export const RocketmqRoutesMap = [
 		icon: "desktop",
 		subs: [
 			{
-				key: "/middleware/rocketmq/rmqnameserver/:id", // /rocketmq/:clusterId/rmqnameserver/:id
+				key: "/middleware/rocketmq/rmqnameserver/:id", 
 				component: "RocketNameServer",
 				name: "RocketNameServer",
 				isExact: true,
 				breadcrumbTitle: "NameServer"
 			},
 			{
-				key: "/middleware/rocketmq/rmqbroker/:id", // /rocketmq/:v/rmqbroker/:id
+				key: "/middleware/rocketmq/rmqbroker/:id", 
 				component: "RocketBroker",
 				name: "RocketBroker",
 				isExact: true,
 				breadcrumbTitle: "Broker"
 			},
 			{
-				key: "/middleware/rocketmq/rmqconsole/:id", // /rocketmq/:clusterId/rmqconsole/:id
+				key: "/middleware/rocketmq/rmqconsole/:id", 
 				component: "RocketConsole",
 				name: "RocketConsole",
 				isExact: true,
 				breadcrumbTitle: "Console"
 			},
 			{
-				key: "/middleware/rocketmq", // 子路由首页放在最后！ // /rocketmq/:clusterId
+				key: "/middleware/rocketmq", // 子路由首页放在最后！ 
 				component: "RocketmqHome",
 				name: "RocketmqHome",
 				isExact: false,
@@ -116,27 +125,27 @@ export const RocketmqRoutesMap = [
 // 永辉云-运维端后台导航
 export const platformNavMap = [
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/platform/tenant",
+		key: "/platform/tenant",
 		navname: "云平台",
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/iaas/overview/computed",
+		key: "/iaas/overview/computed",
 		navname: "云资源",
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/appc/cluster-list",
+		key: "/appc/cluster-list",
 		navname: "应用中心",
 	},
 	{
-		key: "/http://manager.tce.cloud.yonghui.cn/develops/delivery",
+		key: "/develops/delivery",
 		navname: "DevOps"
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/data-operation-tools/task/logtask",
+		key: "/data-operation-tools/task/logtask",
 		navname: "数据化运营工具"
 	},
 	{
-		key: "http://manager.tce.cloud.yonghui.cn/monitor/alarm/strategy",
+		key: "/monitor/alarm/strategy",
 		navname: "监控"
 	}
 ]

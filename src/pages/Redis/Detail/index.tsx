@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Tabs, Descriptions } from "antd";
+import { Tabs } from "antd";
 
 const { TabPane } = Tabs;
 
@@ -17,6 +17,8 @@ import MonitorInfo from "./Monitor-tab"
 import AlarmBasic from "./Alarm-basic"
 import AlarmCustom from "./Alarm-custom"
 import Loading from "@com/UI/Loading";
+
+import "./style.less";
 
 export default function(props) {
 	const {
@@ -40,10 +42,11 @@ export default function(props) {
 				if (basicData.length === 0) {
 					getConfigDetail(taskId).then(data => {
 						setbasicData(data);
+						setloading(false);
 					});
+				} else {
+					setloading(false);
 				}
-				setloading(false);
-				
 				break;
             case "2":
                 setloading(false);
@@ -73,7 +76,7 @@ export default function(props) {
 				{
 					loading ? <Loading /> : <>
 						<AlarmBasic {...props} />
-                		<AlarmCustom {...props} />
+                		{/* <AlarmCustom {...props} /> */}
 					</>
 				}
                 

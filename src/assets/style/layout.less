@@ -10,6 +10,7 @@
 @active-color: #0070cc;
 @white-color: #fff;
 @bg-color: #f5f5f5;
+@manager-color: #262626;
 
 @image: "../image";
 
@@ -17,9 +18,10 @@
     display: flex;
 
     aside.sidebar {
+        background: @manager-color;
         .logo {
             width: 100%;
-            height: 50px;
+            height: 54px;
             background: url("@{image}/logo.png");
             background-position: 50% 50%;
             background-size: 52px 42px;
@@ -35,7 +37,8 @@
             width: 100%;
             height: 54px;
             line-height: 54px;
-            background: @nav-bg-color;
+            // background: @nav-bg-color;
+            background: @manager-color;
             box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
 
             nav {
@@ -107,6 +110,19 @@
                 overflow: scroll;
                 width: 100%;
                 height: 100%;
+                font-size: 12px!important;
+                div {
+                    font-size: 12px!important;
+                }
+            }
+
+            table {
+                font-size: 12px;
+                tbody {
+                    tr, th {
+                        font-size: 12px;
+                    }
+                }
             }
         }
 
@@ -114,8 +130,9 @@
     }
 }
 
-
-
+button.ant-btn {
+    font-size: 12px!important;
+}
 
 .ant-btn-primary {
     background-color: @active-color;
@@ -127,10 +144,11 @@
 }
 
 .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
-    background-color: @active-color;
+    // background-color: @active-color;
+    background: rgb(51, 51, 51);
 }
-.ant-menu-dark .ant-menu-item, .ant-menu-dark .ant-menu-item-group-title, .ant-menu-dark .ant-menu-item > a {
-    color: @white-color;
+.ant-menu-dark .ant-menu-item-selected .anticon, .ant-menu-dark .ant-menu-item-selected .anticon + span {
+    color: #2a90d7;
 }
 
 .ant-breadcrumb {
@@ -139,4 +157,14 @@
 
 a {
     color: @active-color;
+}
+
+.ant-layout-sider {
+    background: rgb(51, 51, 51);
+    ul {
+        background: rgb(51, 51, 51);
+    }
+}
+.ant-layout-sider-trigger {
+    background: lighten(@manager-color, 10%);
 }

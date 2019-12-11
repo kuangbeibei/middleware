@@ -14,6 +14,7 @@ stages:
   - build
   - package
   - deploy
+  - deploy_prod
 
 before_script:
   - cd $CI_PROJECT_DIR
@@ -32,7 +33,6 @@ build_js:
     - mw
   only:
     - dev
-    - qa_test
     - master
 
 build_image:
@@ -47,16 +47,27 @@ build_image:
     - mw
   only:
     - dev
-    - qa_test
     - master
   retry: 2
-    
+
 k8s_cq:
   image: registry.yonghui.cn/public/centos7-kubectl:1
   stage: deploy
   environment: dev
   script:
     - bash k8s/dev.sh ${ServiceName} ${DockerImageName}
+  tags:
+    - mw
+  only:
+    - dev
+
+deploy_sh:
+  image: registry.yonghui.cn/public/centos7-kubectl:1
+  stage: deploy_prod
+  environment: prod
+  # when: manual
+  script:
+    - bash k8s/prod.sh ${ServiceName} ${DockerImageName}
   tags:
     - mw
   only:

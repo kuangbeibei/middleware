@@ -5,11 +5,6 @@
  */
 
 import axios from "axios";
-import {
-	setCookie
-} from "./tools"
-
-var instance = axios["create"]();
 
 interface IResult {
 	code: string;
@@ -17,12 +12,8 @@ interface IResult {
 	message: string;
 }
 
-//curl "http://10.216.155.24:31380/v1/supplier?name=lys-yh&region=china-sh"
-
 axios.interceptors.request.use(
 	(config: any) => {
-		// yh-manager-session=s%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8
-		setCookie('yh-manager-session', 's%3AgQVSkamePXzypRWBhMeuphHlckt45gYi.caphndShuTdT0k1hwGnRgIVEMOZAcWlUkrkICrqlvt8', 100)
 		config.timeout = 10000; //设置相应过期时间
 		return config;
 	},
@@ -40,7 +31,12 @@ axios.interceptors.response.use(
 		}
 	},
 	err => {
-		return Promise.reject(err);
+		if (err.response.status === 401) {
+			location.href = `${location.origin}/login`;
+			return 
+		} else {
+			return Promise.reject(err);
+		}
 	}
 );
 
@@ -66,6 +62,7 @@ export const get = (
 		...config
 	});
 };
+
 export const post = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -74,6 +71,7 @@ export const post = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
 export const del = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -82,6 +80,7 @@ export const del = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
 export const put = (url: string, params?: object, config?: object) => {
 	return request({
 		url,
@@ -90,3 +89,10 @@ export const put = (url: string, params?: object, config?: object) => {
 		...config
 	});
 };
+
+export const getApi = ProductApiUrl => (url, params?, config?) => get(ProductApiUrl + url, params, config);
+export const postApi = ProductApiUrl => (url, params?, config?) => post(ProductApiUrl + url, params, config);
+export const delApi = ProductApiUrl => (url, params?, config?) => del(ProductApiUrl + url, params, config);
+export const putApi = ProductApiUrl => (url, params?, config?) => put(ProductApiUrl + url, params, config);
+
+

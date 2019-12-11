@@ -32,6 +32,8 @@ import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
 
 import FormModal from "./Form.modal"
+import StatusControl from "@com/Status.control"
+import OperationControl from "@com/Operation.control"
 
 import {
 	deployTaskOutput,
@@ -60,7 +62,8 @@ function ExtensionList(props) {
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
     let [com, setCom] = useState();
-    let [taskId, setTaskId] = useState("");
+	let [taskId, setTaskId] = useState("");
+	const [statusTaskId, setStatusTaskId] = useState("");
 
     useEffect(() => {
 		getRedisExtendList(id)
@@ -76,7 +79,31 @@ function ExtensionList(props) {
 			removeLayer();
         }
         setLoadListCount(loadListCount => loadListCount + 1);
-    }, [tableModalVisibility.visible]);
+	}, [tableModalVisibility.visible]);
+	
+	/**
+	 * 当添加或释放集群时，轮询状态
+	 */
+	useIntervalWithCondition((timer, rely) => {
+		if (timer) {
+			checkStatus(rely).then(res => {
+				setLoadListCount(loadListCount => loadListCount + 1);
+				const {
+					data: {
+						status
+					}
+				} = res;
+				if (
+					status === "done" ||
+					status === "failed"
+				) {
+					clearInterval(timer);
+					timer = null;
+					setStatusTaskId("")
+				}
+			});
+		}
+	}, statusTaskId);
     
     const removeLayer = () => {
 		setTimeout(() => {
@@ -120,10 +147,10 @@ function ExtensionList(props) {
 	 * @param taskId
 	 */
 	const deployCluster = taskId => {
-		message.success("正在部署...");
+		message.success("正在部署...", 5);
 		deployExtensionInstance(taskId)
 			.then(res => {
-              
+				setStatusTaskId(taskId)
 			})
 			.catch(e => message.error(e.message));
     };
@@ -236,7 +263,7 @@ function ExtensionList(props) {
 			title: "状态",
 			dataIndex: "status",
 			key: "status",
-			render: text => text
+			render: text => <StatusControl text={text} />
         },
         {
             title: "实例个数",
@@ -251,8 +278,12 @@ function ExtensionList(props) {
 			title: "部署日志",
 			key: "log",
 			render: text => (
-				<YhOp type="info" onClick={() => getOutput(text.taskId)}>
-					查看
+				<YhOp type="info">
+					<Button
+						type="link"
+						icon="code"
+						onClick={() => getOutput(text.taskId)}
+					/>
 				</YhOp>
 			)
 		},
@@ -266,24 +297,7 @@ function ExtensionList(props) {
 			title: "操作",
 			key: "action",
 			render: text => {
-				return (
-					<span>
-						<Dropdown
-							overlay={() => menu(text)}
-							trigger={["click"]}
-						>
-							<Button
-								shape="circle"
-								type="default"
-								size="small"
-							>
-								<a className="ant-dropdown-link">
-									<Icon type="more" />
-								</a>
-							</Button>
-						</Dropdown>
-					</span>
-				);
+				return  <OperationControl {...props} text={text} menu={menu} />
 			}
 		}
 	];

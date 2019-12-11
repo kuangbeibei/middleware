@@ -25,7 +25,7 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 import IPostParams, { initInstancesType } from "./data";
 import { isEven } from "@tools";
 
-import { createCluster, updateCluster, searchTenantInfo } from "./service";
+import { createCluster, updateCluster } from "./service";
 
 const initIPostParams: IPostParams = {
 	type: "redis",
@@ -54,7 +54,8 @@ function FormModal(props) {
 		setTableModalVisibility,
 		form: { getFieldDecorator },
 		taskId,
-		detail
+		detail,
+		tenantRes
 	} = props;
 
 	let [postParams, setPostParams] = useState(
@@ -62,7 +63,6 @@ function FormModal(props) {
 	);
 	let [redisType, setRedisType] = useState(3);
 	const [tenantVal, setTenantVal] = useState("");
-	const [tenantRes, settenantRes] = useState(Array())
 
 	useEffect(() => {
 		setTableModalVisibility();
@@ -73,23 +73,11 @@ function FormModal(props) {
 			const len = detail.params.instances.length;
 			chooseInstanceType(len / 2);
 			setPostParams(detail);
+			setTenantVal(detail.params['sel-yh-tenant-id'])
 		} else {
 			chooseInstanceType(3);
 		}
 	}, [taskId]);
-
-
-	/**
-	 * 根据name或ip查找租户
-	 * @param value 
-	 */
-	const searchTenantInfoFunc = value => {
-		searchTenantInfo(value).then(data => {
-			if (Array.isArray(data)) {
-				settenantRes(data)
-			}
-		})
-	}
 
 	/**
 	 * 选择租户
@@ -262,22 +250,20 @@ function FormModal(props) {
 						]
 					})(<Input placeholder="请输入redis集群密码"></Input>)}
 				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="租户ID">
+				<Form.Item {...formItemBasicLayout} label="租户">
 					<Select
 						showSearch
 						value={tenantVal}
-						placeholder={`请输入租户名称，或者IP地址，以便查询`}
+						placeholder="请输入租户名称，或者IP地址，以便查询"
 						defaultActiveFirstOption={false}
-						showArrow={false}
-						filterOption={false}
-						onSearch={value => searchTenantInfoFunc(value)}
 						notFoundContent={null}
 						onChange={handleTenantChange}
+						optionFilterProp="children"
+						filterOption={(input, option) => typeof option.props.children === 'string' ? option.props.children.indexOf(input) > -1 : false}
 					>
-						
 						{
 							tenantRes.length > 0 && tenantRes.map(tenant => (
-								<Select.Option key={tenant.tenant_id}>{tenant.name}</Select.Option>
+								<Select.Option key={tenant.userId}>{tenant.name}</Select.Option>
 							))
 						}
 					</Select>

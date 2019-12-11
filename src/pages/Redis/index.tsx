@@ -5,12 +5,11 @@
  */
 
 import * as React from "react";
-import { Switch } from "react-router-dom";
 import { renderPageWithRoutes } from "@router/index";
 import CustomBreadcrumbs from "@com/UI/Custom-breadcrumbs";
 import {
-    RedisRouteProps
-} from "./data"
+	RedisRouteProps
+} from "./data";
 
 export default function (props) {
 	return (
@@ -19,7 +18,7 @@ export default function (props) {
                 <CustomBreadcrumbs routeProps={RedisRouteProps} {...props} />
             </section>
 			<section className="page-content">
-				<Switch>{renderPageWithRoutes(props.routes, props)}</Switch>
+				{renderPageWithRoutes(props.routes, props)}
 			</section>
 		</>
 	);
