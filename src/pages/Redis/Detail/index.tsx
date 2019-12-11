@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Tabs, Descriptions } from "antd";
+import { Tabs } from "antd";
 
 const { TabPane } = Tabs;
 
@@ -17,6 +17,8 @@ import MonitorInfo from "./Monitor-tab"
 import AlarmBasic from "./Alarm-basic"
 import AlarmCustom from "./Alarm-custom"
 import Loading from "@com/UI/Loading";
+
+import "./style.less";
 
 export default function(props) {
 	const {
