@@ -8,9 +8,6 @@ const Webpack = require("webpack");
 
 module.exports = {
 	mode: "development",
-	output: {
-		path: "/"
-	},
 	devtool: "inline-source-map",
 	devServer: {
 		contentBase: "../dist",

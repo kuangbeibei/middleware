@@ -7,9 +7,6 @@ const ResolvePath = dir => {
 
 module.exports = {
     mode: "production",
-    output: {
-        path: ResolvePath("../dist/middleware"),
-    },
     devtool: "source-map",
     optimization: {
         minimize: true,

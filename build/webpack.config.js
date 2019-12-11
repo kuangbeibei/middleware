@@ -31,9 +31,10 @@ module.exports = WebpackMerge(
 		output: {
 			filename:
 				ENV === "DEV"
-					? "[name].bundle.js"
-					: "[name].[hash:5].bundle.js",
-			chunkFilename: "[name].chunkfile.js",
+					? "middleware.[name].bundle.js"
+					: "middleware.[name].[hash:5].bundle.js",
+			path: ResolvePath("../dist"),
+			chunkFilename: "middleware.[name].chunkfile.js",
 			publicPath: "/"
 		},
 		resolve: {
@@ -74,8 +75,8 @@ module.exports = WebpackMerge(
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
 					loader: "file-loader",
 					options: {
-						publicPath: ENV === "DEV" ? "/" : "/middleware",
-						name: '[name].[hash:5].[ext]'
+						publicPath: "/",
+						name: "middleware.[name].[hash:5].[ext]"
 					},
 				},
 				{
