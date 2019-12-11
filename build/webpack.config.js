@@ -86,7 +86,7 @@ module.exports = WebpackMerge(
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
 					loader: 'file-loader',
 					options: {
-						publicPath: "/",
+						publicPath: "/middleware/",
 					},
 				},
 			]
