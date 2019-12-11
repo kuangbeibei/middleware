@@ -33,9 +33,8 @@ module.exports = WebpackMerge(
 				ENV === "DEV"
 					? "[name].bundle.js"
 					: "[name].[hash:5].bundle.js",
-			path: ResolvePath("../dist"),
 			chunkFilename: "[name].chunkfile.js",
-			publicPath: ENV === "DEV" ? "/" : "/middleware"
+			publicPath: "/"
 		},
 		resolve: {
 			extensions: [".ts", ".tsx", ".js", ".json"],

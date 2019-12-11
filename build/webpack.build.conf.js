@@ -1,9 +1,14 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const path = require("path");
+const ResolvePath = dir => {
+	return path.join(__dirname, dir);
+};
+
 
 module.exports = {
     mode: "production",
     output: {
-        publicPath: "/"
+        path: ResolvePath("../dist/middleware"),
     },
     devtool: "source-map",
     optimization: {
