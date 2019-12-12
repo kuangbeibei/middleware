@@ -21,10 +21,10 @@ export const clusterStatus = {
 		text: '准备就绪',
 	},
 	running: {
-		text: '部署执行中...',
+		text: '部署执行中',
 	},
 	init: {
-		text: '启动运行...',
+		text: '启动运行',
 	},
 	release: {
 		text: '资源已释放',
@@ -33,7 +33,7 @@ export const clusterStatus = {
 		text: '成功',
 	},
 	processing: {
-		text: '处理中...',
+		text: '处理中',
 	},
 	initial: {
 		text: '初始状态',

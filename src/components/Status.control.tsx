@@ -17,7 +17,7 @@ import {
 
 import {
     transEnStatusToChinese
-} from "@utils/tools"
+} from "@funcs/Trans.enStatusToChinese";
     
 export default function (props) {
     const {
@@ -25,17 +25,21 @@ export default function (props) {
     } = props;
 
     const showWithStatus = status => {
+        const _status = transEnStatusToChinese(status);
         switch (status) {
             case 'done':
-                return <YhText type="success">{status}</YhText>
+                return <YhText type="success">{_status}</YhText>
             case 'failed':
-                return <YhText type="fail">{status}</YhText>;
+                return <YhText type="fail">{_status}</YhText>;
             case 'ready':
-                return <YhText type="ready">{status}</YhText>;
+                return <YhText type="ready">{_status}</YhText>;
             case 'release':
-                return <YhText type="info">{status}</YhText>;
+                return <YhText type="info">{_status}</YhText>;
             default:
-                return <Icon type="loading" />
+                return <>
+                    <Icon type="loading" />
+                    <YhText type="info">{_status}</YhText>
+                </>
         }
     }
 

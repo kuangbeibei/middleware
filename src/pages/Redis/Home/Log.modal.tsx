@@ -66,7 +66,7 @@ function LogMoal(props) {
 		<Modal
 			modalName={`Redis部署日志`}
 			visible={tableModalVisibility.visible}
-			handleOk={() => {}}
+			handleOk={handleCancel}
 			handleCancel={handleCancel}
 			width={1200}
 		>

@@ -261,7 +261,7 @@ function RedisCluster(props) {
 		releaseCluster(taskId)
 			.then(res => {
 				if (res) {
-					message.info(`正在释放集群${name}...`, 5);
+					message.info(`正在释放集群${name}...`);
 					setLoadListCount(loadListCount => loadListCount + 1);
 					// statusTaskIds.push(taskId);
 					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);

@@ -49,7 +49,8 @@ module.exports = WebpackMerge(
 				"@actions": ResolvePath("../src/store/actions"),
 				"@styled": ResolvePath("../src/styled-components"),
 				"@hooks": ResolvePath("../src/hooks"),
-				"@image": ResolvePath("../src/assets/image")
+				"@image": ResolvePath("../src/assets/image"),
+				"@funcs": ResolvePath("../src/Funcs")
 			}
 		},
 		module: {
