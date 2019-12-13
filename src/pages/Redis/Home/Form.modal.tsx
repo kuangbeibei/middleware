@@ -248,7 +248,7 @@ function FormModal(props) {
 								message: "请输入redis集群密码"
 							}
 						]
-					})(<Input placeholder="请输入redis集群密码"></Input>)}
+					})(<Input.Password placeholder="请输入redis集群密码" />)}
 				</Form.Item>
 				<Form.Item {...formItemBasicLayout} label="租户">
 					<Select
@@ -374,7 +374,7 @@ function FormModal(props) {
 									]
 								}
 							)(
-								<Input
+								<Input.Password
 									placeholder="请输入密码"
 									onBlur={event => {
 										autoCompleteInput(
@@ -382,7 +382,7 @@ function FormModal(props) {
 											"pass"
 										);
 									}}
-								></Input>
+								/>
 							)}
 						</YHSmallFormItem>
 					</YHFlexDiv>
