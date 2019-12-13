@@ -43,6 +43,10 @@ import {
 import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
 
+import {
+	filterClusterStatus
+} from "@funcs/Filter.status"
+
 import "./style.less";
 
 function RedisCluster(props) {
@@ -395,10 +399,16 @@ function RedisCluster(props) {
 				style={{ color: filtered ? "#1890ff" : undefined }}
 			/>
 		),
-		onFilter: (value, record) =>
-			record[dataIndex]
+		onFilter: (value, record) => {
+			if (dataIndex === 'status') {
+				return filterClusterStatus(value, record, dataIndex)
+			} else {
+				return record[dataIndex]
 				? record[dataIndex].toString().includes(value)
-				: false,
+				: false
+			}
+		},
+			
 		onFilterDropdownVisibleChange: visible => {
 			// if (visible) {
 			// 	setTimeout(() => this.searchInput.select());
