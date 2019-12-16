@@ -1,8 +1,9 @@
 export const MiddlewarePathPrefix = 'middleware'
 
-const ProductMidApiUrl = '/api-mid-deploy-redis.api.fz.yonghui.cn';
-const ProductUumApiUrl = '/api-uum.api.fz.yonghui.cn';
-const ProductAlarmApiUrl = '/api-mwp.api.fz.yonghui.cn';
+const ProductMidApiUrl = '/api-mid-deploy-redis.api.fz.yonghui.cn'; // 中间件
+const ProductUumApiUrl = '/api-uum.api.fz.yonghui.cn'; // 风光-运维端租户
+const ProductAlarmApiUrl = '/api-mwp.api.fz.yonghui.cn'; // 昆仑-告警
+
 
 export const ProductApiUrl = {
     ProductMidApiUrl,

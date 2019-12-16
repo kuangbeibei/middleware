@@ -17,5 +17,5 @@ export const getAlarmBasicList = (clusterType = "redis") => {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }

@@ -255,6 +255,41 @@ function MysqlCluster(props) {
 			key: "instances",
 			width: "13%",
 			...getColumnSearchProps("instances")
+		},
+		{
+			title: "拓扑",
+			key: "topology",
+			width: "8%",
+			render: text => (
+				<YhOp
+					color={text.status === "done" ? null : "#999"}
+					default={text.status !== "done"}
+				>
+					<Tooltip placement="top" title={"集群拓扑"}>
+						<Button
+							type="link"
+							icon="apartment"
+							onClick={() =>
+								{}
+							}
+						/>
+					</Tooltip>
+				</YhOp>
+			)
+		},
+		{
+			title: "部署日志",
+			key: "log",
+			width: "8%",
+			render: text => (
+				<YhOp type="info">
+					<Button
+						type="link"
+						icon="code"
+						onClick={() => {}}
+					/>
+				</YhOp>
+			)
         },
 		{
 			title: "租户",

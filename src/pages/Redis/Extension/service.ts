@@ -16,21 +16,21 @@ export async function getRedisExtendList(id) {
         } catch (e) {
             return new Error(res) 
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 创建扩容实例
 export async function createExtension(data) {
     return postApi(ProductApiUrl.ProductMidApiUrl)(`/mid/v1/deployTask`, data).then(res => {
         
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 更新扩容实例
 export async function updateExtension(data, taskId) {
     return postApi(ProductApiUrl.ProductMidApiUrl)(`/mid/v1/updateParams/redisExtend/${taskId}`, data).then(res => {
 
-    })
+    }).catch(e => Promise.reject(e))
 }
 
 // 获取扩容实例详情
@@ -43,14 +43,14 @@ export async function getExtensionDetail(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 部署扩容实例
 export async function deployExtensionInstance(taskId) {
     return getApi(ProductApiUrl.ProductMidApiUrl)(`/mid/v1/runTask/redisExtend/${taskId}`).then(res => {
 
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 删除扩容实例
@@ -59,6 +59,6 @@ export async function deleteExtensionInstance(id) {
         if (res.code === 200) {
             return true
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
