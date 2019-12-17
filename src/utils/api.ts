@@ -46,7 +46,7 @@ const request = config => {
 			return response;
 		})
 		.catch(err => {
-			return err;
+			return Promise.reject(err)
 		});
 };
 

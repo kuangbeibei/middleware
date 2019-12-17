@@ -17,9 +17,7 @@ const numRegExp = /\d/;
 
 // 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，link是实际的地址 3.得注意有query的情况 
 
-// TODO： query
-
-const generateBreadcrumbs = (routeProps, pathSnippets) => {
+const generateBreadcrumbs = (routeProps, pathSnippets, state?) => {
 	let baseUrl;
 
 	return pathSnippets.reduce((prev, cur, idx) => {
@@ -57,12 +55,13 @@ const generateBreadcrumbs = (routeProps, pathSnippets) => {
 		}
 
 		function generate(link, breadTitle) {
+			// console.log('...state!.query, ', state && state!.query);
 			prev.push(
 				<Breadcrumb.Item key={link}>
 					{idx === pathSnippets.length - 1 ? (
 						breadTitle
 					) : (
-						<Link to={link}>{breadTitle}</Link>
+						<Link to={{pathname: link, state: {...state!.query} || undefined}}>{breadTitle}</Link>
 					)}
 				</Breadcrumb.Item>
 			);
@@ -77,14 +76,15 @@ const generateBreadcrumbs = (routeProps, pathSnippets) => {
 
 export default function (props) {
 	const {
-		location: { pathname },
+		location: { pathname, state },
 		routeProps
 	} = props;
+	// console.log('props, ', props);
 
 	let pathSnippets = pathname.split("/").filter(i => i);
 
 	if (routeProps) {
-		return generateBreadcrumbs(routeProps, pathSnippets)
+		return generateBreadcrumbs(routeProps, pathSnippets, state)
 	}
 	return null;
 }

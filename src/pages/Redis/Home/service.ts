@@ -18,7 +18,7 @@ export async function getRedisClusters({ name="", status="", spec="", tenantId="
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 创建
@@ -29,7 +29,7 @@ export async function createCluster(data, config) {
         } else {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 //  修改
@@ -40,7 +40,7 @@ export async function updateCluster(taskId, data, config) {
         } else {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 部署
@@ -51,7 +51,7 @@ export async function deployClusterApi(taskId) {
         } else {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 获取某个taskId的配置详情
@@ -62,7 +62,7 @@ export async function getConfigDetail(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 获取某个taskId的日志打印数据
@@ -79,7 +79,7 @@ export async function deployTaskOutput(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 集群拓扑
@@ -92,7 +92,7 @@ export async function deployEntryDetail(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 删除集群
@@ -103,7 +103,7 @@ export async function delCluster(id) {
         } else {
             return false
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 
@@ -115,7 +115,7 @@ export async function releaseCluster(taskId) {
         } else {
             return false
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 获取某特taskId的详情
@@ -130,7 +130,7 @@ export async function getClusterDetail(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 // 轮询状态
@@ -142,7 +142,7 @@ export async function checkStatus(rely) {
 export async function getTenantInfo() {
     return getApi(ProductApiUrl.ProductMidApiUrl)(`http://manager.dev.yonghui.cn/api-uum//tenant/os/list`).then(res => {
         console.log('res', res);
-    })
+    }).catch(e => Promise.reject(e))
 }
 
 // 查找租户ID
@@ -155,7 +155,7 @@ export async function getTenantList() {
         } catch (e) {
             return res
         }
-    }).catch(e => e.message)
+    }).catch(e => Promise.reject(e))
 }
 
 
