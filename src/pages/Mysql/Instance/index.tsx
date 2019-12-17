@@ -15,7 +15,10 @@ import Loading from "@com/UI/Loading";
 
 import { isEven } from "@tools";
 
-// import PasswordColumn from "./Password-unit";
+import PasswordColumn from "../../Redis/Instance/Password-unit";
+import {
+	getHostList
+} from "./service"
 
 const slicePart = (str) => {
 	let idx = str.lastIndexOf(".");
@@ -25,44 +28,30 @@ const slicePart = (str) => {
 export default function(props) {
 	const {
 		match: {
-			params: { taskId }
+			params: { id }
 		},
-		history: {
-			location: {
-				state: {
-					// query: {
-					// 	id,
-					// 	name
-					// }
-				}
-			}
-		}
 	} = props;
 
 	let [loading, setloading] = useState(true);
 	let [tableList, setTableList] = useState(Array());
 
 	useEffect(() => {
-		// getConfigDetail(taskId)
-		// 	.then(data => {
-		// 		setloading(false);
-		// 		if (data && Array.isArray(data)) {
-		// 			let instances = data.find(
-		// 				item => item.enName === "instances"
-		// 			).value;
-					
-		// 			instances = instances.map(item => {
-		// 				return {
-		// 					ip: `${item.ip}.${Math.random()}`,
-		// 					port: `${item.port}.${Math.random()}`,
-		// 					user: `${item.user}.${Math.random()}`,
-		// 					pass: `${item.pass}.${Math.random()}`
-		// 				}
-		// 			});
-		// 			setTableList(instances);
-		// 		}
-		// 	})
-		// 	.catch(e => {});
+		getHostList(id)
+			.then(data => {
+				setloading(false);
+				if (data && Array.isArray(data)) {
+					data = data.map(item => {
+						return {
+							ip: `${item.ip}.${Math.random()}`,
+							port: `${item.port}.${Math.random()}`,
+							user: `${item.user}.${Math.random()}`,
+							password: item.password ? `${item.password}.${Math.random()}` : ""
+						}
+					});
+					setTableList(data);
+				}
+			})
+			.catch(e => {});
 	}, []);
 
 	/**
@@ -70,7 +59,7 @@ export default function(props) {
 	 * @param pass
 	 */
 	const processPass = pass => {
-		// return <PasswordColumn pass={pass} />;
+		return <PasswordColumn pass={pass} />;
 	};
 
 	/**
@@ -131,13 +120,10 @@ export default function(props) {
 		},
 		{
 			title: "密码",
-			dataIndex: "pass",
+			dataIndex: "password",
 			width: 250,
-			key: "pass",
-            render: text => {
-                return text
-				// return processPass(slicePart(text));
-			}
+			key: "password",
+            render: text => text ? processPass(slicePart(text)) : "无"
 		}
 	];
 
