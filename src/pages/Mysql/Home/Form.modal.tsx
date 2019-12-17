@@ -32,9 +32,23 @@ import {
     IPostParams
 } from "./data"
 
-// const initIPostParams: IPostParams = {
-	
-// };
+const initIPostParams: IPostParams = {
+	name: "",
+	tenantId: "",
+	type: "",
+	rootPassword: "",
+    backupStrategy: "",
+    backupServer: "",
+    backupKeepDays: "",
+    dbConfiguration: "",
+	hosts: [{
+		ip: "",
+		port: "",
+		user: "",
+		pass: "",
+		role: "",
+	}]
+};
 
 function FormModal(props) {
 
