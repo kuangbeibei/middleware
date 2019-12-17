@@ -59,3 +59,6 @@ export interface IPostParams {
     dbConfiguration?: any;
     hosts: Array<Ihosts>;
 }
+
+// 自动备份策略 0-59(分钟)，0-4（小时），***，（空格）
+// 清理策略，可以无，-1

@@ -24,3 +24,14 @@ export async function getMysqlClusters({name="", status="", type="", tenantId=""
         }
     }).catch(e => Promise.reject(e))
 }
+
+// 获取mysql高级配置默认值
+export async function getDefaultClusterConfig() {
+    return getApi(ProductMysqlApiUrl)(`/v1/info/db/defaultcfg`).then(res => {
+        try {
+            return res.data
+        } catch (e) {
+            Promise.reject(e)
+        }
+    }).catch(e => Promise.reject(e))
+}
