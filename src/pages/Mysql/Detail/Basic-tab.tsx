@@ -7,41 +7,38 @@
 import * as React from "react";
 import { Descriptions } from "antd";
 
+import {
+	transDataToArray
+} from "./tool"
+
 export default function(props) {
 	const { basicData } = props;
 
-	const processInstancesData = val => {
-		return val.reduce(
-			(prev, cur, idx) => `${prev}${cur.ip}:${cur.port}\n`,
-			""
-		);
-	};
+	let _basicData = transDataToArray(basicData);
+
+	console.log('_basicData,', _basicData)
+
 	return (
 		<Descriptions bordered column={1}>
-			{basicData &&
-				Array.isArray(basicData) &&
-				basicData.map(configItem => {
-					let val;
-					if (typeof configItem.value === "string") {
-						val = configItem.value.replace(/\n/g, "\n");
-					}
-					if (Array.isArray(configItem.value)) {
-						val = processInstancesData(configItem.value);
-					}
-					return (
+			{_basicData.map(configItem => {
+				let val;
+
+				if (configItem.enName === "dbConfiguration" || configItem.enName === "hosts") {
+					val = JSON.stringify(configItem.value).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n")
+				} else {
+					val = configItem.value;
+				}
+				return (
+						configItem.name ? 
 						<Descriptions.Item
 							key={configItem.enName}
 							label={configItem.name}
 						>
-							{configItem.enName === "moreConf" ||
-							configItem.enName === "instances" ||
-							configItem.enName === "defaultConf" ? (
-								<pre>{val}</pre>
-							) : (
-								<span>{configItem.value || "无"}</span>
-							)}
-						</Descriptions.Item>
-					);
+							{
+								<span>{val || "无"}</span>
+							}
+						</Descriptions.Item> : null
+					) 
 				})}
 		</Descriptions>
 	);

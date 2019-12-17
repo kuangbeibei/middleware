@@ -34,7 +34,7 @@ import { getTenantList } from "../../Redis/Home/service";
 import { filterClusterStatus } from "@funcs/Filter.status";
 
 function MysqlCluster(props) {
-	const { tableModalVisibility, drawerVisibility } = props;
+	const { tableModalVisibility, drawerVisibility, history } = props;
 
 	const [loading, setloading] = useState(true);
 	const [tableList, setTableList] = useState(Array());
@@ -115,16 +115,20 @@ function MysqlCluster(props) {
 	};
 
 	/**
-	 * 前往redis集群详情
+	 * 前往mysql集群详情
 	 * @param taskId
 	 */
-	const gotoDetail = (taskId, id, name) => {};
+	const gotoDetail = id => {
+		history.push(`/middleware/mysql/${id}/detail`);
+	};
 
 	/**
-	 * 前往redis节点列表页
+	 * 前往mysql节点列表页
 	 * @param text
 	 */
-	const gotoInstance = (taskId, id, name) => {};
+	const gotoInstance = id => {
+		history.push(`/middleware/mysql/${id}/instance`);
+	};
 
 	const getColumnSearchProps = dataIndex => ({
 		filterDropdown: ({
@@ -195,14 +199,18 @@ function MysqlCluster(props) {
 				return (
 					<a
 						onClick={() =>
-							gotoDetail(text.taskId, text.id, text.name)
+							gotoDetail(text.id)
 						}
 					>
 						{text.name}
 					</a>
 				);
 			case "hosts":
-				return text.hosts.length === 2 ? "1主1从" : "1主2从";
+				return <a onClick={() =>
+							gotoInstance(text.id)
+						}>{
+					text.hosts.length === 2 ? "1主1从" : "1主2从"
+				}</a>;
 			case "tenantName":
 				return text.tenantName;
 			case "status":
