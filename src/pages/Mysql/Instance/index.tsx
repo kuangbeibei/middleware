@@ -113,10 +113,9 @@ export default function(props) {
 		},
 		{
 			title: "角色",
+			dataIndex: "role",
 			key: "role",
-			render: (a, b, idx) =>
-				`${isEven(idx) ? idx / 2 + 1 : Math.ceil(idx / 2)} ` +
-				` - ${isEven(idx) ? "Master" : "Slave"}`
+			render: text => text
 		},
 		{
 			title: "用户名",
@@ -127,7 +126,6 @@ export default function(props) {
 		{
 			title: "密码",
 			dataIndex: "password",
-			width: 250,
 			key: "password",
 			render: text => (text ? processPass(slicePart(text)) : "无")
 		},
