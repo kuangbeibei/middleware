@@ -160,7 +160,6 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const showFormModal = async (taskId?) => {
-    console.log('显示 form弹框---->>>>>>>>>>>');
 		import("./Form.modal").then(component => {
 			if (taskId && typeof taskId === "number") {
 				getClusterDetail(taskId)
@@ -170,7 +169,7 @@ function RedisCluster(props) {
 								{...Object.assign(
 									{},
 									{
-										taskId: taskId
+										taskId
 									},
 									data
 								)}

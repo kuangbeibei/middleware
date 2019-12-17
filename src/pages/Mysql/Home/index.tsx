@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-    useState,
-    useEffect
-} from "react";
+import { useState, useEffect } from "react";
 
 import { connect } from "react-redux";
 
@@ -30,33 +27,29 @@ import OperationControl from "@com/Operation.control";
 import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
 
-import {
-	getMysqlClusters
-} from "./service";
+import { getMysqlClusters, getClusterDetail } from "./service";
 
-import {
-	filterClusterStatus
-} from "@funcs/Filter.status"
+import { getTenantList } from "../../Redis/Home/service";
 
+import { filterClusterStatus } from "@funcs/Filter.status";
 
 function MysqlCluster(props) {
+	const { tableModalVisibility, drawerVisibility, history } = props;
 
-    const { tableModalVisibility, drawerVisibility } = props;
-
-    const [loading, setloading] = useState(true);
-    const [tableList, setTableList] = useState(Array());
-    let [loadingListCount, setLoadListCount] = useState(0);
+	const [loading, setloading] = useState(true);
+	const [tableList, setTableList] = useState(Array());
+	let [loadingListCount, setLoadListCount] = useState(0);
 	let [com, setCom] = useState();
 	const [tenantRes, settenantRes] = useState(Array());
 
 	useEffect(() => {
-		getList({})
+		getList({});
 	}, [loadingListCount]);
 
 	useEffect(() => {
-		// getTenantList().then(data => {
-		// 	settenantRes(data);
-		// });
+		getTenantList().then(data => {
+			settenantRes(data);
+		});
 	}, []);
 
 	useEffect(() => {
@@ -71,7 +64,7 @@ function MysqlCluster(props) {
 			setLoadListCount(loadListCount => loadListCount + 1);
 		}, 400);
 	};
-	
+
 	// 获取集群列表
 	const getList = ({
 		name = "",
@@ -88,10 +81,16 @@ function MysqlCluster(props) {
 		);
 	};
 
-    const showFormModal = async (taskId?) => {
+	const showFormModal = async (id?) => {
 		import("./Form.modal").then(component => {
-			if (taskId && typeof taskId === "number") {
-				
+			if (id && typeof id === "number") {
+				setCom(
+					<component.default
+						{...Object.assign({})}
+						tenantRes={tenantRes}
+						id={id}
+					/>
+				);
 			} else {
 				setCom(
 					<component.default
@@ -101,9 +100,9 @@ function MysqlCluster(props) {
 				);
 			}
 		});
-    }
+	};
 
-    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
 		if (dataIndex === "hosts") {
 			// getList({ spec: selectedKeys[0] });
@@ -113,25 +112,25 @@ function MysqlCluster(props) {
 	const handleReset = clearFilters => {
 		clearFilters();
 		setLoadListCount(loadListCount => loadListCount + 1);
-    };
-    
-    /**
-	 * 前往redis集群详情
-	 * @param taskId
-	 */
-	const gotoDetail = (taskId, id, name) => {
-		
-    };
-    
-    /**
-	 * 前往redis节点列表页
-	 * @param text
-	 */
-	const gotoInstance = (taskId, id, name) => {
-		
 	};
 
-    const getColumnSearchProps = dataIndex => ({
+	/**
+	 * 前往mysql集群详情
+	 * @param taskId
+	 */
+	const gotoDetail = id => {
+		history.push(`/middleware/mysql/${id}/detail`);
+	};
+
+	/**
+	 * 前往mysql节点列表页
+	 * @param text
+	 */
+	const gotoInstance = id => {
+		history.push(`/middleware/mysql/${id}/instance`);
+	};
+
+	const getColumnSearchProps = dataIndex => ({
 		filterDropdown: ({
 			setSelectedKeys,
 			selectedKeys,
@@ -177,62 +176,64 @@ function MysqlCluster(props) {
 			/>
 		),
 		onFilter: (value, record) => {
-			if (dataIndex === 'status') {
-				return filterClusterStatus(value, record, dataIndex)
+			if (dataIndex === "status") {
+				return filterClusterStatus(value, record, dataIndex);
 			} else {
 				return record[dataIndex]
-				? record[dataIndex].toString().includes(value)
-				: false
+					? record[dataIndex].toString().includes(value)
+					: false;
 			}
 		},
-			
+
 		onFilterDropdownVisibleChange: visible => {
 			// if (visible) {
 			// 	setTimeout(() => this.searchInput.select());
 			// }
 		},
 		render: text => processColumnText(dataIndex, text)
-    });
-    
-    const processColumnText = (dataIndex, text) => {
+	});
+
+	const processColumnText = (dataIndex, text) => {
 		switch (dataIndex) {
 			case "name":
 				return (
-					<a onClick={() => gotoDetail(text.taskId, text.id, text.name)}>
+					<a
+						onClick={() =>
+							gotoDetail(text.id)
+						}
+					>
 						{text.name}
 					</a>
 				);
 			case "hosts":
-				return text.hosts.length === 2 ? '1主1从' : '1主2从'
+				return <a onClick={() =>
+							gotoInstance(text.id)
+						}>{
+					text.hosts.length === 2 ? "1主1从" : "1主2从"
+				}</a>;
 			case "tenantName":
 				return text.tenantName;
 			case "status":
-				if (text.status === 'running') {
+				if (text.status === "running") {
 					// setStatusTaskId(text.taskId)
 				}
-				return <StatusControl text={text.status} />
+				return <StatusControl text={text.status} />;
 			default:
 				return text;
 		}
-    };
-    
-    const menu = text => {
+	};
+
+	const menu = text => {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a
-						onClick={() =>
-							{}
-						}
-					>
-						部署
-					</a>
+					<a onClick={() => {}}>部署</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
-						onClick={() =>
-							{}
-						}
+						onClick={() => {
+							showFormModal(text.id);
+						}}
 					>
 						编辑
 					</a>
@@ -241,9 +242,7 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定释放集群${text.name}?`}
-						onConfirm={() =>
-							{}
-						}
+						onConfirm={() => {}}
 						okText="是"
 						cancelText="否"
 					>
@@ -254,9 +253,7 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定删除集群${text.name}?`}
-						onConfirm={() =>
-							{}
-						}
+						onConfirm={() => {}}
 						okText="是"
 						cancelText="否"
 					>
@@ -267,8 +264,8 @@ function MysqlCluster(props) {
 		);
 	};
 
-    const columns = [
-        {
+	const columns = [
+		{
 			title: "ID",
 			dataIndex: "id",
 			key: "id",
@@ -312,9 +309,7 @@ function MysqlCluster(props) {
 						<Button
 							type="link"
 							icon="apartment"
-							onClick={() =>
-								{}
-							}
+							onClick={() => {}}
 						/>
 					</Tooltip>
 				</YhOp>
@@ -326,14 +321,10 @@ function MysqlCluster(props) {
 			width: "8%",
 			render: text => (
 				<YhOp type="info">
-					<Button
-						type="link"
-						icon="code"
-						onClick={() => {}}
-					/>
+					<Button type="link" icon="code" onClick={() => {}} />
 				</YhOp>
 			)
-        },
+		},
 		{
 			title: "租户",
 			key: "tenantName",
@@ -352,31 +343,29 @@ function MysqlCluster(props) {
 			key: "action",
 			width: "16%",
 			render: text => {
-				return  <OperationControl {...props} text={text} menu={menu} />
+				return <OperationControl {...props} text={text} menu={menu} />;
 			}
 		}
-    ]
+	];
 
-    return (
-        <>
-            <YhAdd
+	return (
+		<>
+			<YhAdd
 				type="primary"
 				onClick={() => showFormModal()}
 				style={{ marginBottom: 10 }}
 			>
 				添加
 			</YhAdd>
-            {loading ? (
+			{loading ? (
 				<Loading />
 			) : (
 				<Table columns={columns} dataSource={tableList} rowKey="id" />
 			)}
-			
-			{
-				com
-			}
-        </>
-    )
+
+			{com}
+		</>
+	);
 }
 
 export default connect(

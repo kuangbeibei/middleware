@@ -1,41 +1,36 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-12-16 15:02:26 
- * @Last Modified: 2019-12-16 15:02:26 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-12-16 15:02:26
+ * @Last Modified: 2019-12-16 15:02:26
+ */
 
 import * as React from "react";
 import { useState, useEffect } from "react";
 
 // import { getConfigDetail } from "../Home/service";
 
-import { Table, message, Tooltip, Button, Icon } from "antd";
+import { Table, message, Tooltip, Button, Icon, Menu } from "antd";
 
 import Loading from "@com/UI/Loading";
 
 import { isEven } from "@tools";
+import { YhOp, YhAdd } from "@styled/Button";
 
-// import PasswordColumn from "./Password-unit";
+import PasswordColumn from "../../Redis/Instance/Password-unit";
+import StatusControl from "@com/Status.control";
+import OperationControl from "@com/Operation.control";
 
-const slicePart = (str) => {
+import { getHostList } from "./service";
+
+const slicePart = str => {
 	let idx = str.lastIndexOf(".");
-	return str.slice(0, idx - 2)
-}
+	return str.slice(0, idx - 2);
+};
 
 export default function(props) {
 	const {
 		match: {
-			params: { taskId }
-		},
-		history: {
-			location: {
-				state: {
-					// query: {
-					// 	id,
-					// 	name
-					// }
-				}
-			}
+			params: { id }
 		}
 	} = props;
 
@@ -43,26 +38,24 @@ export default function(props) {
 	let [tableList, setTableList] = useState(Array());
 
 	useEffect(() => {
-		// getConfigDetail(taskId)
-		// 	.then(data => {
-		// 		setloading(false);
-		// 		if (data && Array.isArray(data)) {
-		// 			let instances = data.find(
-		// 				item => item.enName === "instances"
-		// 			).value;
-					
-		// 			instances = instances.map(item => {
-		// 				return {
-		// 					ip: `${item.ip}.${Math.random()}`,
-		// 					port: `${item.port}.${Math.random()}`,
-		// 					user: `${item.user}.${Math.random()}`,
-		// 					pass: `${item.pass}.${Math.random()}`
-		// 				}
-		// 			});
-		// 			setTableList(instances);
-		// 		}
-		// 	})
-		// 	.catch(e => {});
+		getHostList(id)
+			.then(data => {
+				setloading(false);
+				if (data && Array.isArray(data)) {
+					data = data.map(item => {
+						return {
+							ip: `${item.ip}.${Math.random()}`,
+							port: `${item.port}.${Math.random()}`,
+							user: `${item.user}.${Math.random()}`,
+							password: item.password
+								? `${item.password}.${Math.random()}`
+								: ""
+						};
+					});
+					setTableList(data);
+				}
+			})
+			.catch(e => {});
 	}, []);
 
 	/**
@@ -70,7 +63,7 @@ export default function(props) {
 	 * @param pass
 	 */
 	const processPass = pass => {
-		// return <PasswordColumn pass={pass} />;
+		return <PasswordColumn pass={pass} />;
 	};
 
 	/**
@@ -85,7 +78,20 @@ export default function(props) {
 		// 		clusterName: name
 		// 	}
 		// })
-	}
+	};
+
+	const menu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>主机配置</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a onClick={() => {}}>DB配置</a>
+				</Menu.Item>
+			</Menu>
+		);
+	};
 
 	const columns = [
 		{
@@ -96,7 +102,7 @@ export default function(props) {
 		{
 			title: "实例IP",
 			dataIndex: "ip",
-			key: 'ip' ,
+			key: "ip",
 			render: text => slicePart(text)
 		},
 		{
@@ -107,21 +113,9 @@ export default function(props) {
 		},
 		{
 			title: "角色",
+			dataIndex: "role",
 			key: "role",
-			render: (a, b, idx) =>
-				`${isEven(idx) ? idx / 2 + 1 : Math.ceil(idx / 2)} ` +
-				` - ${isEven(idx) ? "Master" : "Slave"}`
-		},
-		{
-			title: "监控状态",
-			key: "monitor",
-			render: text => {
-				return (
-					<Tooltip placement="top" title={"监控状态"}>
-						<Button type="link" icon="bar-chart" onClick={() => gotoInstanceMonitor(slicePart(text.ip), slicePart(text.port))}/>
-					</Tooltip>
-				)
-			}
+			render: text => text
 		},
 		{
 			title: "用户名",
@@ -131,12 +125,45 @@ export default function(props) {
 		},
 		{
 			title: "密码",
-			dataIndex: "pass",
-			width: 250,
-			key: "pass",
-            render: text => {
-                return text
-				// return processPass(slicePart(text));
+			dataIndex: "password",
+			key: "password",
+			render: text => (text ? processPass(slicePart(text)) : "无")
+		},
+		{
+			title: "监控状态",
+			key: "monitor",
+			render: text => {
+				return (
+					<Tooltip placement="top" title={"监控状态"}>
+						<Button
+							type="link"
+							icon="bar-chart"
+							onClick={() =>
+								gotoInstanceMonitor(
+									slicePart(text.ip),
+									slicePart(text.port)
+								)
+							}
+						/>
+					</Tooltip>
+				);
+			}
+		},
+		{
+			title: "日志",
+			key: "log",
+			width: "8%",
+			render: text => (
+				<YhOp type="info">
+					<Button type="link" icon="code" onClick={() => {}} />
+				</YhOp>
+			)
+		},
+		{
+			title: "操作",
+			key: "action",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={menu} />;
 			}
 		}
 	];
@@ -146,11 +173,7 @@ export default function(props) {
 			{loading ? (
 				<Loading />
 			) : (
-				<Table
-					columns={columns}
-					dataSource={tableList}
-					rowKey="ip"
-				/>
+				<Table columns={columns} dataSource={tableList} rowKey="ip" />
 			)}
 		</>
 	);
