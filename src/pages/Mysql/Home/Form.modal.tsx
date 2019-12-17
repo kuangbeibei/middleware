@@ -32,9 +32,9 @@ import {
     IPostParams
 } from "./data"
 
-const initIPostParams: IPostParams = {
+// const initIPostParams: IPostParams = {
 	
-};
+// };
 
 function FormModal(props) {
 

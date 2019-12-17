@@ -21,6 +21,8 @@ import {
 
 import { YhOp, YhAdd, YhId } from "@styled/Button";
 import Loading from "@com/UI/Loading";
+import { bindActionCreators } from "redux";
+import setTableModalVisibility from "@actions/setModalVisibility";
 import TableTitle from "../Components/TableTitle";
 
 
@@ -42,8 +44,14 @@ function RocketMqHome(props) {
 	let [loading, setloading] = useState(true);
 	let [delLoading, setDelLoading] = useState(false);
   let [addLoading, setAddLoading] = useState(false);
+
+  let {
+    tableModalVisibility,
+    setTableModalVisibility
+  } = props;
+
   
-  let [com, setComponent] = useState()
+  let [com, setCom] = useState()
 
 	useEffect(() => {
     console.log('kevin---->>>>>');
@@ -226,6 +234,20 @@ function RocketMqHome(props) {
     {
       title: "拓扑",
       key: "topo",
+      render: text => (
+				<YhOp
+					// color={text.status === "done" ? null : "#999"}
+					// default={text.status !== "done"}
+				>
+					<Tooltip placement="top" title={"集群拓扑"}>
+						<Button
+							type="link"
+							icon="apartment"
+							onClick={() =>{ console.log('拓扑图显示') }}
+						/>
+					</Tooltip>
+				</YhOp>
+      )
     },
     {
       title: "租户",
@@ -310,19 +332,24 @@ function RocketMqHome(props) {
 	];
 
 
+  useEffect(()=> {
+    if (!tableModalVisibility.visible && com) {
+      setTimeout(()=>{
+        // 隐藏组件之后销毁组件
+        setCom("");
+      }, 0)
+    }
+  }, [tableModalVisibility.visible]) // 监听store里面的visible元素
 
 
   const showFormModal = async () => {
-    console.log('abcdefg');
     // 动态加载
     import("./Cluster.modal").then((component) => {
-      setComponent(
+      console.log('加载进来了吗？？？')
+      setCom(
         <component.default />
       )
-      // let d = component.defult
-      // // setComponent();      
-
-    })
+    }).catch(e => message.error(e.message))
   }
 
 	return (
@@ -351,4 +378,15 @@ function RocketMqHome(props) {
 	);
 }
 
-export default connect()(RocketMqHome);
+export default connect(
+  (state: any) => ({
+		tableModalVisibility: state.tableModalVisibility,
+		drawerVisibility: state.drawerVisibility
+	}),
+  dispatch => ({
+		setTableModalVisibility: bindActionCreators(
+			setTableModalVisibility,
+			dispatch
+		)
+	})
+)(RocketMqHome);
