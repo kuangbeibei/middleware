@@ -1,7 +1,7 @@
 /*
  * @Author: kevinkang
  * @Date: 2019-12-16 17:30:53
- * @LastEditTime: 2019-12-17 14:15:21
+ * @LastEditTime: 2019-12-17 17:23:41
  * @LastEditors: Please set LastEditors
  */
 
@@ -16,15 +16,7 @@ import Modal from "@com/Modal";
 import {
   Form,
   Input,
-  Tooltip,
-  Icon,
-  Cascader,
   Select,
-  Row,
-  Col,
-  Checkbox,
-  Button,
-  AutoComplete,
 } from 'antd';
 
 // RocketMqModal.propTypes = {
@@ -78,10 +70,10 @@ function RocketMqModal(props) {
   }, [])
 
 
-const formItemBasicLayout = {
-	labelCol: { span: 6 },
-	wrapperCol: { span: 12 }
-};
+  const formItemBasicLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 12 }
+  };
 
   return(
     <Modal
@@ -93,7 +85,7 @@ const formItemBasicLayout = {
     >
 
       <Form>
-      <Form.Item {...formItemBasicLayout} label="集群名称">
+        <Form.Item {...formItemBasicLayout} label="集群名称">
 					{getFieldDecorator("params.name", {
 						initialValue: initialRocketMqObj.name,
 						rules: [
