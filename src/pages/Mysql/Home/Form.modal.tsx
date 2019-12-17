@@ -28,7 +28,10 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 import { IPostParams } from "./data";
 
 import {
-	getDefaultClusterConfig
+	getDefaultClusterConfig,
+	getClusterDetail,
+	createMysqlCluster,
+	updateMysqlCluster
 } from "./service"
 
 const initIPostParams: IPostParams = {
@@ -73,8 +76,7 @@ function FormModal(props) {
 		tableModalVisibility,
 		setTableModalVisibility,
 		form: { getFieldDecorator },
-		taskId,
-		detail,
+		id,
 		tenantRes
 	} = props;
 
@@ -88,11 +90,19 @@ function FormModal(props) {
 	}, []);
 
 	useEffect(() => {
-		getDefaultClusterConfig().then(data => {
-			// 如果不是编辑，才默认填写
-			let val = JSON.stringify(data).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n");
-			adjustPostParams('dbConfiguration',  JSON.stringify(data));
+		getClusterDetail(id).then(data => {
+			// setPostParams(data)
 		})
+	}, [id])
+
+	useEffect(() => {
+		if (!id || (id && !postParams.dbConfiguration) ) {
+			getDefaultClusterConfig().then(data => {
+				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
+				let val = JSON.stringify(data).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n");
+				adjustPostParams('dbConfiguration',  JSON.stringify(data));
+			})
+		}
 	}, [])
 
 	/**
@@ -155,9 +165,40 @@ function FormModal(props) {
 		setPostParams(newPostParams);
 	}
 
+	/**
+	 * 
+	 */
+	const save = async data => {
+		if (id) {
+			return updateMysqlCluster(id, data);
+		} else {
+			return createMysqlCluster(data);
+		}
+	};
+
 
 	const handleOk = () => {
-
+		const {
+			form: { getFieldsValue, validateFields }
+		} = props;
+		validateFields(err => {
+			if (err) {
+				message.warning("信息填写不完全!");
+			} else {
+				save(getFieldsValue())
+					.then(message => {
+						if (message === "ok") {
+							setTableModalVisibility();
+							message.success(
+								`mysql集群${id ? "修改" : "创建"}成功!`
+							);
+						} else {
+							message.error(message);
+						}
+					})
+					.catch(e => message.error(e.message));
+			}
+		});
 	};
 
 	const handleCancel = () => {
@@ -355,7 +396,7 @@ function FormModal(props) {
 									]
 								}
 							)(
-								<Select>
+								<Select placeholder="请选择机器角色">
 									<Select.Option value="M">M</Select.Option>
 									<Select.Option value="S">
 										S
