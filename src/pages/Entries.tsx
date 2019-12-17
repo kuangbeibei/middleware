@@ -101,6 +101,14 @@ const RocketmqHome = props => (
 	</DynamicImport>
 );
 
+// Rocketmq 详情页
+const RocketmqDetail = props => (
+  <DynamicImport load={() => import("@pages/Rocket-MQ/ClusterDetail")}>
+    {Component => childrenOfDynamicImport(Component, props)}
+  </DynamicImport>
+)
+
+
 const RocketNameServer = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Nameserver")}>
 		{Component => childrenOfDynamicImport(Component, props)}
@@ -132,5 +140,6 @@ export default {
 	RocketmqHome,
 	RocketNameServer,
 	RocketBroker,
-	RocketConsole
+  RocketConsole,
+  RocketmqDetail
 } as any;

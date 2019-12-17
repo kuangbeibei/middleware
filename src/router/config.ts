@@ -1,3 +1,5 @@
+import { Component } from "react";
+
 /*
  * @Author: kuangdan
  * @Date: 2019-11-09 20:45:55
@@ -85,6 +87,14 @@ export const RocketmqRoutesMap = [
 		breadcrumbTitle: "Rocketmq",
 		icon: "desktop",
 		subs: [
+      {
+        key: "/middleware/rocketmq/detail/:id",
+        // component: 
+        component: "RocketmqDetail",
+        isExact: true,
+        name: "RocketmqDetail",
+        breadcrumbTitle: "rocketMqDetail"
+      },
 			{
 				key: "/middleware/rocketmq/rmqnameserver/:id", 
 				component: "RocketNameServer",

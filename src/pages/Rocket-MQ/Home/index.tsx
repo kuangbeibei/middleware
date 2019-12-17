@@ -16,11 +16,13 @@ import {
 	Select,
 	Icon,
 	Popover,
-	Tooltip
+  Tooltip, 
 } from "antd";
 
 import { YhOp, YhAdd, YhId } from "@styled/Button";
 import Loading from "@com/UI/Loading";
+import TableTitle from "../Components/TableTitle";
+
 
 import {
 	getRmqComponentClusterRecords,
@@ -39,11 +41,38 @@ function RocketMqHome(props) {
 	let [newItemType, setNewItemType] = useState("");
 	let [loading, setloading] = useState(true);
 	let [delLoading, setDelLoading] = useState(false);
-	let [addLoading, setAddLoading] = useState(false);
+  let [addLoading, setAddLoading] = useState(false);
+  
+  let [com, setComponent] = useState()
 
 	useEffect(() => {
+    console.log('kevin---->>>>>');
 		getRmqComponentClusterRecords().then(tableList => {
-			setTableList(tableList);
+
+      let fakeList = [
+        {
+          id: '1',
+          businessName: 'MQ001',
+          summary: "集群一的概要信息",
+          instance: '2N4B',
+          topo: '',
+          tenant: 'user001',
+          createTime: '2019-12-20 08:24:00',
+          updateTime: '2019-12-30 09:32:00'
+        },
+        {
+          id: '2',
+          businessName: 'MQ003',
+          summary: "集群二的信息",
+          instance: '4N2B',
+          topo: '',
+          tenant: 'user002',
+          createTime: '2019-12-20 12:90:00',
+          updateTime: '2019-12-30 12:20:00'
+        }
+      ]
+
+			setTableList(fakeList);
 			setloading(false);
 		});
 	}, [loadingListCount]);
@@ -139,13 +168,23 @@ function RocketMqHome(props) {
 		props.history.push(`/middleware/rocketmq/${type}/${id}`);
 	};
 
+  const gotToRocketMQClusterDetail = (id) => {
+    addFlag = false;
+    // addFlag = false;
+		// type = type.toLowerCase();
+		props.history.push(`/middleware/rocketmq/detail/${id}`);
+  }
+
 	/**
 	 * table列表的展示表头
 	 */
+  // 字段： id 名称  概要  实例个数  拓扑 租户 创建时间  更新时间  操作
+  // TODO  确认字段
 	const columns = [
 		{
 			title: "ID",
-			key: "id",
+      key: "id",
+      dataIndex: 'id',
 			render: text => text || ""
 		},
 		{
@@ -153,14 +192,17 @@ function RocketMqHome(props) {
 			dataIndex: "businessName",
 			key: "businessName",
 			width: 280,
-			render: text =>
-				text ? (
+			render: (name, record) =>
+				name ? (
 					<YhOp
+            color = {'#0070cc'}
 						onClick={() => {
-							gotoNameServerList(text.id, text.componentType);
+              console.log(name, 'kevinkang')
+              // gotoNameServerList(text.id, text.componentType);
+              gotToRocketMQClusterDetail(record.id);
 						}}
 					>
-						{text}
+						{name}
 					</YhOp>
 				) : (
 					<Input
@@ -168,35 +210,63 @@ function RocketMqHome(props) {
 						onBlur={getNameWhenBlur}
 					/>
 				)
-		},
-		{
-			title: "类型",
-			dataIndex: "componentType",
-			key: "componentType",
-			width: 280,
-			render: text =>
-				text ? (
-					text
-				) : (
-					<Select
-						style={{ width: "100%" }}
-						placeholder="请选择集群类型"
-						onChange={getTypeWhenChange}
-					>
-						{rmqTypes.map(type => (
-							<Select.Option key={type} value={type}>
-								{type}
-							</Select.Option>
-						))}
-					</Select>
-				)
-		},
+    },
+    // TODO 对接字段
+    {
+      title: "摘要",
+      key: 'summary',
+      dataIndex: 'summary'
+    },
+    // TODO 对接字段
+    { 
+      title: "实例个数",
+      key: "instance",
+      dataIndex: 'instance'
+    },
+    {
+      title: "拓扑",
+      key: "topo",
+    },
+    {
+      title: "租户",
+      key: "tenant",
+      dataIndex: 'tenant'
+    },
+		// {
+		// 	title: "类型",
+		// 	dataIndex: "componentType",
+		// 	key: "componentType",
+		// 	width: 280,
+		// 	render: text =>
+		// 		text ? (
+		// 			text
+		// 		) : (
+		// 			<Select
+		// 				style={{ width: "100%" }}
+		// 				placeholder="请选择集群类型"
+		// 				onChange={getTypeWhenChange}
+		// 			>
+		// 				{rmqTypes.map(type => (
+		// 					<Select.Option key={type} value={type}>
+		// 						{type}
+		// 					</Select.Option>
+		// 				))}
+		// 			</Select>
+		// 		)
+		// },
 		{
 			title: "创建时间",
 			key: "createTime",
 			dataIndex: "createTime",
-			render: text => (text ? FormatTime(text) : "")
-		},
+      // render: text => (text ? FormatTime(text) : "")
+      
+    },
+    {
+      title: "更新时间",
+      key:"updateTime",
+      dataIndex: 'updateTime'
+      // render: time => (time ? FormatTime(time): "")
+    },
 		{
 			title: "操作",
 			key: "operation",
@@ -239,19 +309,44 @@ function RocketMqHome(props) {
 		}
 	];
 
+
+
+
+  const showFormModal = async () => {
+    console.log('abcdefg');
+    // 动态加载
+    import("./Cluster.modal").then((component) => {
+      setComponent(
+        <component.default />
+      )
+      // let d = component.defult
+      // // setComponent();      
+
+    })
+  }
+
 	return (
 		<>
 			<YhAdd
 				type="primary"
-				icon="plus"
-				onClick={addRmqType}
+				// icon="plus"
+				onClick={() => {showFormModal() }}
 				style={{ marginBottom: 10 }}
-			/>
+			>
+        添加
+      </YhAdd>
 			{loading ? (
 				<Loading />
 			) : (
-				<Table columns={columns} dataSource={tableList} rowKey="id" />
-			)}
+        <>
+          <TableTitle title={'集群列表'} />
+          <Table columns={columns} dataSource={tableList} rowKey="id" />
+        </>
+      )}
+      
+      {
+        com
+      }
 		</>
 	);
 }
