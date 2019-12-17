@@ -1,35 +1,37 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-12-16 15:02:26 
- * @Last Modified: 2019-12-16 15:02:26 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-12-16 15:02:26
+ * @Last Modified: 2019-12-16 15:02:26
+ */
 
 import * as React from "react";
 import { useState, useEffect } from "react";
 
 // import { getConfigDetail } from "../Home/service";
 
-import { Table, message, Tooltip, Button, Icon } from "antd";
+import { Table, message, Tooltip, Button, Icon, Menu } from "antd";
 
 import Loading from "@com/UI/Loading";
 
 import { isEven } from "@tools";
+import { YhOp, YhAdd } from "@styled/Button";
 
 import PasswordColumn from "../../Redis/Instance/Password-unit";
-import {
-	getHostList
-} from "./service"
+import StatusControl from "@com/Status.control";
+import OperationControl from "@com/Operation.control";
 
-const slicePart = (str) => {
+import { getHostList } from "./service";
+
+const slicePart = str => {
 	let idx = str.lastIndexOf(".");
-	return str.slice(0, idx - 2)
-}
+	return str.slice(0, idx - 2);
+};
 
 export default function(props) {
 	const {
 		match: {
 			params: { id }
-		},
+		}
 	} = props;
 
 	let [loading, setloading] = useState(true);
@@ -45,8 +47,10 @@ export default function(props) {
 							ip: `${item.ip}.${Math.random()}`,
 							port: `${item.port}.${Math.random()}`,
 							user: `${item.user}.${Math.random()}`,
-							password: item.password ? `${item.password}.${Math.random()}` : ""
-						}
+							password: item.password
+								? `${item.password}.${Math.random()}`
+								: ""
+						};
 					});
 					setTableList(data);
 				}
@@ -74,7 +78,20 @@ export default function(props) {
 		// 		clusterName: name
 		// 	}
 		// })
-	}
+	};
+
+	const menu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>主机配置</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a onClick={() => {}}>DB配置</a>
+				</Menu.Item>
+			</Menu>
+		);
+	};
 
 	const columns = [
 		{
@@ -85,7 +102,7 @@ export default function(props) {
 		{
 			title: "实例IP",
 			dataIndex: "ip",
-			key: 'ip' ,
+			key: "ip",
 			render: text => slicePart(text)
 		},
 		{
@@ -102,17 +119,6 @@ export default function(props) {
 				` - ${isEven(idx) ? "Master" : "Slave"}`
 		},
 		{
-			title: "监控状态",
-			key: "monitor",
-			render: text => {
-				return (
-					<Tooltip placement="top" title={"监控状态"}>
-						<Button type="link" icon="bar-chart" onClick={() => gotoInstanceMonitor(slicePart(text.ip), slicePart(text.port))}/>
-					</Tooltip>
-				)
-			}
-		},
-		{
 			title: "用户名",
 			dataIndex: "user",
 			key: "user",
@@ -123,7 +129,44 @@ export default function(props) {
 			dataIndex: "password",
 			width: 250,
 			key: "password",
-            render: text => text ? processPass(slicePart(text)) : "无"
+			render: text => (text ? processPass(slicePart(text)) : "无")
+		},
+		{
+			title: "监控状态",
+			key: "monitor",
+			render: text => {
+				return (
+					<Tooltip placement="top" title={"监控状态"}>
+						<Button
+							type="link"
+							icon="bar-chart"
+							onClick={() =>
+								gotoInstanceMonitor(
+									slicePart(text.ip),
+									slicePart(text.port)
+								)
+							}
+						/>
+					</Tooltip>
+				);
+			}
+		},
+		{
+			title: "日志",
+			key: "log",
+			width: "8%",
+			render: text => (
+				<YhOp type="info">
+					<Button type="link" icon="code" onClick={() => {}} />
+				</YhOp>
+			)
+		},
+		{
+			title: "操作",
+			key: "action",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={menu} />;
+			}
 		}
 	];
 
@@ -132,11 +175,7 @@ export default function(props) {
 			{loading ? (
 				<Loading />
 			) : (
-				<Table
-					columns={columns}
-					dataSource={tableList}
-					rowKey="ip"
-				/>
+				<Table columns={columns} dataSource={tableList} rowKey="ip" />
 			)}
 		</>
 	);

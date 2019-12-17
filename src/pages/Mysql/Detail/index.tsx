@@ -1,41 +1,40 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-12-16 14:48:48 
- * @Last Modified: 2019-12-16 14:48:48 
- */ 
+ * @Author: kuangdan
+ * @Date: 2019-12-16 14:48:48
+ * @Last Modified: 2019-12-16 14:48:48
+ */
 
-import * as React from "react"
- import { useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import { Tabs } from "antd";
 
 const { TabPane } = Tabs;
 
 import BasicInfo from "./Basic-tab";
 import BackupTab from "./Backup-tab";
-import ActionsLogTab from "./Action.logs-tab"
+import ActionsLogTab from "./Action.logs-tab";
+import MonitorTab from "./Monitor-tab";
 import Loading from "@com/UI/Loading";
 
-import {
-	getClusterDetail,
-} from "../Home/service"
+import { getClusterDetail } from "../Home/service";
 
-export default function (props) {
-    const {
+export default function(props) {
+	const {
 		match: {
 			params: { id }
 		}
-    } = props;
+	} = props;
 
-    const [basicData, setbasicData] = useState(Array());
-    const [loading, setloading] = useState(true);
+	const [basicData, setbasicData] = useState(Array());
+	const [loading, setloading] = useState(true);
 
-    useEffect(() => {
-        changeTab("1")
-    }, [])
-    
-    const changeTab = (key) => {
-        setloading(true);
-        switch (key) {
+	useEffect(() => {
+		changeTab("1");
+	}, []);
+
+	const changeTab = key => {
+		setloading(true);
+		switch (key) {
 			case "1":
 				if (basicData.length === 0) {
 					getClusterDetail(id).then(data => {
@@ -46,37 +45,40 @@ export default function (props) {
 					setloading(false);
 				}
 				break;
-            case "2":
-                setloading(false);
+			case "2":
+				setloading(false);
 				break;
-            default:
-                setloading(false);
+			case "3":
+				setloading(false);
+				break;
+			default:
+				setloading(false);
 				break;
 		}
-    }
-    
-    return <Tabs onChange={changeTab} type="card">
+	};
+
+	return (
+		<Tabs onChange={changeTab} type="card">
 			<TabPane tab="集群基本信息" key="1">
-				{
-				loading ? <Loading /> :
+				{loading ? (
+					<Loading />
+				) : (
 					<BasicInfo basicData={basicData} {...props} />
-				}
-                
+				)}
 			</TabPane>
 			<TabPane tab="备份与恢复" key="2">
-				
-				{
-				loading ? <Loading /> :
+				{loading ? (
+					<Loading />
+				) : (
 					<BackupTab basicData={basicData} {...props} />
-				}
-                
+				)}
 			</TabPane>
 			<TabPane tab="操作日志" key="3">
-				{
-					loading ? <Loading /> : 
-						<ActionsLogTab {...props} />
-				}
-                
+				{loading ? <Loading /> : <ActionsLogTab {...props} />}
+			</TabPane>
+			<TabPane tab="监控" key="4">
+				{loading ? <Loading /> : <MonitorTab {...props} />}
 			</TabPane>
 		</Tabs>
+	);
 }
