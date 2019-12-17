@@ -45,6 +45,18 @@ const MysqlHome = props => (
 	</DynamicImport>
 )
 
+const MysqlDetail = props => (
+	<DynamicImport load={() => import("@pages/Mysql/Detail")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+)
+
+const MysqlInstance = props => (
+	<DynamicImport load={() => import("@pages/Mysql/Instance")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+)
+
 // Redis 入口
 const Redis = props => (
 	<DynamicImport load={() => import("@pages/Redis")}>
@@ -130,6 +142,8 @@ const RocketConsole = props => (
 export default {
 	Mysql,
 	MysqlHome,
+	MysqlDetail,
+	MysqlInstance,
 	Redis,
 	RedisHome,
 	RedisInstance,

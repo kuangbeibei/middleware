@@ -18,6 +18,20 @@ export const MysqlRoutesMap = [
 		icon: "desktop",
 		subs: [
 			{
+				key: "/middleware/mysql/instance",
+				component: "MysqlInstance",
+				name: "MysqlInstance",
+				isExact: false,
+				breadcrumbTitle: "实例"
+			},
+			{
+				key: "/middleware/mysql/detail",
+				component: "MysqlDetail",
+				name: "MysqlDetail",
+				isExact: false,
+				breadcrumbTitle: "详情"
+			},
+			{
 				key: "/middleware/mysql",
 				component: "MysqlHome",
 				name: "MysqlHome",
@@ -72,7 +86,7 @@ export const RedisRoutesMap = [
 				name: "RedisHome",
 				isExact: false,
 				breadcrumbTitle: "Redis集群"
-			},
+			}
 		]
 	}
 ];
@@ -96,33 +110,33 @@ export const RocketmqRoutesMap = [
         breadcrumbTitle: "rocketMqDetail"
       },
 			{
-				key: "/middleware/rocketmq/rmqnameserver/:id", 
+				key: "/middleware/rocketmq/rmqnameserver/:id",
 				component: "RocketNameServer",
 				name: "RocketNameServer",
 				isExact: true,
 				breadcrumbTitle: "NameServer"
 			},
 			{
-				key: "/middleware/rocketmq/rmqbroker/:id", 
+				key: "/middleware/rocketmq/rmqbroker/:id",
 				component: "RocketBroker",
 				name: "RocketBroker",
 				isExact: true,
 				breadcrumbTitle: "Broker"
 			},
 			{
-				key: "/middleware/rocketmq/rmqconsole/:id", 
+				key: "/middleware/rocketmq/rmqconsole/:id",
 				component: "RocketConsole",
 				name: "RocketConsole",
 				isExact: true,
 				breadcrumbTitle: "Console"
 			},
 			{
-				key: "/middleware/rocketmq", // 子路由首页放在最后！ 
+				key: "/middleware/rocketmq", // 子路由首页放在最后！
 				component: "RocketmqHome",
 				name: "RocketmqHome",
 				isExact: false,
 				breadcrumbTitle: "Rocketmq集群"
-			}, 
+			}
 			// 多加一层 总的集群页面
 			// rocketmq/all
 		]
@@ -136,15 +150,15 @@ export const RocketmqRoutesMap = [
 export const platformNavMap = [
 	{
 		key: "/platform/tenant",
-		navname: "云平台",
+		navname: "云平台"
 	},
 	{
 		key: "/iaas/overview/computed",
-		navname: "云资源",
+		navname: "云资源"
 	},
 	{
 		key: "/appc/cluster-list",
-		navname: "应用中心",
+		navname: "应用中心"
 	},
 	{
 		key: "/develops/delivery",
@@ -158,7 +172,7 @@ export const platformNavMap = [
 		key: "/monitor/alarm/strategy",
 		navname: "监控"
 	}
-]
+];
 
 // 永辉云-中间件平台导航
 export const middlewareNavMap = [
@@ -166,7 +180,7 @@ export const middlewareNavMap = [
 		key: "/middleware/mysql",
 		navname: "中间件",
 		breadcrumbTitle: "中间件",
-		name: "middleware",
+		name: "middleware"
 	}
 ];
 

@@ -456,7 +456,7 @@ function RedisCluster(props) {
 
 	const handleReset = clearFilters => {
 		clearFilters();
-		getList({});
+		setLoadListCount(loadListCount => loadListCount + 1);
 	};
 
 	const menu = text => {
@@ -584,7 +584,7 @@ function RedisCluster(props) {
 			)
 		},
 		{
-			title: "部署日志",
+			title: "日志",
 			key: "log",
 			width: "8%",
 			render: text => (

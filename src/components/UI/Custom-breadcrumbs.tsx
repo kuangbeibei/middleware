@@ -5,7 +5,11 @@
  */
 
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
+import {
+	useState,
+	useEffect
+} from "react";
+import { Link } from "react-router-dom";
 import { Breadcrumb } from "antd";
 import {
 	variable 
@@ -61,7 +65,7 @@ const generateBreadcrumbs = (routeProps, pathSnippets, state?) => {
 					{idx === pathSnippets.length - 1 ? (
 						breadTitle
 					) : (
-						<Link to={{pathname: link, state: {...state!.query} || undefined}}>{breadTitle}</Link>
+						<Link to={{pathname: link, state: state ? {...state!.query} : undefined}}>{breadTitle}</Link>
 					)}
 				</Breadcrumb.Item>
 			);
