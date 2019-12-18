@@ -15,7 +15,7 @@ export const MysqlRoutesMap = [
 		name: "Mysql",
 		isExact: false,
 		breadcrumbTitle: "Mysql集群",
-		icon: "desktop",
+		icon: "database",
 		subs: [
 			{
 				key: "/middleware/mysql/:id/instance",
@@ -99,7 +99,7 @@ export const RocketmqRoutesMap = [
 		component: "Rocketmq",
 		isExact: false,
 		breadcrumbTitle: "Rocketmq",
-		icon: "desktop",
+		icon: "rocket",
 		subs: [
       {
         key: "/middleware/rocketmq/detail/:id",
