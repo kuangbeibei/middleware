@@ -71,6 +71,11 @@ const formItemInstanceLayout = {
 	wrapperCol: { span: 6 }
 };
 
+const formItemInstanceSshLayout = {
+	labelCol: { span: 12 },
+	wrapperCol: { span: 6 }
+}
+
 function FormModal(props) {
 	const {
 		tableModalVisibility,
@@ -213,7 +218,7 @@ function FormModal(props) {
 			visible={tableModalVisibility.visible}
 			handleOk={handleOk}
 			handleCancel={handleCancel}
-			width={"70%"}
+			width={"75%"}
 		>
 			<Form>
 				<Divider>基础信息</Divider>
@@ -302,8 +307,8 @@ function FormModal(props) {
 							})(<Input placeholder="请输入IP地址"></Input>)}
 						</YHSmallFormItem>
 						<YHSmallFormItem
-							{...formItemInstanceLayout}
-							label="Port"
+							{...formItemInstanceSshLayout}
+							label="SSH连接端口"
 						>
 							{getFieldDecorator(
 								`hosts[${idx}].port`,
