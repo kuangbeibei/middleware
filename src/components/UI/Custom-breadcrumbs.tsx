@@ -18,10 +18,11 @@ import {
 import { MiddlewarePathPrefix } from "@utils/data"
 
 const numRegExp = /\d/;
+let queryStackMap = Object.create({});
 
-// 两条线：1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的，link是实际的地址 3.得注意有query的情况 
+// 1. 根据title来判断是否添加该面包屑；2. 根据baseUrl来生成与routes匹配的面包屑名称，link是实际的地址 3.得注意有query的情况 
 
-const generateBreadcrumbs = (routeProps, pathSnippets, state?) => {
+const generateBreadcrumbs = (routeProps, pathSnippets) => {
 	let baseUrl;
 
 	return pathSnippets.reduce((prev, cur, idx) => {
@@ -59,13 +60,13 @@ const generateBreadcrumbs = (routeProps, pathSnippets, state?) => {
 		}
 
 		function generate(link, breadTitle) {
-			// console.log('...state!.query, ', state && state!.query);
+			let _state = queryStackMap[link] ? queryStackMap[link] : undefined;
 			prev.push(
 				<Breadcrumb.Item key={link}>
 					{idx === pathSnippets.length - 1 ? (
 						breadTitle
 					) : (
-						<Link to={{pathname: link, state: state ? {...state!.query} : undefined}}>{breadTitle}</Link>
+						<Link to={{pathname: link, state: _state}}>{breadTitle}</Link>
 					)}
 				</Breadcrumb.Item>
 			);
@@ -74,21 +75,37 @@ const generateBreadcrumbs = (routeProps, pathSnippets, state?) => {
 		return prev
 
 	}, [])
-
-	
 }
 
 export default function (props) {
 	const {
 		location: { pathname, state },
-		routeProps
+		routeProps,
+		match: {
+			path
+		}
 	} = props;
-	// console.log('props, ', props);
+
+	useEffect(() => {
+		if (path === pathname) {
+			// console.log('我清空了')
+			queryStackMap = Object.create({})
+		} else {
+			if (!queryStackMap[pathname] && state) {
+				queryStackMap[pathname] = state;
+				// console.log('我来了 ,', queryStackMap);
+			}
+		}
+	}, [pathname])
+
+	
+
+	console.log('queryStackMap 对象, ', queryStackMap);
 
 	let pathSnippets = pathname.split("/").filter(i => i);
 
 	if (routeProps) {
-		return generateBreadcrumbs(routeProps, pathSnippets, state)
+		return generateBreadcrumbs(routeProps, pathSnippets)
 	}
 	return null;
 }
