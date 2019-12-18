@@ -90,9 +90,11 @@ function FormModal(props) {
 	}, []);
 
 	useEffect(() => {
-		getClusterDetail(id).then(data => {
-			// setPostParams(data)
-		})
+		if (id) {
+			getClusterDetail(id).then(data => {
+				// setPostParams(data)
+			})
+		}
 	}, [id])
 
 	useEffect(() => {
