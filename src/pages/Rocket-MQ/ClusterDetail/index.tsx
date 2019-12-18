@@ -24,6 +24,7 @@ function ClusterDetail(props){
 
   let [com, setCom] = useState();
   let [nameServerList, setNameServerLsit] = useState(Array());
+  let [consoleList, setConsoleList] = useState(Array());
   let [brokerList, setBrokerList] = useState(Array());
 
   useEffect(()=>{
@@ -79,9 +80,32 @@ function ClusterDetail(props){
       },
     ])
 
+
+    formatFakeConsoleList()
   }, []); // 加上[]只会执行一次，不然会造成死循环。
 
-
+  function formatFakeConsoleList(){
+    setConsoleList([
+      {
+        id: '1',
+        ip: '192.167.9.09',
+        port: '8800',
+        status: '准备部署',
+        createTime: '2019-12-02 09:02:04',
+        updateTime: '2019-12-05 08:08:32',
+        domain: 'http://xxx.xxx.xx.xx'
+      },
+      {
+        id: '2',
+        ip: '192.167.9.08',
+        port: '8900',
+        status: '准备部署',
+        createTime: '2019-12-02 09:02:04',
+        updateTime: '2019-12-05 08:08:32',
+        domain: 'http://xxx.xxx.xx.xx'
+      },
+    ])
+  }
       
   // 监听modal属性的变化
   useEffect(()=>{
@@ -104,6 +128,15 @@ function ClusterDetail(props){
   const addBroker = ()=> {
     import('./modal/Broker.modal').then(component => {
       console.log('加载Broker的modal框完成');
+      if (!com) {
+        setCom(<component.default />)
+      }
+    })
+  }
+
+  const addConsole = ()=> {
+    import('./modal/Console.modal').then(component => {
+      console.log('加载Console的modal框完成');
       if (!com) {
         setCom(<component.default />)
       }
@@ -186,6 +219,92 @@ function ClusterDetail(props){
         )
       }
     }
+  ]
+
+  const consoleColumns = [
+    {
+      title: 'id',
+      key: 'id',
+      dataIndex: 'id',
+    },
+    {
+      title: "IP",
+      key: 'ip',
+      dataIndex: 'ip'
+    },
+    {
+      title: "监听端口",
+      key: 'port',
+      dataIndex: 'port'
+    },
+    // {
+    //   title: "Broker Id",
+    //   key: 'bId',
+    //   dataIndex: 'bId'
+    // },
+    // {
+    //   title: "Broker Name",
+    //   key: 'bName',
+    //   dataIndex: 'bName'
+    // },
+    // {
+    //   title: "Broker 角色",
+    //   key: 'role',
+    //   dataIndex: 'role'
+    // },
+    {
+			title: "状态",
+			key: "status",
+			dataIndex: "status",      
+    },
+    {
+      title: "部署日志",
+      key:"log",
+      dataIndex: 'log',
+      render: ()=> (
+        <div>
+            <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
+              实时
+            </YhOp><YhOp color={'#0070cc'}>
+              全部
+            </YhOp>
+        </div>
+      )
+    },
+    {
+      title: "创建时间",
+      key: "createTime",
+      dataIndex: 'createTime'
+    },
+    {
+      title: "更新时间",
+      key: "updateTime",
+      dataIndex: 'updateTime'
+    },
+    {
+      title: "访问",
+      key: "domain",
+      dataIndex: "domain"
+    },
+    {
+      title: "操作",
+      key: "operation",
+      render: ()=>{
+        return (
+          <div>
+            <YhOp color={'#0070cc'}>
+              执行部署
+            </YhOp>
+            <YhOp color={'#0070cc'}>
+              释放资源
+            </YhOp>
+            <YhOp color={'#0070cc'}>
+              删除
+            </YhOp>
+          </div>
+        )
+      }
+    }  
   ]
 
   const brokerColumns = [
@@ -284,17 +403,33 @@ function ClusterDetail(props){
       <YhAdd
 				type="primary"
 				// icon="plus"
+				onClick={addConsole}
+				style={{ marginBottom: 5, marginRight: 20 }}
+			>
+        添加Console
+      </YhAdd>
+
+      <YhAdd
+				type="primary"
+				// icon="plus"
 				onClick={addBroker}
-				style={{ marginBottom: 5 }}
+				style={{ marginBottom: 5,}}
 			>
         添加Broker
       </YhAdd>
+
       <Divider />
       <TableTitle title={'NameServer列表'}/>
       <Table columns={nameServerColumns} dataSource={nameServerList} rowKey="id" />
       
+      <TableTitle title={'console列表'} style= {{marginTop: 30}} />
+      <Table columns={consoleColumns} dataSource={consoleList} rowKey="id" />
+
+
       <TableTitle title={'Broker列表'} style= {{marginTop: 30}} />
       <Table columns={brokerColumns} dataSource={brokerList} rowKey="id" />
+
+      
 
       {
         com
