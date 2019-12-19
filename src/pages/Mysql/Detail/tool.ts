@@ -25,7 +25,7 @@ export const transDataToArray = data => {
             // case "connection":
             //     configItem["name"] = "连接信息"
             //     break;
-            case "hosts":
+            case "instances":
                 configItem["name"] = "实例列表";
                 break;
             case "dbConfiguration":

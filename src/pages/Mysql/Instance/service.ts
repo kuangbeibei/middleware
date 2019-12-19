@@ -9,7 +9,7 @@ import { ProductApiUrl } from "@utils/data";
 const { ProductMysqlApiUrl } = ProductApiUrl;
 
 export const getHostList = async id => {
-    return getApi(ProductMysqlApiUrl)(`/v1/hosts/${id}`).then(res => {
+    return getApi(ProductMysqlApiUrl)(`/v1/instances/${id}`).then(res => {
         try {
             return res.data
         } catch (e) {

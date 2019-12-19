@@ -104,7 +104,7 @@ function MysqlCluster(props) {
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
-		if (dataIndex === "hosts") {
+		if (dataIndex === "instances") {
 			// getList({ spec: selectedKeys[0] });
 		}
 	};
@@ -205,11 +205,11 @@ function MysqlCluster(props) {
 						{text.name}
 					</a>
 				);
-			case "hosts":
+			case "instances":
 				return <a onClick={() =>
 							gotoInstance(text.id)
 						}>{
-					text.hosts.length === 2 ? "1主1从" : "1主2从"
+					text.instances.length === 2 ? "1主1从" : "1主2从"
 				}</a>;
 			case "tenantName":
 				return text.tenantName;
@@ -292,9 +292,9 @@ function MysqlCluster(props) {
 		},
 		{
 			title: "实例个数",
-			key: "hosts",
+			key: "instances",
 			width: "13%",
-			...getColumnSearchProps("hosts")
+			...getColumnSearchProps("instances")
 		},
 		{
 			title: "拓扑",

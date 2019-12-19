@@ -23,7 +23,7 @@ export default function(props) {
 			{_basicData.map(configItem => {
 				let val;
 
-				if (configItem.enName === "dbConfiguration" || configItem.enName === "hosts") {
+				if (configItem.enName === "dbConfiguration" || configItem.enName === "instances") {
 					val = JSON.stringify(configItem.value).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n")
 				} else {
 					val = configItem.value;
