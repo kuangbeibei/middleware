@@ -243,7 +243,7 @@ function RocketMqHome(props) {
 						<Button
 							type="link"
 							icon="apartment"
-							onClick={() =>{ console.log('拓扑图显示') }}
+							onClick={() =>{ showTopoModal() }}
 						/>
 					</Tooltip>
 				</YhOp>
@@ -344,8 +344,19 @@ function RocketMqHome(props) {
 
   const showFormModal = async () => {
     // 动态加载
-    import("./Cluster.modal").then((component) => {
+    import("./modal/Cluster.modal").then((component) => {
       console.log('加载进来了吗？？？')
+      setCom(
+        <component.default />
+        
+      )
+    }).catch(e => message.error(e.message))
+  }
+
+  const showTopoModal = async () => {
+    // 动态加载
+    import("./modal/Topo.modal").then((component) => {
+      console.log('topo')
       setCom(
         <component.default />
       )
