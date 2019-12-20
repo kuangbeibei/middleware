@@ -18,8 +18,6 @@ import './topo.modal.less'
 
 import {
   Form,
-  Input,
-  Select,
   Icon,
   Spin
 } from 'antd';
@@ -33,8 +31,7 @@ function TopoModal(props) {
   
   const { 
     tableModalVisibility,
-    setTableModalVisibility,
-    form: { getFieldDecorator },
+    setTableModalVisibility
   } = props
   
   const handleCancel = ()=>{
@@ -52,10 +49,8 @@ function TopoModal(props) {
     setTableModalVisibility();
 
     setTimeout(()=> {
-      // jsPlumb.ready(() => {
         let instance:any = jsPlumb.getInstance({
-        // type ConnectorId = "Bezier" | "StateMachine" | "Flowchart" | "Straight" | UserDefinedConnectorId;
-          // Connector: ['Straight', { curviness: 1 }],
+          Connector: ['Flowchart', { curviness: 1 }],
           // Endpoint: ['Dot', { radius: 0.1 }], // 端点为一个圆点
           Endpoint: 'Blank', // 端点为空
           // HoverPaintStyle: { strokeStyle: '#ec9f2e' },
@@ -71,27 +66,26 @@ function TopoModal(props) {
           ],
           Container: 'canvas'
         })
-        const serviceCards = instance.getSelector('.service-card')
-        instance.connect({
-          source: 'k1', target: 'k2', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        })
-        instance.connect({
-          source: 'k2', target: 'k3', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        })
-        instance.connect({
-          source: 'k3', target: 'k4', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        })
-        instance.connect({
-          source: 'k4', target: 'k1', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        })
-        instance.connect({
-          connector: 'Straight',
-          source: 'kcenter', target: 'k4', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        }) 
-        instance.connect({
-          connector: ['Straight'],
-          source: 'kcenter', target: 'k2', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
-        })                      
+        let array = [
+          ['k1', 'k2'],
+          ['k3', 'k2'],
+          ['k3', 'k4'],
+          ['k1', 'k4']
+        ]
+        array.forEach(item => {
+          instance.connect({
+            overlays: [
+              ['Arrow', {
+                location: 1,
+                id: 'arrow',
+                length: 14,
+                width: 10,
+                foldback: 0.8
+              }],                         
+            ],
+            source: item[0], target: item[1], paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
+          })
+        })        
         // 禁止拖拽
         instance.importDefaults({
           ConnectionsDetachable: false
@@ -153,9 +147,6 @@ function TopoModal(props) {
             <div className="text-wrapper">
               NameServer
             </div>
-            {/* <div className="tip">
-              每隔10秒扫描还存活的broker连接，2分钟没有发送心跳的broker连接会被关闭。
-            </div> */}
           </div> 
 
           <div id="k4" className="card broker">
@@ -165,15 +156,9 @@ function TopoModal(props) {
             <div className="text-wrapper">
               broker
             </div>
-            {/* <div className="tip">
-              每隔10秒扫描还存活的连接，2分钟没有发送心跳的连接会被关闭。
-            </div> */}
           </div>  
 
-          {/* <div id="kcenter" className="card center">
-              <div> 长连接 </div>
-              <div> 心跳： broker每隔30s向NameServer发送心跳（包含自身的topic信息）</div>
-          </div> */}
+  
 
         </div>
       </Spin>
