@@ -82,7 +82,7 @@ function ExtensionList(props) {
 	}, [tableModalVisibility.visible]);
 	
 	/**
-	 * 当添加或释放集群时，轮询状态
+	 * 当添加或卸载集群时，轮询状态
 	 */
 	useIntervalWithCondition((timer, rely) => {
 		if (timer) {

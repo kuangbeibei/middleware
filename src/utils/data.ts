@@ -30,7 +30,7 @@ export const clusterStatus = {
 		text: '启动运行',
 	},
 	release: {
-		text: '资源已释放',
+		text: '资源已卸载',
 	},
 	success: {
 		text: '成功',

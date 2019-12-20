@@ -241,12 +241,12 @@ function MysqlCluster(props) {
 				<Menu.Item key="3">
 					<Popconfirm
 						placement="topRight"
-						title={`确定释放集群${text.name}?`}
+						title={`确定卸载集群${text.name}?`}
 						onConfirm={() => {}}
 						okText="是"
 						cancelText="否"
 					>
-						<a>释放</a>
+						<a>卸载</a>
 					</Popconfirm>
 				</Menu.Item>
 				<Menu.Item key="4">

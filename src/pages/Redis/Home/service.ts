@@ -110,7 +110,7 @@ export async function delCluster(id) {
 }
 
 
-// 释放集群
+// 卸载集群
 export async function releaseCluster(taskId) {
     return delApi(ProductRedisApiUrl)(`/mid/v1/releaseTaskResources/redis/${taskId}`).then(res => {
          if (res.code === 200) {
