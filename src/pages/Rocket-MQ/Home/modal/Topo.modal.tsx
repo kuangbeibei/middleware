@@ -14,25 +14,22 @@ import Modal from "@com/Modal";
 // import PropTypes from 'prop-types'
 import { jsPlumb } from 'jsplumb'
 import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
-
+import './topo.modal.less'
 
 import {
   Form,
   Input,
   Select,
-  Icon
+  Icon,
+  Spin
 } from 'antd';
 
 
 
 function TopoModal(props) {
   
+  let [loading, setLoading] = useState(true)
 
-  // const initialRocketMqObj:any = {
-  //   name: '',
-  //   summary: '',
-  //   tenant: 't1'
-  // }
   
   const { 
     tableModalVisibility,
@@ -55,8 +52,6 @@ function TopoModal(props) {
     setTableModalVisibility();
 
     setTimeout(()=> {
-      console.log(jsPlumb)
-
       // jsPlumb.ready(() => {
         let instance:any = jsPlumb.getInstance({
         // type ConnectorId = "Bezier" | "StateMachine" | "Flowchart" | "Straight" | UserDefinedConnectorId;
@@ -78,32 +73,31 @@ function TopoModal(props) {
         })
         const serviceCards = instance.getSelector('.service-card')
         instance.connect({
-          source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'black' }, anchor: 'Continuous'
-          // source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'red' }, anchor: 'Continuous'
+          source: 'k1', target: 'k2', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
         })
         instance.connect({
-          source: 'k2', target: 'k3', paintStyle: { strokeWidth: 1, stroke: 'black' }, anchor: 'Continuous'
-          // source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'red' }, anchor: 'Continuous'
+          source: 'k2', target: 'k3', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
         })
         instance.connect({
-          source: 'k3', target: 'k4', paintStyle: { strokeWidth: 1, stroke: 'black' }, anchor: 'Continuous'
-          // source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'red' }, anchor: 'Continuous'
+          source: 'k3', target: 'k4', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
         })
         instance.connect({
-          source: 'k4', target: 'k1', paintStyle: { strokeWidth: 1, stroke: 'black' }, anchor: 'Continuous'
-          // source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'red' }, anchor: 'Continuous'
-        })     
-        // instance.connect({
-        //   Connector: 'Straight',
-        //   source: 'k2', target: 'k4', paintStyle: { strokeWidth: 1, stroke: 'black' }, anchor: 'Continuous'
-        //   // source: 'k1', target: 'k2', paintStyle: { strokeWidth: 1, stroke: 'red' }, anchor: 'Continuous'
-        // })                       
+          source: 'k4', target: 'k1', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
+        })
+        instance.connect({
+          connector: 'Straight',
+          source: 'kcenter', target: 'k4', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
+        }) 
+        instance.connect({
+          connector: ['Straight'],
+          source: 'kcenter', target: 'k2', paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
+        })                      
         // 禁止拖拽
         instance.importDefaults({
           ConnectionsDetachable: false
         })
  
-
+        setLoading(false)
 
     }, 500)
 
@@ -117,6 +111,11 @@ function TopoModal(props) {
     wrapperCol: { span: 12 }
   };
 
+  
+  const solutionIcons = Array.from({length: 3}).map((item,index) => {
+    return (<Icon key={index} type="solution" />)
+  })
+
   return(
     <Modal
       modalName = {`拓扑图`}
@@ -125,117 +124,63 @@ function TopoModal(props) {
       handleCancel={handleCancel}
       handleOk= {handleOK}
     >
-      <div style={{
-        // border: '1px solid black',
-        position: 'relative',
-        height: '700px',
-      }}>
-         <div
-          className="card"
-          id={"k1"}
-          style={{
-            position: 'absolute',
-            right: 10,
-            top: 'calc(50% - 80px)',
-            // top: '50%',
-            // transform: 'translateY(50%)',
-            width: '280px',
-            height: '160px',
-            border: '1px solid black'
-          }}
-         >
+      <Spin spinning={loading}>
+        <div className="topo-container">
 
-          <YHFlexDiv style={{padding: '20px'}}>
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-          </YHFlexDiv>
-          <div style={{
-            textAlign: 'center',
-            fontSize: 12
-          }}>
-            消费者
-          </div>
-         </div>
-
-         <div
-          id={"k3"}
-          className="card"
-          style={{
-            position: 'absolute',
-            left: 10,
-            top: 'calc(50% - 80px)',
-            // top: '50%',
-            width: '280px',
-            height: '160px',
-            border: '1px solid black'
-          }}
-         >
-          <YHFlexDiv style={{padding: '20px'}}>
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-            <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="solution" />
-           </YHFlexDiv>
-          <div style={{
-            textAlign: 'center',
-            fontSize: 12
-          }}>
-            生产者
-          </div>
-         </div>   
-
-
-         <div
-          id={"k2"}
-          className="card"
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 'calc(50% - 200px)',
-            width: '400px',
-            height: '200px',
-            border: '1px solid black'
-          }}
-         >
-            <YHFlexDiv style={{padding: '20px', justifyContent: 'center', paddingTop: '30px'}}>
-              <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="database" />
+          <div  id="k1" className="card consumer">
+            <YHFlexDiv className="icon-wrapper">
+              { solutionIcons }
             </YHFlexDiv>
-            <div style={{
-              textAlign: 'center',
-              fontSize: 12
-            }}>
-              name server
+            <div className="text-wrapper">
+              消费者
             </div>
-         </div> 
+          </div>
 
-         <div
-          id={"k4"}
-          className="card"
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            right: 'calc(50% - 200px)',
-            width: '400px',
-            height: '200px',
-            border: '1px solid black'
-          }}
-         >
-            <YHFlexDiv style={{padding: '20px', justifyContent: 'center', paddingTop: '30px'}}>
-              <Icon style={{fontSize: 80, color: '#9e9e9e'}} type="database" />
+          <div id="k3" className="card producer">
+            <YHFlexDiv className="icon-wrapper">
+              { solutionIcons }
             </YHFlexDiv>
-            <div style={{
-              textAlign: 'center',
-              fontSize: 12
-            }}>
+            <div className="text-wrapper">
+              生产者
+            </div>
+          </div>   
+
+
+          <div id="k2" className="card name-server">
+            <YHFlexDiv className="icon-wrapper">
+              <Icon type="database" />
+            </YHFlexDiv>
+            <div className="text-wrapper">
+              NameServer
+            </div>
+            {/* <div className="tip">
+              每隔10秒扫描还存活的broker连接，2分钟没有发送心跳的broker连接会被关闭。
+            </div> */}
+          </div> 
+
+          <div id="k4" className="card broker">
+            <YHFlexDiv className="icon-wrapper">
+              <Icon type="database" />
+            </YHFlexDiv>
+            <div className="text-wrapper">
               broker
             </div>
-         </div>  
+            {/* <div className="tip">
+              每隔10秒扫描还存活的连接，2分钟没有发送心跳的连接会被关闭。
+            </div> */}
+          </div>  
 
+          {/* <div id="kcenter" className="card center">
+              <div> 长连接 </div>
+              <div> 心跳： broker每隔30s向NameServer发送心跳（包含自身的topic信息）</div>
+          </div> */}
 
-      </div>
-
+        </div>
+      </Spin>
     </Modal>
   )
+
+
 
 }
 

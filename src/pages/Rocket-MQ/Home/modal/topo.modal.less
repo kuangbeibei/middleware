@@ -1,0 +1,101 @@
+.topo-container {
+  position: relative;
+  height: 770px;
+  // height:800px;
+  margin: 10px;
+  .card {
+    position: absolute;
+    border: 1px solid black;
+    border: 1px solid #9e9e9e;
+    background-color: #dff6f0;
+    
+    // 水平线上的生产者和消费者
+    &.producer, &.consumer {
+      background-color: #effffb;
+      width: 240px;
+      height: 120px;
+      top: calc(50% - 60px);
+      div.icon-wrapper {
+        padding: 20px;
+        i.anticon {
+          font-size: 50px; // maybe little is better
+          // color: #9e9e9e
+          color: #46b3e6;
+        }
+      }
+      
+      div.text-wrapper {
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+    // 右侧-消费者
+    &.consumer {
+      right: 0;
+    }
+    // 左侧-生产者
+    &.producer {
+      left: 0;
+    }
+
+
+    // 垂直线上的name server、 broker
+    &.name-server, &.broker {
+      width: 360px;
+      height: 140px;
+      right: calc(50% - 180px);
+      div.icon-wrapper {
+        padding: 20px;
+        padding-top: 30px;
+        justify-content: center;
+        i.anticon {
+          font-size: 70px;
+          // color: #9e9e9e;
+          // color: #46b3e6;
+          color: #4d80e4;
+        }
+      }
+      div.text-wrapper {
+        font-size: 12px;
+        text-align: center;
+        color: black;
+      }
+      // div.tip {
+      //   position: absolute;
+      //   width: 61%;
+      //   text-align: center;
+      //   border: 1px solid #9e9e9e;
+      //   padding: 8px;
+      //   background-color: #fff1cf;
+      //   left: 50%;
+      // }
+    }
+    &.name-server {
+      top: 0;
+      // .tip {
+      //   transform: translate(-50%, -100%);
+      //   top: 0;
+      // }
+    }
+    &.broker {
+      bottom: 0;
+      // .tip {
+      //   transform: translate(-50%, 100%);
+      //   bottom: 0;
+      //   padding: 4px;
+      // }
+    }
+
+    // &.center {
+    //   padding: 5px;
+    //   width: 180px;
+    //   // height: 90px;
+    //   background-color: #fff1cf;
+    //   text-align: center;
+    //   top: calc(50% - 45px);
+    //   right: calc(50% - 90px);
+    // }
+  }
+
+
+}
