@@ -105,7 +105,7 @@ function RedisCluster(props) {
 	};
 
 	/**
-	 * 当添加或释放集群时，轮询状态
+	 * 当添加或卸载集群时，轮询状态
 	 */
 	useIntervalWithCondition((timer, rely) => {
 		if (timer) {
@@ -258,20 +258,20 @@ function RedisCluster(props) {
 	};
 
 	/**
-	 * 释放集群
+	 * 卸载集群
 	 * @param taskId
 	 */
 	const releaseClusterByTaskId = (taskId, name) => {
 		releaseCluster(taskId)
 			.then(res => {
 				if (res) {
-					message.info(`正在释放集群${name}...`);
+					message.info(`正在卸载集群${name}...`);
 					setLoadListCount(loadListCount => loadListCount + 1);
 					// statusTaskIds.push(taskId);
 					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
 					setStatusTaskId(taskId)
 				} else {
-					message.error(`释放集群${name}失败! `);
+					message.error(`卸载集群${name}失败! `);
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -328,7 +328,7 @@ function RedisCluster(props) {
 					return (taskId, name) =>
 						releaseClusterByTaskId(taskId, name);
 				}
-				return () => message.info(`集群状态是${status}，不可释放!`);
+				return () => message.info(`集群状态是${status}，不可卸载!`);
 			case "deploy":
 				if (status === "ready" || status === "failed") {
 					return taskId => deployCluster(taskId);
@@ -500,7 +500,7 @@ function RedisCluster(props) {
 				<Menu.Item key="4">
 					<Popconfirm
 						placement="topRight"
-						title={`确定释放集群${text.name}?`}
+						title={`确定卸载集群${text.name}?`}
 						onConfirm={() =>
 							checkStatusBeforeOperate("release", text.status)(
 								text.taskId,
@@ -510,7 +510,7 @@ function RedisCluster(props) {
 						okText="是"
 						cancelText="否"
 					>
-						<a>释放</a>
+						<a>卸载</a>
 					</Popconfirm>
 				</Menu.Item>
 				<Menu.Item key="5">

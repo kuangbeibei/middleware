@@ -13,17 +13,14 @@ import {
 
 export default function(props) {
 	const { basicData } = props;
-
 	let _basicData = transDataToArray(basicData);
-
-	console.log('_basicData,', _basicData)
 
 	return (
 		<Descriptions bordered column={1}>
 			{_basicData.map(configItem => {
 				let val;
 
-				if (configItem.enName === "dbConfiguration" || configItem.enName === "hosts") {
+				if (configItem.enName === "dbConfiguration" || configItem.enName === "instances") {
 					val = JSON.stringify(configItem.value).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n")
 				} else {
 					val = configItem.value;

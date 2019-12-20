@@ -36,7 +36,7 @@ export async function runTask(taskId) {
     return get(`/mid/v1/runTask/rmqNameServer/${taskId}`).then(res => {}).catch(e => e.message)
 }
 
-// 释放/删除
+// 卸载/删除
 export async function releaseTaskResources(taskId) {
     return del(`/mid/v1/releaseTaskResources/rmqNameServer/${taskId}`).then(res => {}).catch(e => e.message)
 }

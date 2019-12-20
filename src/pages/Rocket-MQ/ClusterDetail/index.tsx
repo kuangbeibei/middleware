@@ -210,7 +210,7 @@ function ClusterDetail(props){
               执行部署
             </YhOp>
             <YhOp color={'#0070cc'}>
-              释放资源
+              卸载资源
             </YhOp>
             <YhOp color={'#0070cc'}>
               删除
@@ -296,7 +296,7 @@ function ClusterDetail(props){
               执行部署
             </YhOp>
             <YhOp color={'#0070cc'}>
-              释放资源
+              卸载资源
             </YhOp>
             <YhOp color={'#0070cc'}>
               删除
@@ -377,7 +377,7 @@ function ClusterDetail(props){
               执行部署
             </YhOp>
             <YhOp color={'#0070cc'}>
-              释放资源
+              卸载资源
             </YhOp>
             <YhOp color={'#0070cc'}>
               删除

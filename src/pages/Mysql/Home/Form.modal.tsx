@@ -43,7 +43,7 @@ const initIPostParams: IPostParams = {
 	backupServer: "",
 	backupKeepDays: "",
 	dbConfiguration: "",
-	hosts: [
+	instances: [
 		{
 			ip: "",
 			port: "",
@@ -70,6 +70,11 @@ const formItemInstanceLayout = {
 	labelCol: { span: 6 },
 	wrapperCol: { span: 6 }
 };
+
+const formItemInstanceSshLayout = {
+	labelCol: { span: 12 },
+	wrapperCol: { span: 6 }
+}
 
 function FormModal(props) {
 	const {
@@ -143,14 +148,14 @@ function FormModal(props) {
 	 * @param type 
 	 */
 	const generateHostsTemplate = num => {
-		let hosts = Array(num).fill({
+		let instances = Array(num).fill({
 			ip: "",
 			port: "",
 			user: "",
 			pass: "",
 			role: ""
 		})
-		adjustPostParams('hosts', hosts)
+		adjustPostParams('instances', instances)
 	}
 	
 	/**
@@ -213,7 +218,7 @@ function FormModal(props) {
 			visible={tableModalVisibility.visible}
 			handleOk={handleOk}
 			handleCancel={handleCancel}
-			width={"70%"}
+			width={"75%"}
 		>
 			<Form>
 				<Divider>基础信息</Divider>
@@ -283,7 +288,7 @@ function FormModal(props) {
 				</Form.Item>
 
 				<Divider>实例配置</Divider>
-				{postParams.hosts.map((host, idx) => (
+				{postParams.instances.map((instance, idx) => (
 					<YHFlexDiv key={idx}>
 						<YHSmallFormItem
 							{...formItemInstanceLayout}
@@ -291,8 +296,8 @@ function FormModal(props) {
 								`IP`
 							}
 						>
-							{getFieldDecorator(`hosts[${idx}].ip`, {
-								initialValue: host.ip,
+							{getFieldDecorator(`instances[${idx}].ip`, {
+								initialValue: instance.ip,
 								rules: [
 									{
 										required: true,
@@ -302,13 +307,13 @@ function FormModal(props) {
 							})(<Input placeholder="请输入IP地址"></Input>)}
 						</YHSmallFormItem>
 						<YHSmallFormItem
-							{...formItemInstanceLayout}
-							label="Port"
+							{...formItemInstanceSshLayout}
+							label="SSH连接端口"
 						>
 							{getFieldDecorator(
-								`hosts[${idx}].port`,
+								`instances[${idx}].port`,
 								{
-									initialValue: host.port,
+									initialValue: instance.port,
 									rules: [
 										{
 											required: true,
@@ -333,9 +338,9 @@ function FormModal(props) {
 							label="用户名"
 						>
 							{getFieldDecorator(
-								`hosts[${idx}].user`,
+								`instances[${idx}].user`,
 								{
-									initialValue: host.user,
+									initialValue: instance.user,
 									rules: [
 										{
 											required: true,
@@ -360,9 +365,9 @@ function FormModal(props) {
 							label="密码"
 						>
 							{getFieldDecorator(
-								`hosts[${idx}].pass`,
+								`instances[${idx}].pass`,
 								{
-									initialValue: host.pass,
+									initialValue: instance.pass,
 									rules: [
 										{
 											required: true,
@@ -387,9 +392,9 @@ function FormModal(props) {
 							label="角色"
 						>
 							{getFieldDecorator(
-								`hosts[${idx}].role`,
+								`instances[${idx}].role`,
 								{
-									initialValue: host.role,
+									initialValue: instance.role,
 									rules: [
 										{
 											required: true,

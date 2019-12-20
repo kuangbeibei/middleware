@@ -64,7 +64,7 @@ function RmqNameServer(props) {
 	}, [loadingListCount]);
 
 	/**
-	 * 释放
+	 * 卸载
 	 */
 	const delNameserver = (taskId, status) => {
 		releaseTaskResources(taskId)
