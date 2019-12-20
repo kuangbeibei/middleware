@@ -13,10 +13,7 @@ import {
 
 export default function(props) {
 	const { basicData } = props;
-
 	let _basicData = transDataToArray(basicData);
-
-	console.log('_basicData,', _basicData)
 
 	return (
 		<Descriptions bordered column={1}>

@@ -98,8 +98,6 @@ export default function (props) {
 		}
 	}, [pathname])
 
-	
-
 	console.log('queryStackMap 对象, ', queryStackMap);
 
 	let pathSnippets = pathname.split("/").filter(i => i);
