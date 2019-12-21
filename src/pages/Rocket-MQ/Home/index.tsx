@@ -376,10 +376,7 @@ function RocketMqHome(props) {
 			{loading ? (
 				<Loading />
 			) : (
-        <>
-          <TableTitle title={'集群列表'} />
-          <Table columns={columns} dataSource={tableList} rowKey="id" />
-        </>
+        <Table columns={columns} dataSource={tableList} rowKey="id" />
       )}
       
       {

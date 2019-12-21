@@ -151,7 +151,7 @@ function ConsoleModal(props) {
 						]
 					})(<Input type="password" placeholder="请输入密码"></Input>)}
 				</Form.Item>
-        <Form.Item {...formItemBasicLayout} label="dashboard文件路径">
+        {/* <Form.Item {...formItemBasicLayout} label="dashboard文件路径">
 					{getFieldDecorator("params.logPath", {
 						initialValue: nameServerObj.logPath,
 						rules: [
@@ -172,7 +172,7 @@ function ConsoleModal(props) {
 							}
 						]
 					})(<TextArea rows={4} placeholder="更多配置"></TextArea>)}
-				</Form.Item>                       
+				</Form.Item>                        */}
 
 
       </Form>

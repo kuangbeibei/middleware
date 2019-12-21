@@ -1,7 +1,7 @@
 /*
  * @Author: kevinkang
  * @Date: 2019-12-17 16:35:46
- * @LastEditTime: 2019-12-17 17:42:04
+ * @LastEditTime : 2019-12-20 18:07:27
  * @FilePath: /middleware-frontend/src/pages/Rocket-MQ/ClusterDetail/modal/NameServer.modal.tsx
  */
 
@@ -152,7 +152,7 @@ function NameServerModal(props) {
 						]
 					})(<Input type="password" placeholder="请输入密码"></Input>)}
 				</Form.Item>
-        <Form.Item {...formItemBasicLayout} label="日志路径">
+        {/* <Form.Item {...formItemBasicLayout} label="日志路径">
 					{getFieldDecorator("params.logPath", {
 						initialValue: nameServerObj.logPath,
 						rules: [
@@ -173,7 +173,7 @@ function NameServerModal(props) {
 							}
 						]
 					})(<TextArea rows={4} placeholder="更多配置"></TextArea>)}
-				</Form.Item>                       
+				</Form.Item>                        */}
 
 
       </Form>

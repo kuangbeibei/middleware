@@ -391,43 +391,25 @@ function ClusterDetail(props){
   return (
     <>
 
-      <YhAdd
-				type="primary"
-				// icon="plus"
-				onClick={addNameServer}
-				style={{ marginBottom: 5, marginRight: 20, marginTop: 10}}
-			>
-        添加NameServer
-      </YhAdd>
-
-      <YhAdd
-				type="primary"
-				// icon="plus"
-				onClick={addConsole}
-				style={{ marginBottom: 5, marginRight: 20 }}
-			>
-        添加Console
-      </YhAdd>
-
-      <YhAdd
-				type="primary"
-				// icon="plus"
-				onClick={addBroker}
-				style={{ marginBottom: 5,}}
-			>
-        添加Broker
-      </YhAdd>
-
       <Divider />
-      <TableTitle title={'NameServer列表'}/>
+
+      <TableTitle title={'Broker列表'}>
+        <YhAdd type="primary" onClick={addBroker}> 添加Broker </YhAdd>
+      </TableTitle>
+      <Table columns={brokerColumns} dataSource={brokerList} rowKey="id" />
+
+      <TableTitle title={'NameServer列表'}>
+        <YhAdd type="primary" onClick={addNameServer}> 添加NameSerever </YhAdd>
+      </TableTitle>
       <Table columns={nameServerColumns} dataSource={nameServerList} rowKey="id" />
       
-      <TableTitle title={'console列表'} style= {{marginTop: 30}} />
+      <TableTitle title={'console列表'}>
+        <YhAdd type="primary" onClick={addConsole}> 添加Console </YhAdd>
+      </TableTitle>
       <Table columns={consoleColumns} dataSource={consoleList} rowKey="id" />
 
 
-      <TableTitle title={'Broker列表'} style= {{marginTop: 30}} />
-      <Table columns={brokerColumns} dataSource={brokerList} rowKey="id" />
+
 
       
 

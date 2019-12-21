@@ -1,10 +1,21 @@
 import * as React from 'react';
+import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
 
 function TableTitle(props) {
   return(
-    <p style={{marginTop: 15, marginBottom: 25, fontSize: 14, ...props.style}}>
+    <YHFlexDiv style={{alignItems: 'baseline', marginTop: 30, marginBottom: 15}}>
       {props.title}:
-    </p>
+
+      {
+        props.children ? 
+        (
+            <div style={{float: 'right'}}>
+              {props.children}
+            </div>
+        ) : null
+      }
+
+    </YHFlexDiv>
   )
 }
 
