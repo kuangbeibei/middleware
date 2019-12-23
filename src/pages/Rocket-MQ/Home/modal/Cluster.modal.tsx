@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import Modal from "@com/Modal";
-import { YHSmallFormItem, YHFlexDiv, YHFlexCenterDiv } from "@styled/Form";
+import { YHSmallFormItem, YHFlexSpaceBetwenDiv, YHFlexCenterDiv } from "@styled/Form";
 import { isEven, deepCloneObject } from "@utils/tools";
 
 // import PropTypes from 'prop-types'
@@ -112,7 +112,7 @@ function RocketMqModal(props) {
         <div style={{border: '3px dotted wheat', paddingTop: 24, marginTop: 15}}>
           {
             consoleGroup.map((item, idx) => 
-              <YHFlexDiv>
+              <YHFlexSpaceBetwenDiv>
                 {/* <Form.Item
                   style= {{width: 15}}
                   // {...formItemBasicLayout}
@@ -195,7 +195,7 @@ function RocketMqModal(props) {
                     })(<Input placeholder="password"></Input>)}
                 </YHSmallFormItem>
 
-              </YHFlexDiv>
+              </YHFlexSpaceBetwenDiv>
               )
           }
 
@@ -205,12 +205,12 @@ function RocketMqModal(props) {
       );
     })
     formItems.push(
-      <YHFlexDiv>
+      <YHFlexSpaceBetwenDiv>
         <Button type="primary" onClick={addConsole} style={{marginTop: 10}}> 
           添加 
           <Icon type="plus-circle" /> 
         </Button>
-      </YHFlexDiv>
+      </YHFlexSpaceBetwenDiv>
     )
     return formItems;
   }
@@ -239,7 +239,7 @@ function RocketMqModal(props) {
   const getBrokerFormItems = ()=> {
 
     const formItems = clusterObj.brokerList.map((broker, index) => (
-      <YHFlexDiv>
+      <YHFlexSpaceBetwenDiv>
               <YHSmallFormItem
                   {...formItemBasicLayout}
                   label="版本"
@@ -329,15 +329,15 @@ function RocketMqModal(props) {
                 {/* </YHSmallFormItem> */}
                        
 
-      </YHFlexDiv>
+      </YHFlexSpaceBetwenDiv>
     ))
     formItems.push(
-      <YHFlexDiv>
+      <YHFlexSpaceBetwenDiv>
         <Button type="primary" onClick={addBroker} style={{marginTop: 10}}>
            添加 
            <Icon type="plus-circle" /> 
         </Button>
-      </YHFlexDiv>
+      </YHFlexSpaceBetwenDiv>
     )
     return formItems;
 
@@ -368,7 +368,7 @@ function RocketMqModal(props) {
     // const formItems = getFieldValue('nameServerList').map((nameServer, index) =>(
     console.log('get ---->>>>', clusterObj.nameServerList)
     const formItems = clusterObj.nameServerList.map((nameServer, index) =>(
-      <YHFlexDiv>
+      <YHFlexSpaceBetwenDiv>
       <YHSmallFormItem
           {...formItemBasicLayout}
           label="版本"
@@ -458,16 +458,16 @@ function RocketMqModal(props) {
         {/* </YHSmallFormItem> */}
                
 
-      </YHFlexDiv>
+      </YHFlexSpaceBetwenDiv>
     ))
 
     formItems.push(
-      <YHFlexDiv>
+      <YHFlexSpaceBetwenDiv>
         <Button  type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
          添加 
          <Icon type="plus-circle" /> 
         </Button>
-      </YHFlexDiv>
+      </YHFlexSpaceBetwenDiv>
     )
     return formItems;
 
