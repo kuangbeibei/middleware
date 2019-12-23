@@ -205,6 +205,8 @@ function MysqlCluster(props) {
 						{text.name}
 					</a>
 				);
+			case "type":
+				return text === 'ha' ? '主从复制' : 'InnodbCluster';
 			case "instances":
 				return <a onClick={() =>
 							gotoInstance(text.id)
@@ -274,13 +276,13 @@ function MysqlCluster(props) {
 		{
 			title: "名称",
 			key: "name",
-			width: "20%",
+			width: "18%",
 			...getColumnSearchProps("name")
 		},
 		{
 			title: "状态",
 			key: "status",
-			width: "13%",
+			width: "10%",
 			...getColumnSearchProps("status")
 		},
 		{
@@ -293,7 +295,7 @@ function MysqlCluster(props) {
 		{
 			title: "实例个数",
 			key: "instances",
-			width: "13%",
+			width: "8%",
 			...getColumnSearchProps("instances")
 		},
 		{

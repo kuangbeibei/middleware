@@ -13,7 +13,13 @@ export const YHSmallFormItem = styled(Form.Item)`
 
 export const YHFlexDiv = styled('div')`
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
+	align-items: center;
+`
+
+export const YHFlexDivEvenly = styled('div')`
+	display: flex;
+	justify-content: space-evenly;
 	align-items: center;
 `
 

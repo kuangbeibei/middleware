@@ -18,7 +18,7 @@ import {
 	Col
 } from "antd";
 import Modal from "@com/Modal";
-import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
+import { YHSmallFormItem, YHFlexDivEvenly } from "@styled/Form";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
@@ -285,7 +285,7 @@ function FormModal(props) {
 				</Form.Item>
 
 				{postParams.params.instances.map((instance, idx) => (
-					<YHFlexDiv key={idx}>
+					<YHFlexDivEvenly key={idx}>
 						<YHSmallFormItem
 							{...formItemInstanceLayout}
 							label={
@@ -385,7 +385,7 @@ function FormModal(props) {
 								/>
 							)}
 						</YHSmallFormItem>
-					</YHFlexDiv>
+					</YHFlexDivEvenly>
 				))}
 				<Divider>自定义配置项目</Divider>
 				<Form.Item {...formItemBasicLayout} label="自定义参数">
