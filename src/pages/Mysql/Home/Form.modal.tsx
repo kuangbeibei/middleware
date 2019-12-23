@@ -32,7 +32,7 @@ import {
 	getClusterDetail,
 	createMysqlCluster,
 	updateMysqlCluster
-} from "./service"
+} from "./service";
 
 const initIPostParams: IPostParams = {
 	name: "",
@@ -62,8 +62,8 @@ const initIPostParams: IPostParams = {
 };
 
 const formItemBasicLayout = {
-	labelCol: { span: 6 },
-	wrapperCol: { span: 12 }
+	labelCol: { span: 8 },
+	wrapperCol: { span: 4 }
 };
 
 const formItemInstanceLayout = {
@@ -72,8 +72,23 @@ const formItemInstanceLayout = {
 };
 
 const formItemInstanceSshLayout = {
+	labelCol: { span: 10 },
+	wrapperCol: { span: 6 }
+};
+
+const formAdvancesLayout = {
+	labelCol: { span: 10 },
+	wrapperCol: { span: 6 }
+}
+
+const formBackupLayout = {
 	labelCol: { span: 12 },
 	wrapperCol: { span: 6 }
+}
+
+const dbConfigurationLayout = {
+	labelCol: { span: 2 },
+	wrapperCol: { span: 20 }
 }
 
 function FormModal(props) {
@@ -98,19 +113,21 @@ function FormModal(props) {
 		if (id) {
 			getClusterDetail(id).then(data => {
 				// setPostParams(data)
-			})
+			});
 		}
-	}, [id])
+	}, [id]);
 
 	useEffect(() => {
-		if (!id || (id && !postParams.dbConfiguration) ) {
+		if (!id || (id && !postParams.dbConfiguration)) {
 			getDefaultClusterConfig().then(data => {
 				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
-				let val = JSON.stringify(data).replace(/[\{\}\"]/g, "").replace(/\,/g, "\n");
-				adjustPostParams('dbConfiguration',  JSON.stringify(data));
-			})
+				let val = JSON.stringify(data)
+					.replace(/[\{\}\"]/g, "")
+					.replace(/\,/g, "\n");
+				adjustPostParams("dbConfiguration", JSON.stringify(data));
+			});
 		}
-	}, [])
+	}, []);
 
 	/**
 	 * 选择租户
@@ -125,27 +142,25 @@ function FormModal(props) {
 	 * @param value
 	 * @param type
 	 */
-	const autoCompleteInput = (value, type) => {
-		
-	};
+	const autoCompleteInput = (value, type) => {};
 
 	/**
 	 * 切换集群类型，变换实例
-	 * @param val 
+	 * @param val
 	 */
 	const chooseClusterType = val => {
-		if (val === 'ha') {
+		if (val === "ha") {
 			// 默认一主一从，2个机器实例
-			generateHostsTemplate(2)
+			generateHostsTemplate(2);
 		} else {
 			// 默认一主两从，3个机器实例
-			generateHostsTemplate(3)
+			generateHostsTemplate(3);
 		}
-	}
+	};
 
 	/**
 	 * 根据type，生成相应的机器实例template
-	 * @param type 
+	 * @param type
 	 */
 	const generateHostsTemplate = num => {
 		let instances = Array(num).fill({
@@ -154,14 +169,14 @@ function FormModal(props) {
 			user: "",
 			pass: "",
 			role: ""
-		})
-		adjustPostParams('instances', instances)
-	}
-	
+		});
+		adjustPostParams("instances", instances);
+	};
+
 	/**
 	 * 调整postParams的值，只变化相应部分
-	 * @param key 
-	 * @param val 
+	 * @param key
+	 * @param val
 	 */
 	const adjustPostParams = (key, val) => {
 		const {
@@ -170,10 +185,10 @@ function FormModal(props) {
 		let newPostParams = Object.assign({}, getFieldsValue());
 		newPostParams[key] = val;
 		setPostParams(newPostParams);
-	}
+	};
 
 	/**
-	 * 
+	 *
 	 */
 	const save = async data => {
 		if (id) {
@@ -182,7 +197,6 @@ function FormModal(props) {
 			return createMysqlCluster(data);
 		}
 	};
-
 
 	const handleOk = () => {
 		const {
@@ -218,83 +232,82 @@ function FormModal(props) {
 			visible={tableModalVisibility.visible}
 			handleOk={handleOk}
 			handleCancel={handleCancel}
-			width={"75%"}
+			width={"70%"}
 		>
 			<Form>
 				<Divider>基础信息</Divider>
-				<Form.Item {...formItemBasicLayout} label="集群名称">
-					{getFieldDecorator("name", {
-						initialValue: postParams.name,
-						rules: [
-							{
-								required: true,
-								message: "请输入集群名称"
-							}
-						]
-					})(<Input placeholder="请输入集群名称"></Input>)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="集群类型">
-					{getFieldDecorator("type", {
-						initialValue: postParams.type,
-						rules: [
-							{
-								required: true,
-								message: "请选择mysql集群类型"
-							}
-						]
-					})(
-						<Select
-							onChange={chooseClusterType}
-						>
-							<Select.Option value="ha">HA</Select.Option>
-							<Select.Option value="InnodeCluster">
-								InnodeCluster
-							</Select.Option>
-						</Select>
-					)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="集群密码">
-					{getFieldDecorator("rootPassword", {
-						initialValue: postParams.rootPassword,
-						rules: [
-							{
-								message: "请输入mysql集群密码"
-							}
-						]
-					})(<Input.Password placeholder="请输入mysql集群密码" />)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="租户">
-					<Select
-						showSearch
-						value={tenantVal}
-						placeholder="请输入租户名称，或者IP地址，以便查询"
-						defaultActiveFirstOption={false}
-						notFoundContent={null}
-						onChange={handleTenantChange}
-						optionFilterProp="children"
-						filterOption={(input, option) =>
-							typeof option.props.children === "string"
-								? option.props.children.indexOf(input) > -1
-								: false
-						}
-					>
-						{tenantRes.length > 0 &&
-							tenantRes.map(tenant => (
-								<Select.Option key={tenant.userId}>
-									{tenant.name}
+				<YHFlexDiv>
+					<YHSmallFormItem {...formItemBasicLayout} label="集群名称">
+						{getFieldDecorator("name", {
+							initialValue: postParams.name,
+							rules: [
+								{
+									required: true,
+									message: "请输入集群名称"
+								}
+							]
+						})(<Input placeholder="请输入集群名称"></Input>)}
+					</YHSmallFormItem>
+					<YHSmallFormItem {...formItemBasicLayout} label="集群类型">
+						{getFieldDecorator("type", {
+							initialValue: postParams.type,
+							rules: [
+								{
+									required: true,
+									message: "请选择mysql集群类型"
+								}
+							]
+						})(
+							<Select onChange={chooseClusterType}>
+								<Select.Option value="ha">HA</Select.Option>
+								<Select.Option value="InnodeCluster">
+									InnodeCluster
 								</Select.Option>
-							))}
-					</Select>
-				</Form.Item>
-
+							</Select>
+						)}
+					</YHSmallFormItem>
+					<YHSmallFormItem {...formItemBasicLayout} label="集群密码">
+						{getFieldDecorator("rootPassword", {
+							initialValue: postParams.rootPassword,
+							rules: [
+								{
+									message: "请输入mysql集群密码"
+								}
+							]
+						})(
+							<Input.Password placeholder="请输入mysql集群密码" />
+						)}
+					</YHSmallFormItem>
+					<YHSmallFormItem {...formItemBasicLayout} label="租户">
+						<Select
+							showSearch
+							value={tenantVal}
+							placeholder="请输入租户名称，或者IP地址，以便查询"
+							defaultActiveFirstOption={false}
+							notFoundContent={null}
+							onChange={handleTenantChange}
+							optionFilterProp="children"
+							filterOption={(input, option) =>
+								typeof option.props.children === "string"
+									? option.props.children.indexOf(input) > -1
+									: false
+							}
+						>
+							{tenantRes.length > 0 &&
+								tenantRes.map(tenant => (
+									<Select.Option key={tenant.userId}>
+										{tenant.name}
+									</Select.Option>
+								))}
+						</Select>
+					</YHSmallFormItem>
+				</YHFlexDiv>
 				<Divider>实例配置</Divider>
 				{postParams.instances.map((instance, idx) => (
 					<YHFlexDiv key={idx}>
 						<YHSmallFormItem
 							{...formItemInstanceLayout}
-							label={
-								`IP`
-							}
+							label={`IP`}
 						>
 							{getFieldDecorator(`instances[${idx}].ip`, {
 								initialValue: instance.ip,
@@ -310,18 +323,15 @@ function FormModal(props) {
 							{...formItemInstanceSshLayout}
 							label="SSH连接端口"
 						>
-							{getFieldDecorator(
-								`instances[${idx}].port`,
-								{
-									initialValue: instance.port,
-									rules: [
-										{
-											required: true,
-											message: "请输入端口号"
-										}
-									]
-								}
-							)(
+							{getFieldDecorator(`instances[${idx}].port`, {
+								initialValue: instance.port,
+								rules: [
+									{
+										required: true,
+										message: "请输入端口号"
+									}
+								]
+							})(
 								<Input
 									placeholder="请输入端口号"
 									onBlur={event => {
@@ -337,18 +347,15 @@ function FormModal(props) {
 							{...formItemInstanceLayout}
 							label="用户名"
 						>
-							{getFieldDecorator(
-								`instances[${idx}].user`,
-								{
-									initialValue: instance.user,
-									rules: [
-										{
-											required: true,
-											message: "请输入用户名"
-										}
-									]
-								}
-							)(
+							{getFieldDecorator(`instances[${idx}].user`, {
+								initialValue: instance.user,
+								rules: [
+									{
+										required: true,
+										message: "请输入用户名"
+									}
+								]
+							})(
 								<Input
 									placeholder="请输入用户名"
 									onBlur={event => {
@@ -364,18 +371,15 @@ function FormModal(props) {
 							{...formItemInstanceLayout}
 							label="密码"
 						>
-							{getFieldDecorator(
-								`instances[${idx}].pass`,
-								{
-									initialValue: instance.pass,
-									rules: [
-										{
-											required: true,
-											message: "请输入密码"
-										}
-									]
-								}
-							)(
+							{getFieldDecorator(`instances[${idx}].pass`, {
+								initialValue: instance.pass,
+								rules: [
+									{
+										required: true,
+										message: "请输入密码"
+									}
+								]
+							})(
 								<Input.Password
 									placeholder="请输入密码"
 									onBlur={event => {
@@ -391,23 +395,18 @@ function FormModal(props) {
 							{...formItemInstanceLayout}
 							label="角色"
 						>
-							{getFieldDecorator(
-								`instances[${idx}].role`,
-								{
-									initialValue: instance.role,
-									rules: [
-										{
-											required: true,
-											message: "请输入密码"
-										}
-									]
-								}
-							)(
+							{getFieldDecorator(`instances[${idx}].role`, {
+								initialValue: instance.role,
+								rules: [
+									{
+										required: true,
+										message: "请输入密码"
+									}
+								]
+							})(
 								<Select placeholder="请选择机器角色">
 									<Select.Option value="M">M</Select.Option>
-									<Select.Option value="S">
-										S
-									</Select.Option>
+									<Select.Option value="S">S</Select.Option>
 								</Select>
 							)}
 						</YHSmallFormItem>
@@ -415,40 +414,49 @@ function FormModal(props) {
 				))}
 
 				<Divider>高级配置</Divider>
-				<Form.Item {...formItemBasicLayout} label="备份服务器">
-					{getFieldDecorator("backupServer", {
-						initialValue: postParams.backupServer,
-						rules: [
-							{
-								message: "请输入备份服务器",
-								required: true
-							}
-						]
-					})(<Input placeholder="请输入备份服务器" />)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="自动备份">
-					{getFieldDecorator("backupStrategy", {
-						initialValue: postParams.backupStrategy,
-						rules: [
-							{
-								message: "自动备份策略，请填写cron表达式"
-							}
-						]
-					})(<Input placeholder="自动备份策略，请填写cron表达式" />)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="备份清理策略">
-					{getFieldDecorator("backupKeepDays", {
-						initialValue: postParams.backupKeepDays,
-						rules: [
-							{
-								message: "备份清理策略"
-							}
-						]
-					})(<Input placeholder="备份清理策略" />)}
-				</Form.Item>
-
+				<YHFlexDiv>
+					<YHSmallFormItem
+						{...formAdvancesLayout}
+						label="备份服务器"
+					>
+						{getFieldDecorator("backupServer", {
+							initialValue: postParams.backupServer,
+							rules: [
+								{
+									message: "请输入备份服务器",
+									required: true
+								}
+							]
+						})(<Input placeholder="请输入备份服务器" />)}
+					</YHSmallFormItem>
+					<YHSmallFormItem {...formAdvancesLayout} label="自动备份">
+						{getFieldDecorator("backupStrategy", {
+							initialValue: postParams.backupStrategy,
+							rules: [
+								{
+									message: "请填写cron表达式"
+								}
+							]
+						})(
+							<Input placeholder="请填写cron表达式" />
+						)}
+					</YHSmallFormItem>
+					<YHSmallFormItem
+						{...formBackupLayout}
+						label="备份清理策略"
+					>
+						{getFieldDecorator("backupKeepDays", {
+							initialValue: postParams.backupKeepDays,
+							rules: [
+								{
+									message: "备份清理策略"
+								}
+							]
+						})(<Input placeholder="备份清理策略" />)}
+					</YHSmallFormItem>
+				</YHFlexDiv>
 				<Divider>DB参数配置</Divider>
-				<Form.Item {...formItemBasicLayout} label="自定义参数">
+				<Form.Item {...dbConfigurationLayout} label="自定义参数">
 					{getFieldDecorator("dbConfiguration", {
 						initialValue: postParams.dbConfiguration,
 						rules: [
@@ -458,7 +466,10 @@ function FormModal(props) {
 							}
 						]
 					})(
-						<Input.TextArea placeholder="请输入自定义参数" rows={5}></Input.TextArea>
+						<Input.TextArea
+							placeholder="请输入自定义参数"
+							rows={5}
+						></Input.TextArea>
 					)}
 				</Form.Item>
 			</Form>
