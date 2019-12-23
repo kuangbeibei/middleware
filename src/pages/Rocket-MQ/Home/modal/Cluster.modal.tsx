@@ -40,7 +40,7 @@ import {
 // interface ConsoleItem {
 
 // }
-
+let count = 0;
 
   // todo 定义typescript 数据格式
   const initialRocketMqObj:any = {
@@ -55,7 +55,7 @@ import {
 
 function RocketMqModal(props) {
   
-
+  const [testList, settestList] = useState(Array())
 
   
   let [clusterObj, setClusterObj] = useState(Object.assign( {}, initialRocketMqObj));
@@ -550,12 +550,11 @@ function RocketMqModal(props) {
 
     // getFieldDecorator('nameServerList', { initialValue: [] })
 
-    console.log('get ---->>>>', clusterObj.list)
     const formItems = clusterObj.list.map((item, index) =>(
       <div>
         <Form.Item {...formItemBasicLayout} label="集群名称" style={{width: '50%', display: 'inline-block'}}>
 					{getFieldDecorator(`params.list[${index}].name`, {
-						initialValue: initialRocketMqObj.name,
+						initialValue: item.name,
 						rules: [
 							{
 								required: true,
@@ -584,35 +583,32 @@ function RocketMqModal(props) {
     return formItems;
 
   }
-  const deletet= (index)=> {
-    let list = JSON.parse(JSON.stringify(clusterObj.list));
-    console.log('当前删除的是', index)
-    list.splice(index, 1);
-    console.log('删了之后的list,', list);
-    setClusterObj(
-      Object.assign(
-        {},
-        clusterObj,
-        {
-          list: list
-        }
-      )
-    )
+  const deletet = (index) => {
+    let _testList = deepCloneObject(clusterObj.list);
+    _testList.splice(index, 1);
+    // settestList(testList => _testList);
+    let newClusterObj = deepCloneObject(clusterObj);
+    newClusterObj.list = _testList;
+    setClusterObj(newClusterObj)
   }
+  
   const addd = ()=>{
-    let list = JSON.parse(JSON.stringify(clusterObj.list));
-    list.push({ name: 'k1' })
-    setClusterObj(
-      Object.assign(
-        {},
-        clusterObj,
-        {
-          list: list
-        }
-      )
-    )
+    let _testList = deepCloneObject(clusterObj.list);
+    _testList.push({ name: count++ });
+    let newClusterObj = deepCloneObject(clusterObj);
+     newClusterObj.list = _testList;
+    // settestList( testList => _testList)
+     setClusterObj(newClusterObj)
   }
 
+  const adjustPostParams = (key, val) => {
+		const {
+			form: { getFieldsValue }
+		} = props;
+		let newPostParams = Object.assign({}, getFieldsValue());
+		newPostParams[key] = val;
+		setClusterObj(newPostParams);
+	};
 
 
   return(
