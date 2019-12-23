@@ -25,5 +25,42 @@ export interface IPostParams {
     instances: Array<Iinstances>;
 }
 
-// 自动备份策略 0-59(分钟)，0-4（小时），***，（空格）
-// 清理策略，可以无，-1
+export const formItemBasicLayout = {
+	labelCol: { span: 8 },
+	wrapperCol: { span: 4 }
+};
+
+export const formItemBasicLayoutOther = {
+	labelCol: { span: 12 },
+	wrapperCol: { span: 6 }
+}
+
+export const formItemInstanceLayout = {
+	labelCol: { span: 6 },
+	wrapperCol: { span: 6 }
+};
+
+export const formItemInstanceSshLayout = {
+	labelCol: { span: 10 },
+	wrapperCol: { span: 6 }
+};
+
+export const formAdvancesLayout = {
+	labelCol: { span: 8 },
+	wrapperCol: { span: 6 }
+}
+
+export const formBackupLayout = {
+	labelCol: { span: 16 },
+	wrapperCol: { span: 6 }
+}
+
+export const dbConfigurationLayout = {
+	labelCol: { span: 2 },
+	wrapperCol: { span: 20 }
+}
+
+export const formAdvancesServerLayout = {
+	labelCol: { span: 8 },
+	wrapperCol: { span: 12 }
+}

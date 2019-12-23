@@ -12,20 +12,36 @@ import {
 	Divider,
 	Form,
 	Input,
+	InputNumber,
 	message,
 	Select,
 	Icon,
 	Row,
 	Col
 } from "antd";
-import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
+import {
+	YHSmallFormItem,
+	YHFlexDiv,
+	YHSmallFormItemWide,
+	YHSmallFormItemNarrow
+} from "@styled/Form";
 import Modal from "@com/Modal";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 
-import { IPostParams } from "./data";
+import {
+	IPostParams,
+	formItemBasicLayout,
+	formItemBasicLayoutOther,
+	formItemInstanceLayout,
+	formItemInstanceSshLayout,
+	formAdvancesLayout,
+	formBackupLayout,
+	dbConfigurationLayout,
+	formAdvancesServerLayout
+} from "./data";
 
 import {
 	getDefaultClusterConfig,
@@ -61,36 +77,6 @@ const initIPostParams: IPostParams = {
 	]
 };
 
-const formItemBasicLayout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 4 }
-};
-
-const formItemInstanceLayout = {
-	labelCol: { span: 6 },
-	wrapperCol: { span: 6 }
-};
-
-const formItemInstanceSshLayout = {
-	labelCol: { span: 10 },
-	wrapperCol: { span: 6 }
-};
-
-const formAdvancesLayout = {
-	labelCol: { span: 10 },
-	wrapperCol: { span: 6 }
-}
-
-const formBackupLayout = {
-	labelCol: { span: 12 },
-	wrapperCol: { span: 6 }
-}
-
-const dbConfigurationLayout = {
-	labelCol: { span: 2 },
-	wrapperCol: { span: 20 }
-}
-
 function FormModal(props) {
 	const {
 		tableModalVisibility,
@@ -123,8 +109,8 @@ function FormModal(props) {
 				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
 				let val = JSON.stringify(data)
 					.replace(/[\{\}\"]/g, "")
-					.replace(/\,/g, "\n");
-				adjustPostParams("dbConfiguration", JSON.stringify(data));
+					.replace(/\,/g, ",\n");
+				adjustPostParams("dbConfiguration", val);
 			});
 		}
 	}, []);
@@ -237,7 +223,10 @@ function FormModal(props) {
 			<Form>
 				<Divider>基础信息</Divider>
 				<YHFlexDiv>
-					<YHSmallFormItem {...formItemBasicLayout} label="集群名称">
+					<YHSmallFormItemWide
+						{...formItemBasicLayout}
+						label="集群名称"
+					>
 						{getFieldDecorator("name", {
 							initialValue: postParams.name,
 							rules: [
@@ -247,8 +236,11 @@ function FormModal(props) {
 								}
 							]
 						})(<Input placeholder="请输入集群名称"></Input>)}
-					</YHSmallFormItem>
-					<YHSmallFormItem {...formItemBasicLayout} label="集群类型">
+					</YHSmallFormItemWide>
+					<YHSmallFormItem
+						{...formItemBasicLayoutOther}
+						label="集群类型"
+					>
 						{getFieldDecorator("type", {
 							initialValue: postParams.type,
 							rules: [
@@ -266,7 +258,10 @@ function FormModal(props) {
 							</Select>
 						)}
 					</YHSmallFormItem>
-					<YHSmallFormItem {...formItemBasicLayout} label="集群密码">
+					<YHSmallFormItem
+						{...formItemBasicLayoutOther}
+						label="集群密码"
+					>
 						{getFieldDecorator("rootPassword", {
 							initialValue: postParams.rootPassword,
 							rules: [
@@ -278,11 +273,14 @@ function FormModal(props) {
 							<Input.Password placeholder="请输入mysql集群密码" />
 						)}
 					</YHSmallFormItem>
-					<YHSmallFormItem {...formItemBasicLayout} label="租户">
+					<YHSmallFormItemWide
+						{...formItemBasicLayoutOther}
+						label="租户"
+					>
 						<Select
 							showSearch
 							value={tenantVal}
-							placeholder="请输入租户名称，或者IP地址，以便查询"
+							placeholder="请选择租户"
 							defaultActiveFirstOption={false}
 							notFoundContent={null}
 							onChange={handleTenantChange}
@@ -300,7 +298,7 @@ function FormModal(props) {
 									</Select.Option>
 								))}
 						</Select>
-					</YHSmallFormItem>
+					</YHSmallFormItemWide>
 				</YHFlexDiv>
 				<Divider>实例配置</Divider>
 				{postParams.instances.map((instance, idx) => (
@@ -415,8 +413,8 @@ function FormModal(props) {
 
 				<Divider>高级配置</Divider>
 				<YHFlexDiv>
-					<YHSmallFormItem
-						{...formAdvancesLayout}
+					<YHSmallFormItemWide
+						{...formAdvancesServerLayout}
 						label="备份服务器"
 					>
 						{getFieldDecorator("backupServer", {
@@ -428,34 +426,47 @@ function FormModal(props) {
 								}
 							]
 						})(<Input placeholder="请输入备份服务器" />)}
-					</YHSmallFormItem>
-					<YHSmallFormItem {...formAdvancesLayout} label="自动备份">
+					</YHSmallFormItemWide>
+					<YHSmallFormItem
+						{...formAdvancesLayout}
+						label="自动备份"
+						style={{ width: "300px" }}
+					>
 						{getFieldDecorator("backupStrategy", {
 							initialValue: postParams.backupStrategy,
 							rules: [
 								{
-									message: "请填写cron表达式"
+									message: "请输入自动备份时间"
 								}
 							]
 						})(
-							<Input placeholder="请填写cron表达式" />
+							<>
+								<YHFlexDiv>
+									<YHSmallFormItemNarrow>
+										<InputNumber min={0} max={6} formatter={value => `${value}时`}/>
+									</YHSmallFormItemNarrow>
+									<YHSmallFormItemNarrow>
+										<InputNumber min={0} max={59} formatter={value => `${value}分`}/>
+									</YHSmallFormItemNarrow>
+								</YHFlexDiv>
+							</>
 						)}
 					</YHSmallFormItem>
-					<YHSmallFormItem
+					<YHSmallFormItemNarrow
 						{...formBackupLayout}
 						label="备份清理策略"
 					>
 						{getFieldDecorator("backupKeepDays", {
-							initialValue: postParams.backupKeepDays,
+							initialValue: postParams.backupKeepDays || "30",
 							rules: [
 								{
-									message: "备份清理策略"
+									message: "请输入备份清理策略"
 								}
 							]
-						})(<Input placeholder="备份清理策略" />)}
-					</YHSmallFormItem>
+						})(<InputNumber min={1} formatter={value => `${value}天`}/>)}
+					</YHSmallFormItemNarrow>
 				</YHFlexDiv>
-				<Divider>DB参数配置</Divider>
+				<Divider>自定义配置项目</Divider>
 				<Form.Item {...dbConfigurationLayout} label="自定义参数">
 					{getFieldDecorator("dbConfiguration", {
 						initialValue: postParams.dbConfiguration,
@@ -468,7 +479,7 @@ function FormModal(props) {
 					})(
 						<Input.TextArea
 							placeholder="请输入自定义参数"
-							rows={5}
+							rows={8}
 						></Input.TextArea>
 					)}
 				</Form.Item>

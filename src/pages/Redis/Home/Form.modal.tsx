@@ -48,6 +48,11 @@ const formItemInstanceLayout = {
 	wrapperCol: { span: 6 }
 };
 
+const dbConfigurationLayout = {
+	labelCol: { span: 4 },
+	wrapperCol: { span: 18 }
+}
+
 function FormModal(props) {
 	const {
 		tableModalVisibility,
@@ -388,7 +393,7 @@ function FormModal(props) {
 					</YHFlexDivEvenly>
 				))}
 				<Divider>自定义配置项目</Divider>
-				<Form.Item {...formItemBasicLayout} label="自定义参数">
+				<Form.Item {...dbConfigurationLayout} label="自定义参数">
 					{getFieldDecorator("params.moreConf", {
 						initialValue: postParams.params.moreConf,
 						rules: [

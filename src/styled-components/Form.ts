@@ -11,10 +11,29 @@ export const YHSmallFormItem = styled(Form.Item)`
 	}
 `
 
+export const YHSmallFormItemWide = styled(Form.Item)`
+	.ant-form-item-control {
+		margin-right: 10px;
+		width: 200px!important;
+	}
+	input {
+		width: 200px;
+	}
+`
+export const YHSmallFormItemNarrow = styled(Form.Item)`
+	.ant-form-item-control {
+		margin-right: 10px;
+		width: 100px!important;
+	}
+	input {
+		width: 100px;
+	}
+`
+
 export const YHFlexDiv = styled('div')`
 	display: flex;
 	justify-content: flex-start;
-	align-items: center;
+	align-items: flex-start;
 `
 
 export const YHFlexDivEvenly = styled('div')`
