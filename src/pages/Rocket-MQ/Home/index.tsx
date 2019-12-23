@@ -207,7 +207,8 @@ function RocketMqHome(props) {
 						onClick={() => {
               console.log(name, 'kevinkang')
               // gotoNameServerList(text.id, text.componentType);
-              gotToRocketMQClusterDetail(record.id);
+              // gotToRocketMQClusterDetail(record.id);
+              console.log('跳转到集群详情界面-》集群详情有监控 日志等基础信息-')
 						}}
 					>
 						{name}
@@ -229,7 +230,19 @@ function RocketMqHome(props) {
     { 
       title: "实例个数",
       key: "instance",
-      dataIndex: 'instance'
+      dataIndex: 'instance',
+      render: (instance, record) => {
+        return (
+          <YhOp
+          color = {'#0070cc'}
+          onClick={() => {
+            gotToRocketMQClusterDetail(record.id);
+          }}
+        >
+          {record.instance}
+        </YhOp>
+        )
+      }
     },
     {
       title: "拓扑",

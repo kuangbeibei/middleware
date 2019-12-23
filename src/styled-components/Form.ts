@@ -41,3 +41,9 @@ export const YHFlexDivEvenly = styled('div')`
 	justify-content: space-evenly;
 	align-items: center;
 `
+
+export const YHFlexCenterDiv = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
