@@ -497,10 +497,7 @@ function RocketMqModal(props) {
     console.log(Object.assign({}, clonneObj, {  }));
     setClusterObj(
       Object.assign({},
-      clusterObj,
-      {
-        nameServerList: nameServerList
-      }
+       clonneObj
       )
     )
     // let nameServerList_ = getFieldValue('params.nameServerList')
@@ -512,7 +509,8 @@ function RocketMqModal(props) {
     
   }
   const addNameServer = () => {
-    let nameServerList = clusterObj.nameServerList
+    let cloneNmObjv =  deepCloneObject(clusterObj)
+    let nameServerList = cloneNmObjv.nameServerList
     nameServerList.push({
       version: '4.3.9',
       ip: '',
@@ -521,12 +519,12 @@ function RocketMqModal(props) {
       password: '',
       key: Date.now()
     })
+
+    let newPostParams = Object.assign({}, getFieldsValue());
+    console.log(newPostParams, 'kevinnooooo')
     setClusterObj(
       Object.assign({},
-      clusterObj,
-      {
-        nameServerList: nameServerList
-      }
+        cloneNmObjv
       )
     )
     // let nameServerList = getFieldValue('nameServerList')
@@ -598,7 +596,8 @@ function RocketMqModal(props) {
     let newClusterObj = deepCloneObject(clusterObj);
      newClusterObj.list = _testList;
     // settestList( testList => _testList)
-     setClusterObj(newClusterObj)
+     setClusterObj(newClusterObj);
+    //  adjustPostParams('list', _testList)
   }
 
   const adjustPostParams = (key, val) => {
@@ -688,12 +687,12 @@ function RocketMqModal(props) {
           getConsoleListFormItems()
         }
 
-        <Divider> Test </Divider>
+        {/* <Divider> Test </Divider>
 
         {
           getNameServerForms22()
 
-        }
+        } */}
       </Form>
 
 
