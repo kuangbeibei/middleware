@@ -100,7 +100,6 @@ function ConsoleModal(props) {
 					})(
 						<Select>
                 <Select.Option value="1.1.0" > 1.1.0 </Select.Option>
-                <Select.Option value="1.1.9" > 1.1.9 </Select.Option>
 						</Select>
 					)}
 				</Form.Item> 

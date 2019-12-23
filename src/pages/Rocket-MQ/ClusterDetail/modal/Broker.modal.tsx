@@ -79,7 +79,7 @@ function BrokerModal(props) {
 
   return (
     <Modal
-      modalName = {`添加name server`}
+      modalName = {`添加broker`}
       visible={tableModalVisibility.visible}
       width={'60%'}
       handleCancel={handleCancel}
@@ -97,7 +97,6 @@ function BrokerModal(props) {
 						]
 					})(
 						<Select>
-                <Select.Option value="4.4.0" > 4.4.0 </Select.Option>
                 <Select.Option value="4.3.9" > 4.3.9 </Select.Option>
 						</Select>
 					)}
@@ -121,7 +120,7 @@ function BrokerModal(props) {
 						rules: [
 							{
 								required: true,
-								message: "请输入概要"
+								message: "请输入端口"
 							}
 						]
 					})(<Input placeholder="请输入端口"></Input>)}
