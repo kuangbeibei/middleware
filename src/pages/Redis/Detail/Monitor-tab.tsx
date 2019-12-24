@@ -10,5 +10,6 @@ import CommonMonitor from "../Instance-Monitor/common.monitor"
 
 
 export default function (props) {
-	return CommonMonitor(props, clustersMonitorArrayData, 'cluster')
+	return <CommonMonitor {...props} data={clustersMonitorArrayData} type={'cluster'} />
+	// CommonMonitor(props, clustersMonitorArrayData, 'cluster')
 }

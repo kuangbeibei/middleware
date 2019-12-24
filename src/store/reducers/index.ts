@@ -9,11 +9,13 @@ import { combineReducers } from "redux";
 import tableModalVisibility from "./modalVisibility";
 import drawerVisibility from "./drawerVisibility"
 import navFlagToSidebar from "./sidebar"
+import monitorTime from "./Monitor/time"
 
 const RootReducer = combineReducers({
 	tableModalVisibility,
 	drawerVisibility,
-	navFlagToSidebar
+	navFlagToSidebar,
+	monitorTime
 });
 
 export default RootReducer;
