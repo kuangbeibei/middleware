@@ -102,13 +102,21 @@ export const RocketmqRoutesMap = [
 		icon: "rocket",
 		subs: [
       {
+        key: "/middleware/rocketmq/instances/:id",
+        // component: 
+        component: "RocketmqInstancesDetail",
+        isExact: true,
+        name: "RocketmqInstancesDetail",
+        breadcrumbTitle: "集群实例"
+      },
+      {
         key: "/middleware/rocketmq/detail/:id",
         // component: 
         component: "RocketmqDetail",
         isExact: true,
         name: "RocketmqDetail",
-        breadcrumbTitle: "rocketMqDetail"
-      },
+        breadcrumbTitle: "集群概览"
+      },  
 			{
 				key: "/middleware/rocketmq/rmqnameserver/:id",
 				component: "RocketNameServer",

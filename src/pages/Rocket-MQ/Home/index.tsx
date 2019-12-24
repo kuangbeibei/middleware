@@ -179,15 +179,17 @@ function RocketMqHome(props) {
 		props.history.push(`/middleware/rocketmq/${type}/${id}`);
 	};
 
-  const gotToRocketMQClusterDetail = (id) => {
+  const gotToRocketMQInstancesDetail = (id) => {
     addFlag = false;
     // addFlag = false;
 		// type = type.toLowerCase();
-		props.history.push(`/middleware/rocketmq/detail/${id}`);
+		props.history.push(`/middleware/rocketmq/instances/${id}`);
   }
 
 
-
+  const gotToRocketMQDetail = (id) => {
+		props.history.push(`/middleware/rocketmq/detail/${id}`);
+  }
   
 	/**
 	 * table列表的展示表头
@@ -212,9 +214,7 @@ function RocketMqHome(props) {
             color = {'#0070cc'}
 						onClick={() => {
               console.log(name, 'kevinkang')
-              // gotoNameServerList(text.id, text.componentType);
-              // gotToRocketMQClusterDetail(record.id);
-              console.log('跳转到集群详情界面-》集群详情有监控 日志等基础信息-')
+              gotToRocketMQDetail(record.id)
 						}}
 					>
 						{name}
@@ -242,7 +242,7 @@ function RocketMqHome(props) {
           <YhOp
           color = {'#0070cc'}
           onClick={() => {
-            gotToRocketMQClusterDetail(record.id);
+            gotToRocketMQInstancesDetail(record.id);
           }}
         >
           {record.instance}

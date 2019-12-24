@@ -12,13 +12,14 @@ interface IDynamicImportProps {
 	load: Function;
 	children: any;
 }
-
+let count = 0
 class DynamicImport extends React.Component<IDynamicImportProps> {
 	state = {
 		component: null
 	};
 	public async componentDidMount() {
-		const { default: component } = await this.props.load();
+    const { default: component } = await this.props.load();
+    console.log(++count, 'render component count')
 		this.setState({
 			component
 		});
@@ -113,12 +114,19 @@ const RocketmqHome = props => (
 	</DynamicImport>
 );
 
-// Rocketmq 详情页
-const RocketmqDetail = props => (
+// Rocketmq 实例详情页
+const RocketmqInstancesDetail = props => (
   <DynamicImport load={() => import("@pages/Rocket-MQ/ClusterDetail")}>
     {Component => childrenOfDynamicImport(Component, props)}
   </DynamicImport>
 )
+
+const RocketmqDetail = props => (
+  <DynamicImport load={() => import("@pages/Rocket-MQ/Detail")}>
+    {Component => childrenOfDynamicImport(Component, props)}
+  </DynamicImport>
+)
+
 
 
 const RocketNameServer = props => (
@@ -155,5 +163,6 @@ export default {
 	RocketNameServer,
 	RocketBroker,
   RocketConsole,
+  RocketmqInstancesDetail,
   RocketmqDetail
 } as any;
