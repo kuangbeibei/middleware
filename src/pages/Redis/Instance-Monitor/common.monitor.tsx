@@ -111,6 +111,7 @@ function CommonMoitor(props) {
 		setvisibility("none");
 		switch (val) {
 			case "realtime":
+				setfromTime(endTime - 1000 * 60 * 30);
 				break;
 			case "24hours":
 				setfromTime(endTime - 1000 * 60 * 60 * 24);
