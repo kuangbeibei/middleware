@@ -8,7 +8,7 @@ interface Iinstances {
     ip: string;
     port: string | number;
     user: string;
-    pass: string;
+    password: string;
     role: string;
 }
 
@@ -20,8 +20,8 @@ export interface IPostParams {
     rootPassword: string;
     backupStrategy: string;
     backupServer: string;
-    backupKeepDays: string;
-    dbConfiguration?: any;
+    backupKeepDays: number
+    dbConfiguration?: Object;
     instances: Array<Iinstances>;
 }
 
@@ -46,12 +46,7 @@ export const formItemInstanceSshLayout = {
 };
 
 export const formAdvancesLayout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 6 }
-}
-
-export const formBackupLayout = {
-	labelCol: { span: 16 },
+	labelCol: { span: 11 },
 	wrapperCol: { span: 6 }
 }
 
