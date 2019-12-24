@@ -17,6 +17,8 @@ import {
 	Icon,
 	Popover,
   Tooltip, 
+  Menu,
+  Dropdown
 } from "antd";
 
 import { YhOp, YhAdd, YhId } from "@styled/Button";
@@ -24,6 +26,7 @@ import Loading from "@com/UI/Loading";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import TableTitle from "../Components/TableTitle";
+import OperationControl from "@com/Operation.control";
 
 
 import {
@@ -183,6 +186,9 @@ function RocketMqHome(props) {
 		props.history.push(`/middleware/rocketmq/detail/${id}`);
   }
 
+
+
+  
 	/**
 	 * table列表的展示表头
 	 */
@@ -304,45 +310,55 @@ function RocketMqHome(props) {
     },
 		{
 			title: "操作",
-			key: "operation",
-			render: text =>
-				text.id ? (
+			key: "action",
+			width: "10%",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={menu} />;
+			}
+		}
+	];
+	const menu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>部署</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a
+						onClick={() => {
+							showFormModal(text.id);
+						}}
+					>
+						编辑
+					</a>
+				</Menu.Item>
+				<Menu.Item key="3">
 					<Popconfirm
 						placement="topRight"
-						title={`确定删除集群 ${text.businessName} ?`}
-						onConfirm={() =>
-							deleteRmqCluster(text.id, text.businessName)
-						}
+						title={`确定卸载集群?`}
+						onConfirm={() => {}}
 						okText="是"
 						cancelText="否"
 					>
-						<Button
-							type="primary"
-							shape="circle"
-							icon="delete"
-							loading={delLoading}
-						/>
+						<a>卸载</a>
 					</Popconfirm>
-				) : (
-					<>
-						<Button
-							type="primary"
-							shape="circle"
-							style={{ marginRight: 15 }}
-							onClick={createRmqType}
-							icon="check"
-							loading={addLoading}
-						/>
-						<Button
-							type="primary"
-							shape="circle"
-							onClick={delRmqType}
-							icon="close"
-						/>
-					</>
-				)
-		}
-	];
+				</Menu.Item>
+				<Menu.Item key="4">
+					<Popconfirm
+						placement="topRight"
+						title={`确定删除集群?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>删除</a>
+					</Popconfirm>
+				</Menu.Item>
+			</Menu>
+		);
+	};
+
+
 
 
   useEffect(()=> {
@@ -355,7 +371,7 @@ function RocketMqHome(props) {
   }, [tableModalVisibility.visible]) // 监听store里面的visible元素
 
 
-  const showFormModal = async () => {
+  const showFormModal = async (id) => {
     // 动态加载
     import("./modal/Cluster.modal").then((component) => {
       console.log('加载进来了吗？？？')
@@ -381,7 +397,7 @@ function RocketMqHome(props) {
 			<YhAdd
 				type="primary"
 				// icon="plus"
-				onClick={() => {showFormModal() }}
+				onClick={() => {showFormModal(null) }}
 				style={{ marginBottom: 10 }}
 			>
         添加

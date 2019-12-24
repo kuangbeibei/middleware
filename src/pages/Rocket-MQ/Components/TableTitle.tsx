@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
+import { YHSmallFormItem, YHFlexSpaceBetwenDiv } from "@styled/Form";
 
 function TableTitle(props) {
   return(
-    <YHFlexDiv style={{alignItems: 'baseline', marginTop: 30, marginBottom: 15}}>
+    <YHFlexSpaceBetwenDiv style={{alignItems: 'baseline', marginTop: 30, marginBottom: 15}}>
       {props.title}:
 
       {
@@ -15,7 +15,7 @@ function TableTitle(props) {
         ) : null
       }
 
-    </YHFlexDiv>
+    </YHFlexSpaceBetwenDiv>
   )
 }
 

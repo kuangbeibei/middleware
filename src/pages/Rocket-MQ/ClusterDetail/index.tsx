@@ -5,6 +5,7 @@ import TableTitle from "../Components/TableTitle";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
+import OperationControl from "@com/Operation.control";
 import {
 	Button,
 	Table,
@@ -15,7 +16,9 @@ import {
 	Icon,
 	Popover,
   Tooltip,
-  Divider
+  Divider,
+  Menu,
+  Dropdown
 } from "antd";
 
 function ClusterDetail(props){
@@ -147,6 +150,49 @@ function ClusterDetail(props){
     console.log('显示实时日志---->>>')
   }
 
+
+  const nameServerMenu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>部署</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a
+						onClick={() => {
+							// showFormModal(text.id);
+						}}
+					>
+						编辑
+					</a>
+				</Menu.Item>
+				<Menu.Item key="3">
+					<Popconfirm
+						placement="topRight"
+						title={`确定卸载集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>卸载</a>
+					</Popconfirm>
+				</Menu.Item>
+				<Menu.Item key="4">
+					<Popconfirm
+						placement="topRight"
+						title={`确定删除集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>删除</a>
+					</Popconfirm>
+				</Menu.Item>
+			</Menu>
+		);
+	};
+
+
   const nameServerColumns = [
     {
       title: 'id',
@@ -179,10 +225,11 @@ function ClusterDetail(props){
       // dataIndex: 'summary'
       render: ()=> (
         <div>
-            <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
+            {/* <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
               实时
-            </YhOp><YhOp color={'#0070cc'}>
-              全部
+            </YhOp> */}
+            <YhOp color={'#0070cc'}>
+              实时
             </YhOp>
         </div>
       )
@@ -201,25 +248,56 @@ function ClusterDetail(props){
       // render: time => (time ? FormatTime(time): "")
     },
     {
-      title: "操作",
-      key: "operation",
-      render: ()=>{
-        return (
-          <div>
-            <YhOp color={'#0070cc'}>
-              执行部署
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              卸载资源
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              删除
-            </YhOp>
-          </div>
-        )
-      }
-    }
+			title: "操作",
+			key: "action",
+			width: "8%",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={nameServerMenu} />;
+			}
+		}
   ]
+
+
+  const consoleMenu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>部署</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a
+						onClick={() => {
+							// showFormModal(text.id);
+						}}
+					>
+						编辑
+					</a>
+				</Menu.Item>
+				<Menu.Item key="3">
+					<Popconfirm
+						placement="topRight"
+						title={`确定卸载集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>卸载</a>
+					</Popconfirm>
+				</Menu.Item>
+				<Menu.Item key="4">
+					<Popconfirm
+						placement="topRight"
+						title={`确定删除集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>删除</a>
+					</Popconfirm>
+				</Menu.Item>
+			</Menu>
+		);
+	};
 
   const consoleColumns = [
     {
@@ -237,21 +315,6 @@ function ClusterDetail(props){
       key: 'port',
       dataIndex: 'port'
     },
-    // {
-    //   title: "Broker Id",
-    //   key: 'bId',
-    //   dataIndex: 'bId'
-    // },
-    // {
-    //   title: "Broker Name",
-    //   key: 'bName',
-    //   dataIndex: 'bName'
-    // },
-    // {
-    //   title: "Broker 角色",
-    //   key: 'role',
-    //   dataIndex: 'role'
-    // },
     {
 			title: "状态",
 			key: "status",
@@ -265,9 +328,10 @@ function ClusterDetail(props){
         <div>
             <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
               实时
-            </YhOp><YhOp color={'#0070cc'}>
-              全部
             </YhOp>
+            {/* <YhOp color={'#0070cc'}>
+              全部
+            </YhOp> */}
         </div>
       )
     },
@@ -287,25 +351,56 @@ function ClusterDetail(props){
       dataIndex: "domain"
     },
     {
-      title: "操作",
-      key: "operation",
-      render: ()=>{
-        return (
-          <div>
-            <YhOp color={'#0070cc'}>
-              执行部署
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              卸载资源
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              删除
-            </YhOp>
-          </div>
-        )
-      }
-    }  
+			title: "操作",
+			key: "action",
+			width: "8%",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={consoleMenu} />;
+			}
+		} 
   ]
+
+
+  const brokerMenu = text => {
+		return (
+			<Menu>
+				<Menu.Item key="1">
+					<a onClick={() => {}}>部署</a>
+				</Menu.Item>
+				<Menu.Item key="2">
+					<a
+						onClick={() => {
+							// showFormModal(text.id);
+						}}
+					>
+						编辑
+					</a>
+				</Menu.Item>
+				<Menu.Item key="3">
+					<Popconfirm
+						placement="topRight"
+						title={`确定卸载集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>卸载</a>
+					</Popconfirm>
+				</Menu.Item>
+				<Menu.Item key="4">
+					<Popconfirm
+						placement="topRight"
+						title={`确定删除集群${text.name}?`}
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+						<a>删除</a>
+					</Popconfirm>
+				</Menu.Item>
+			</Menu>
+		);
+	};
 
   const brokerColumns = [
     {
@@ -349,10 +444,11 @@ function ClusterDetail(props){
       dataIndex: 'log',
       render: ()=> (
         <div>
-            <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
+            {/* <YhOp onClick={getRealTimeLog} color={'#0070cc'}>
               实时
-            </YhOp><YhOp color={'#0070cc'}>
-              全部
+            </YhOp> */}
+            <YhOp color={'#0070cc'}>
+              历史
             </YhOp>
         </div>
       )
@@ -368,24 +464,13 @@ function ClusterDetail(props){
       dataIndex: 'updateTime'
     },
     {
-      title: "操作",
-      key: "operation",
-      render: ()=>{
-        return (
-          <div>
-            <YhOp color={'#0070cc'}>
-              执行部署
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              卸载资源
-            </YhOp>
-            <YhOp color={'#0070cc'}>
-              删除
-            </YhOp>
-          </div>
-        )
-      }
-    }    
+			title: "操作",
+			key: "action",
+			width: "8%",
+			render: text => {
+				return <OperationControl {...props} text={text} menu={brokerMenu} />;
+			}
+		}    
   ]
 
   return (
