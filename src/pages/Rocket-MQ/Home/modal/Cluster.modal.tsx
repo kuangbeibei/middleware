@@ -25,6 +25,7 @@ import {
   Icon,
   Tooltip
 } from 'antd';
+import { Item } from "rc-menu";
 
 // RocketMqModal.propTypes = {
 //   name: PropTypes.string.isRequired
@@ -40,8 +41,9 @@ import {
 // interface ConsoleItem {
 
 // }
-let count = 0;
 
+
+  // TODO 样式抽取
   // todo 定义typescript 数据格式
   const initialRocketMqObj:any = {
     name: '',
@@ -107,33 +109,31 @@ function RocketMqModal(props) {
 
 
   const getConsoleListFormItems = () => {
-    // console.log('dddd------>>>')
-    // getFieldDecorator('params.consoleList', {initialValue: clusterObj.consoleList })
-    // console.log('2222')
-    // const consoleLists = getFieldValue('params.consoleList')
-    // console.log('3333', consoleLists)
+ 
     const formItems = clusterObj.consoleList.map((consoleGroup, index) => {
-    // const formItems = consoleLists.map((item, index) => {
       
-    // console 必须一主一备，这里iteme也是一个数组
     return (
-        // <div style={{border: '1px solid red'}}>
-        <div style={{border: '3px dotted wheat', paddingTop: 24, marginTop: 15}}>
-          {
-            consoleGroup.map((item, idx) => 
-              <YHFlexSpaceBetwenDiv>
-                {/* <Form.Item
-                  style= {{width: 15}}
-                  // {...formItemBasicLayout}
-                  label={idx ? '备': '主'}
-                >
+        <div key={'console_item_' + index} style={{outline: '3px dotted wheat',  outlineOffset: 6, position: 'relative', paddingTop: 10, marginTop: index!=0 ? 36: 15}}>
 
-                </Form.Item> */}
+          <Tooltip title="删除">
+            <Icon onClick={()=>{deleteConsole(consoleGroup.key)}} style={{
+              fontSize: 25,
+              marginBottom: 24,
+              cursor: 'pointer',
+              position: 'absolute',
+              right: -18,
+              top: -18,
+              background: 'white'
+              }} type="minus-circle" />
+          </Tooltip>
+          {
+            consoleGroup.data.map((item, idx) => 
+              <YHFlexSpaceBetwenDiv key={'console_m_v'+idx}>
                 <YHSmallFormItem
                   {...formItemBasicLayout}
                   label={ '版本' + ( idx ? '(备)': '(主)') }
                 >
-                  {getFieldDecorator(`params.consoleList[${index}][${idx}].version`, {
+                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].version`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -148,7 +148,7 @@ function RocketMqModal(props) {
                 {...formItemBasicLayout}
                 label="ip"
                 >
-                  {getFieldDecorator(`params.consoleList[${index}][${idx}].ip`, {
+                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].ip`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -163,7 +163,7 @@ function RocketMqModal(props) {
                 {...formItemBasicLayout}
                 label="端口"
                 >
-                  {getFieldDecorator(`params.consoleList[${index}][${idx}].port`, {
+                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].port`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -178,7 +178,7 @@ function RocketMqModal(props) {
                 {...formItemBasicLayout}
                 label="用户名"
                 >
-                  {getFieldDecorator(`params.consoleList[${index}][${idx}].username`, {
+                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].username`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -193,7 +193,7 @@ function RocketMqModal(props) {
                 {...formItemBasicLayout}
                 label="密码"
                 >
-                  {getFieldDecorator(`params.consoleList[${index}][${idx}].username`, {
+                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].username`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -214,8 +214,8 @@ function RocketMqModal(props) {
       );
     })
     formItems.push(
-      <YHFlexSpaceBetwenDiv>
-        <Button type="primary" onClick={addConsole} style={{marginTop: 10}}> 
+      <YHFlexSpaceBetwenDiv key={'add_btn_console'}>
+        <Button type="primary" onClick={addConsole} style={{marginTop: 30}}> 
           添加 
           <Icon type="plus-circle" /> 
         </Button>
@@ -225,16 +225,19 @@ function RocketMqModal(props) {
   }
   const addConsole = () => {
     let consoleList = clusterObj.consoleList
-    consoleList.push([
-      {
-        ip: '',
-        type: 'Master',
-      },
-      {
-        ip: '',
-        type: 'vice'
-      }
-    ])
+    consoleList.push({
+      key: Date.now()+ '_console',
+      data: [
+        {
+          ip: '',
+          type: 'Master'
+        },
+        {
+          ip: '',
+          type: 'Vice'
+        }
+      ]
+    })
     setClusterObj(
       Object.assign({},
       clusterObj,
@@ -245,15 +248,26 @@ function RocketMqModal(props) {
     )
   }
 
+  const deleteConsole = (key)=>{
+    let cloneObj = deepCloneObject(clusterObj)
+    cloneObj.consoleList = cloneObj.consoleList.filter(item => item.key != key)
+    setClusterObj(
+      Object.assign({},
+        cloneObj
+      )
+    )
+
+  }
+
   const getBrokerFormItems = ()=> {
 
     const formItems = clusterObj.brokerList.map((broker, index) => (
-      <YHFlexSpaceBetwenDiv>
+      <YHFlexSpaceBetwenDiv key={'broker_item_' + index}>
               <YHSmallFormItem
                   {...formItemBasicLayout}
                   label="版本"
                 >
-                  {getFieldDecorator(`params.brokerList[${index}].version`, {
+                  {getFieldDecorator(`params.brokerList[${broker.key}].version`, {
                     initialValue: broker.version,
                     rules: [
                       {
@@ -272,7 +286,7 @@ function RocketMqModal(props) {
                   {...formItemBasicLayout}
                   label="ip"
                 >
-                  {getFieldDecorator(`params.brokerList[${index}].ip`, {
+                  {getFieldDecorator(`params.brokerList[${broker.key}].ip`, {
                     initialValue: broker.ip,
                     rules: [
                       {
@@ -287,7 +301,7 @@ function RocketMqModal(props) {
                   {...formItemBasicLayout}
                   label="端口"
                 >
-                  {getFieldDecorator(`params.brokerList[${index}].port`, {
+                  {getFieldDecorator(`params.brokerList[${broker.key}].port`, {
                     initialValue: broker.port,
                     rules: [
                       {
@@ -302,7 +316,7 @@ function RocketMqModal(props) {
                   {...formItemBasicLayout}
                   label="用户名"
                 >
-                  {getFieldDecorator(`params.brokerList[${index}].username`, {
+                  {getFieldDecorator(`params.brokerList[${broker.key}].username`, {
                     initialValue: broker.usrename,
                     rules: [
                       {
@@ -317,7 +331,7 @@ function RocketMqModal(props) {
                   {...formItemBasicLayout}
                   label="密码"
                 >
-                  {getFieldDecorator(`params.brokerList[${index}].password`, {
+                  {getFieldDecorator(`params.brokerList[${broker.key}].password`, {
                     initialValue: broker.password,
                     rules: [
                       {
@@ -328,20 +342,15 @@ function RocketMqModal(props) {
                     })(<Input placeholder="请输入密码"></Input>)}
                 </YHSmallFormItem>   
                 
-                {/* <YHSmallFormItem> */}
-                  {/* <Button type="primary"> */}
-                    <Tooltip title="删除">
-                    {/* color: '#f5222d' */}
-                    <Icon style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
-                    </Tooltip>
-                  {/* </Button>   */}
-                {/* </YHSmallFormItem> */}
+                <Tooltip title="删除">
+                <Icon onClick={deleteBroker} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
+                </Tooltip>
                        
 
       </YHFlexSpaceBetwenDiv>
     ))
     formItems.push(
-      <YHFlexSpaceBetwenDiv>
+      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
         <Button type="primary" onClick={addBroker} style={{marginTop: 10}}>
            添加 
            <Icon type="plus-circle" /> 
@@ -359,7 +368,8 @@ function RocketMqModal(props) {
       ip: '',
       port: '',
       username: '',
-      password: ''
+      password: '',
+      key: Date.now()+'_broker'
     })
     setClusterObj(
       Object.assign({},
@@ -368,15 +378,17 @@ function RocketMqModal(props) {
       )
     )
   }
+  const deleteBroker = (key)=>{
+    let cloneObj = deepCloneObject(clusterObj)
+    cloneObj.brokerList = cloneObj.brokerList.filter(item => item.key != key)
+    setClusterObj(
+      Object.assign({},
+        cloneObj
+      )
+    )
+  }
 
   const getNameServerForms = () => {
-
-
-    // getFieldDecorator('nameServerList', { initialValue: [] })
-
-    // const formItems = getFieldValue('nameServerList').map((nameServer, index) =>(
-    console.log('get ---->>>>', clusterObj.nameServerList)
-    console.log(getFieldValue('params'), 'abcdefg')
 
     const formItems = clusterObj.nameServerList.map((nameServer, index) =>(
       <YHFlexSpaceBetwenDiv key={nameServer.key}>
@@ -385,7 +397,7 @@ function RocketMqModal(props) {
           {...formItemBasicLayout}
           label="版本"
         >
-          {getFieldDecorator(`params.nameServerList[${index}].version`, {
+          {getFieldDecorator(`params.nameServerList[${nameServer.key}].version`, {
             initialValue: nameServer.version,
             rules: [
               {
@@ -405,7 +417,7 @@ function RocketMqModal(props) {
           {...formItemBasicLayout}
           label="ip"
         >
-          {getFieldDecorator(`params.nameServerList[${index}].ip`, {
+          {getFieldDecorator(`params.nameServerList[${nameServer.key}].ip`, {
             initialValue: nameServer.ip,
             rules: [
               {
@@ -421,7 +433,7 @@ function RocketMqModal(props) {
           {...formItemBasicLayout}
           label="端口"
         >
-          {getFieldDecorator(`params.nameServerList[${index}].port`, {
+          {getFieldDecorator(`params.nameServerList[${nameServer.key}].port`, {
             initialValue: nameServer.port,
             rules: [
               {
@@ -437,7 +449,7 @@ function RocketMqModal(props) {
           {...formItemBasicLayout}
           label="用户名"
         >
-          {getFieldDecorator(`params.nameServerList[${index}].username`, {
+          {getFieldDecorator(`params.nameServerList[${nameServer.key}].username`, {
             initialValue: nameServer.username,
             rules: [
               {
@@ -453,7 +465,7 @@ function RocketMqModal(props) {
           {...formItemBasicLayout}
           label="密码"
         >
-          {getFieldDecorator(`params.nameServerList[${index}].password`, {
+          {getFieldDecorator(`params.nameServerList[${nameServer.key}].password`, {
             initialValue: nameServer.password,
             rules: [
               {
@@ -464,21 +476,17 @@ function RocketMqModal(props) {
             })(<Input placeholder="请输入密码"></Input>)}
         </YHSmallFormItem>   
         
-        {/* <YHSmallFormItem> */}
-          {/* <Button type="primary"> */}
-            <Tooltip title="删除">
-            {/* color: '#f5222d' */}
-            <Icon onClick = { ()=>{deleteNameServer(index)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
-            </Tooltip>
-          {/* </Button>   */}
-        {/* </YHSmallFormItem> */}
+        <Tooltip title="删除">
+            <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
+        </Tooltip>
+
                
 
       </YHFlexSpaceBetwenDiv>
     ))
 
     formItems.push(
-      <YHFlexSpaceBetwenDiv>
+      <YHFlexSpaceBetwenDiv key={'add_btn_ns'}>
         <Button  type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
          添加 
          <Icon type="plus-circle" /> 
@@ -488,24 +496,16 @@ function RocketMqModal(props) {
     return formItems;
 
   }
-  const deleteNameServer = (index) => {
-    let clonneObj = deepCloneObject(clusterObj)
-    let { nameServerList } = clonneObj
-    console.log(index, '删除的index')
-    nameServerList.splice(index, 1)
-    console.log(JSON.stringify(nameServerList), 'kevinnn')
-    console.log(Object.assign({}, clonneObj, {  }));
+  const deleteNameServer = (key) => {
+    let cloneObj = deepCloneObject(clusterObj)
+    let { nameServerList } = cloneObj
+    cloneObj.nameServerList = nameServerList.filter(item => item.key !== key)
     setClusterObj(
       Object.assign({},
-       clonneObj
+       cloneObj
       )
     )
-    // let nameServerList_ = getFieldValue('params.nameServerList')
-    // console.log(nameServerList_)
-    // nameServerList_.splice(index, 1)
-    // setFieldsValue({
-    //   'nameServerList': nameServerList_
-    // })
+
     
   }
   const addNameServer = () => {
@@ -517,7 +517,7 @@ function RocketMqModal(props) {
       port: '',
       username: 'eee',
       password: '',
-      key: Date.now()
+      key: Date.now()+'_ns'
     })
 
     let newPostParams = Object.assign({}, getFieldsValue());
@@ -527,87 +527,10 @@ function RocketMqModal(props) {
         cloneNmObjv
       )
     )
-    // let nameServerList = getFieldValue('nameServerList')
-    // console.log(nameServerList, 'kevinn----')
-    // nameServerList.push({
-    //   version: '4.3.9',
-    //   ip: '',
-    //   port: '',
-    //   username: '',
-    //   password: ''
-    // })
-    // setFieldsValue({
-    //   'nameServerList': nameServerList
-    // })
   }
 
 
-  const getNameServerForms22 = () => {
-
-    // getFieldDecorator('keys', { iniialValue: [] })
-
-    // getFieldDecorator('nameServerList', { initialValue: [] })
-
-    const formItems = clusterObj.list.map((item, index) =>(
-      <div>
-        <Form.Item {...formItemBasicLayout} label="集群名称" style={{width: '50%', display: 'inline-block'}}>
-					{getFieldDecorator(`params.list[${index}].name`, {
-						initialValue: item.name,
-						rules: [
-							{
-								required: true,
-								message: "请输入集群名称"
-							}
-						]
-					})(<Input placeholder="请输入集群名称"></Input>)}
-
-        </Form.Item>
-               
-        <Tooltip title="删除">
-            {/* color: '#f5222d' */}
-            <Icon onClick = { ()=>{deletet(index)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
-            </Tooltip>
-      </div>
-    ))
-
-    formItems.push(
-      <YHFlexSpaceBetwenDiv>
-        <Button  type="primary" onClick={addd} style={{marginTop: 10}}> 
-         添加 
-         <Icon type="plus-circle" /> 
-        </Button>
-      </YHFlexSpaceBetwenDiv>
-    )
-    return formItems;
-
-  }
-  const deletet = (index) => {
-    let _testList = deepCloneObject(clusterObj.list);
-    _testList.splice(index, 1);
-    // settestList(testList => _testList);
-    let newClusterObj = deepCloneObject(clusterObj);
-    newClusterObj.list = _testList;
-    setClusterObj(newClusterObj)
-  }
   
-  const addd = ()=>{
-    let _testList = deepCloneObject(clusterObj.list);
-    _testList.push({ name: count++ });
-    let newClusterObj = deepCloneObject(clusterObj);
-     newClusterObj.list = _testList;
-    // settestList( testList => _testList)
-     setClusterObj(newClusterObj);
-    //  adjustPostParams('list', _testList)
-  }
-
-  const adjustPostParams = (key, val) => {
-		const {
-			form: { getFieldsValue }
-		} = props;
-		let newPostParams = Object.assign({}, getFieldsValue());
-		newPostParams[key] = val;
-		setClusterObj(newPostParams);
-	};
 
 
   return(
@@ -687,12 +610,7 @@ function RocketMqModal(props) {
           getConsoleListFormItems()
         }
 
-        {/* <Divider> Test </Divider>
 
-        {
-          getNameServerForms22()
-
-        } */}
       </Form>
 
 
