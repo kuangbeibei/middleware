@@ -14,9 +14,11 @@ import {
 } from "antd"
 
 export const YhOp = styled['span']`
+	font-weight: ${p => p.fontWeight ? p.fontWeight : 'normal'};
 	padding-left: 2px;
 	cursor: ${p => p.default ? 'default' : 'pointer'};
 	padding-right: 5px;
+	padding-left: ${p => p.paddingLeft ? p.paddingLeft : 0};
 	i,span {
 		font-size: ${p => p.fontSize? p.fontSize : 12}px;
   }
