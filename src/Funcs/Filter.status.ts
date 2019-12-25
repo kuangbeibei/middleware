@@ -5,17 +5,7 @@
  */
 
 import { clusterStatus } from "@utils/data";
-
-// 根据clusterStatus的value获取key
-const getKeysFromVal = (obj, val, k?) => {
-	let res = Array();
-	Object.keys(obj).forEach(key => {
-		if (obj[key][k] && obj[key][k].toString().includes(val)) {
-			res.push(key)
-		}
-	});
-	return res
-}
+import { getKeysFromVal } from "@utils/tools";
 
 export function filterClusterStatus(value, record, dataIndex) {
     if (escape(value).indexOf("%u") < 0) {

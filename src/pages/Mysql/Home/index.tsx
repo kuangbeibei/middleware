@@ -33,8 +33,10 @@ import { getTenantList } from "../../Redis/Home/service";
 
 import { filterClusterStatus } from "@funcs/Filter.status";
 
+import { filterKeywordswithChinese } from "@funcs/Filter.Ch";
+
 function MysqlCluster(props) {
-	const { tableModalVisibility, drawerVisibility, history } = props;
+	const { tableModalVisibility, history } = props;
 
 	const [loading, setloading] = useState(true);
 	const [tableList, setTableList] = useState(Array());
@@ -175,6 +177,12 @@ function MysqlCluster(props) {
 		onFilter: (value, record) => {
 			if (dataIndex === "status") {
 				return filterClusterStatus(value, record, dataIndex);
+			} else if (dataIndex === 'type') {
+				return typeof filterKeywordswithChinese(value, record, dataIndex) === 'function' ? filterKeywordswithChinese(value, record, dataIndex)({
+					ha: {
+						text: '主从复制'
+					}
+				}, 'text') : filterKeywordswithChinese(value, record, dataIndex)
 			} else {
 				return record[dataIndex]
 					? record[dataIndex].toString().includes(value)
