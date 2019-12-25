@@ -1,9 +1,10 @@
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const path = require("path");
-const ResolvePath = dir => {
-	return path.join(__dirname, dir);
-};
+/*
+ * 生产配置
+ * @Date: 2019-12-25 14:11:13 
+ * @Last Modified: 2019-12-25 14:11:13 
+ */ 
 
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
     mode: "production",
