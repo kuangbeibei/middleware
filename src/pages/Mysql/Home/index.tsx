@@ -27,13 +27,23 @@ import OperationControl from "@com/Operation.control";
 import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
 
-import { getMysqlClusters, getClusterDetail } from "./service";
+import {
+	getMysqlClusters,
+	getClusterDetail,
+	deployCluster,
+	unload,
+	deleteCluster
+} from "./service";
 
 import { getTenantList } from "../../Redis/Home/service";
 
 import { filterClusterStatus } from "@funcs/Filter.status";
 
 import { filterKeywordswithChinese } from "@funcs/Filter.Ch";
+
+import { myslqClustersTypes } from "./data";
+
+import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 
 function MysqlCluster(props) {
 	const { tableModalVisibility, history } = props;
@@ -67,7 +77,10 @@ function MysqlCluster(props) {
 		}, 400);
 	};
 
-	// 获取集群列表
+	/**
+	 * 获取列表
+	 * @param param
+	 */
 	const getList = ({
 		name = "",
 		status = "",
@@ -82,6 +95,46 @@ function MysqlCluster(props) {
 			}
 		);
 	};
+
+	/**
+	 * 卸载集群
+	 * @param id 
+	 */
+	const unloadAction = id => {
+		unload(id).then(msg => {
+			if (msg === 'ok') {
+				getList({})
+				message.success(`集群${id} 卸载成功`);
+			} else {
+				message.error(`${msg}`)
+			}
+		}).catch(e => message.error(e.message))
+	}
+
+	/**
+	 * 删除集群
+	 * @param id
+	 */
+	const deleteAction = id => {
+		deleteCluster(id).then(msg => {
+			if (msg === 'ok') {
+				getList({})
+				message.success(`集群${id} 删除成功`)
+			} else {
+				message.error(`${msg}`)
+			}
+		}).catch(e => message.error(e.message))
+	}
+
+	/**
+	 * 部署集群
+	 * @param id
+	 */
+	const depolyAction = id => {
+		deployCluster(id).then(msg => {
+			getList({})
+		}).catch(e => message.error(e.message))
+	}
 
 	const showFormModal = async (id?) => {
 		import("./Form.modal").then(component => {
@@ -177,12 +230,18 @@ function MysqlCluster(props) {
 		onFilter: (value, record) => {
 			if (dataIndex === "status") {
 				return filterClusterStatus(value, record, dataIndex);
-			} else if (dataIndex === 'type') {
-				return typeof filterKeywordswithChinese(value, record, dataIndex) === 'function' ? filterKeywordswithChinese(value, record, dataIndex)({
-					ha: {
-						text: '主从复制'
-					}
-				}, 'text') : filterKeywordswithChinese(value, record, dataIndex)
+			} else if (dataIndex === "type") {
+				return typeof filterKeywordswithChinese(
+					value,
+					record,
+					dataIndex
+				) === "function"
+					? filterKeywordswithChinese(
+							value,
+							record,
+							dataIndex
+					  )(myslqClustersTypes, "text")
+					: filterKeywordswithChinese(value, record, dataIndex);
 			} else {
 				return record[dataIndex]
 					? record[dataIndex].toString().includes(value)
@@ -220,13 +279,11 @@ function MysqlCluster(props) {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a onClick={() => {}}>部署</a>
+					<a onClick={() => checkStatusBeforeOperate('deploy', text.status)(text.id, text.name, depolyAction)}>部署</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
-						onClick={() => {
-							showFormModal(text.id);
-						}}
+						onClick={() => checkStatusBeforeOperate('edit', text.status)(text.id, text.name, showFormModal)}
 					>
 						编辑
 					</a>
@@ -235,7 +292,7 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定卸载集群${text.name}?`}
-						onConfirm={() => {}}
+						onConfirm={() => checkStatusBeforeOperate('release', text.status)(text.id, text.name, unloadAction)}
 						okText="是"
 						cancelText="否"
 					>
@@ -246,7 +303,7 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定删除集群${text.name}?`}
-						onConfirm={() => {}}
+						onConfirm={() => checkStatusBeforeOperate('delete', text.status)(text.id, text.name, deleteAction)}
 						okText="是"
 						cancelText="否"
 					>

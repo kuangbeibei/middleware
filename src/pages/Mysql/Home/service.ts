@@ -24,7 +24,7 @@ export async function getMysqlClusters({
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(e);
+				Promise.reject(res.message)
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -37,7 +37,7 @@ export async function getDefaultClusterConfig() {
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(e);
+				Promise.reject(res.message)
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -50,7 +50,7 @@ export async function getClusterDetail(id) {
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(e);
+				Promise.reject(res.message)
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -63,11 +63,12 @@ export async function createMysqlCluster(data) {
 			try {
 				return res.message;
 			} catch (e) {
-				Promise.reject(e);
+				Promise.reject(res.message)
 			}
 		})
 		.catch(e => Promise.reject(e));
 }
+
 // 修改集群再次提交接口
 export async function updateMysqlCluster(id, data) {
 	return putApi(ProductMysqlApiUrl)(`/v1/clusters/${id}`, data)
@@ -75,7 +76,47 @@ export async function updateMysqlCluster(id, data) {
 			try {
 				return res.message;
 			} catch (e) {
-				Promise.reject(e);
+				Promise.reject(res.message)
+			}
+		})
+		.catch(e => Promise.reject(e));
+}
+
+// 部署
+export async function deployCluster(id) {
+	return postApi(ProductMysqlApiUrl)(`/v1/manage/deploy/${id}`)
+		.then(res => {
+			try {
+				return res.message;
+			} catch (e) {
+				Promise.reject(res.message);
+			}
+		})
+		.catch(e => Promise.reject(e));
+}
+
+// 卸载
+export async function unload(id) {
+	return delApi(ProductMysqlApiUrl)(`/v1/manage/deploy/${id}`)
+		.then(res => {
+			try {
+				return res.message;
+			} catch (e) {
+				Promise.reject(res.message);
+			}
+		})
+		.catch(e => Promise.reject(e));
+}
+
+// 删除
+export async function deleteCluster(id) {
+	return delApi(ProductMysqlApiUrl)(`/v1/clusters/${id}`)
+		.then()
+		.then(res => {
+			try {
+				return res.message;
+			} catch (e) {
+				Promise.reject(res.message)
 			}
 		})
 		.catch(e => Promise.reject(e));

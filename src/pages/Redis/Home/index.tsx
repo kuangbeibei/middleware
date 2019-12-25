@@ -47,6 +47,8 @@ import {
 	filterClusterStatus
 } from "@funcs/Filter.status"
 
+import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
+
 import "./style.less";
 
 function RedisCluster(props) {
@@ -297,63 +299,6 @@ function RedisCluster(props) {
 		props.history.push(`/middleware/redis/${id}/extension`);
 	};
 
-	/**
-	 * 在操作前校验status
-	 * @param type
-	 * @param status
-	 */
-	const checkStatusBeforeOperate = (type, status) => {
-		switch (type) {
-			case "mapRelations":
-				if (status === "done") {
-					return taskId => getMapRelationsInfo(taskId);
-				}
-				return () =>
-					message.info(`集群状态是${status}，无法展示拓扑图!`);
-			case "delete":
-				if (
-					status === "release" ||
-					status === "failed" ||
-					status === "ready"
-				) {
-					return (id, name) => deleteCluster(id, name);
-				}
-				return () => message.info(`集群状态是${status}，无法删除!`);
-			case "release":
-				if (
-					status !== "running" &&
-					status !== "release" &&
-					status !== "ready"
-				) {
-					return (taskId, name) =>
-						releaseClusterByTaskId(taskId, name);
-				}
-				return () => message.info(`集群状态是${status}，不可卸载!`);
-			case "deploy":
-				if (status === "ready" || status === "failed") {
-					return taskId => deployCluster(taskId);
-				}
-				return () => message.info(`集群状态是${status}，不可部署！`);
-			case "edit":
-				if (status !== "done" && status !== "release") {
-					return taskId => showFormModal(taskId);
-				}
-				return () => message.info(`集群状态是${status}，不可编辑`);
-			case "monitor":
-				if (status === "done") {
-					return (id, name) => checkMonitorStatus(id, name);
-				}
-				return () => message.info(`集群状态是${status}，暂无监控状态`);
-			case "extension":
-				if (status === "done") {
-					return (id, taskId) => gotoExtension(id, taskId);
-				}
-				return () => message.info(`集群状态是${status}, 不可扩容`);
-			default:
-				return () => {};
-		}
-	};
-
 	const getColumnSearchProps = dataIndex => ({
 		filterDropdown: ({
 			setSelectedKeys,
@@ -466,7 +411,8 @@ function RedisCluster(props) {
 						onClick={() =>
 							checkStatusBeforeOperate("deploy", text.status)(
 								text.taskId,
-								text.name
+								text.name,
+								deployCluster
 							)
 						}
 					>
@@ -478,7 +424,8 @@ function RedisCluster(props) {
 						onClick={() =>
 							checkStatusBeforeOperate("extension", text.status)(
 								text.id,
-								text.taskId
+								text.taskId,
+								gotoExtension
 							)
 						}
 					>
@@ -490,7 +437,8 @@ function RedisCluster(props) {
 						onClick={() =>
 							checkStatusBeforeOperate("edit", text.status)(
 								text.taskId,
-								text.name
+								text.name,
+								showFormModal
 							)
 						}
 					>
@@ -504,7 +452,8 @@ function RedisCluster(props) {
 						onConfirm={() =>
 							checkStatusBeforeOperate("release", text.status)(
 								text.taskId,
-								text.name
+								text.name,
+								releaseClusterByTaskId
 							)
 						}
 						okText="是"
@@ -520,7 +469,8 @@ function RedisCluster(props) {
 						onConfirm={() =>
 							checkStatusBeforeOperate("delete", text.status)(
 								text.id,
-								text.name
+								text.name,
+								deleteCluster
 							)
 						}
 						okText="是"
@@ -575,7 +525,7 @@ function RedisCluster(props) {
 								checkStatusBeforeOperate(
 									"mapRelations",
 									text.status
-								)(text.taskId, text.name)
+								)(text.taskId, text.name, getMapRelationsInfo)
 							}
 						/>
 					</Tooltip>
