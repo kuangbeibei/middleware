@@ -16,7 +16,7 @@ import Loading from "@com/UI/Loading";
 import { isEven } from "@tools";
 import { YhOp, YhAdd } from "@styled/Button";
 
-import PasswordColumn from "../../Redis/Instance/Password-unit";
+import PasswordColumn from "@com/Password-unit";
 import StatusControl from "@com/Status.control";
 import OperationControl from "@com/Operation.control";
 
