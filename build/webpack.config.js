@@ -23,8 +23,8 @@ const {
 	env: { ENV }
 } = process;
 
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const isDevMode = ENV === "DEV";
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const isDevMode = ENV === "DEV";
 
 module.exports = WebpackMerge(
 	{
@@ -58,42 +58,42 @@ module.exports = WebpackMerge(
 		},
 		module: {
 			rules: [
-				{
-					test: /\.css$/,
-					use: ["style-loader", "css-loader"]
-				},
-				{
-					test: /\.less$/,
-					use: [
-						"style-loader",
-						"css-loader",
-						{
-							loader: "less-loader",
-							options: {
-								javascriptEnabled: true
-							}
-						}
-					]
-        },
-        // {
-        //   test: /\.(le|c)ss$/,
-        //   use: [
-        //     {
-        //       loader: MiniCssExtractPlugin.loader,
-        //       options: {
-        //         hmr: isDevMode,
-        //       },
-        //     },
-        //     'css-loader',
-        //     // 'less-loader',
-        //     {
-        //       loader: "less-loader",
-        //       options: {
-        //         javascriptEnabled: true
-        //       }
-        //     }
-        //   ],
-        // },        
+				// {
+				// 	test: /\.css$/,
+				// 	use: ["style-loader", "css-loader"]
+				// },
+				// {
+				// 	test: /\.less$/,
+				// 	use: [
+				// 		"style-loader",
+				// 		"css-loader",
+				// 		{
+				// 			loader: "less-loader",
+				// 			options: {
+				// 				javascriptEnabled: true
+				// 			}
+				// 		}
+				// 	]
+        // },
+        {
+          test: /\.(le|c)ss$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                hmr: isDevMode,
+              },
+            },
+            'css-loader',
+            // 'less-loader',
+            {
+              loader: "less-loader",
+              options: {
+                javascriptEnabled: true
+              }
+            }
+          ],
+        },        
 				{
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
 					loader: "file-loader",
@@ -118,12 +118,12 @@ module.exports = WebpackMerge(
 				template: ResolvePath("../src/index.html"),
 				filename: `index.html?tag=${new Date().getTime()}`
       }),
-      // new MiniCssExtractPlugin({
-      //   // Options similar to the same options in webpackOptions.output
-      //   // both options are optional
-      //   filename: isDevMode ? '[name].css' : '[name].[hash].css',
-      //   chunkFilename: isDevMode ? '[id].css' : '[id].[hash].css',
-      // }),
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: isDevMode ? '[name].css' : '[name].[hash].css',
+        chunkFilename: isDevMode ? '[id].css' : '[id].[hash].css',
+      }),
 		],
 	},
 	ENV === "DEV" ? DevConfig : BuildConfig

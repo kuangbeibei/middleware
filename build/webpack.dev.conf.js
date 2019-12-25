@@ -8,7 +8,7 @@ const Webpack = require("webpack");
 
 module.exports = {
 	mode: "development",
-	devtool: "inline-source-map",
+	// devtool: "inline-source-map",
 	devServer: {
 		contentBase: "../dist",
 		host: "127.0.0.1",
@@ -23,7 +23,8 @@ module.exports = {
 		https: false, // true for self-signed, object for cert authority
 		noInfo: true, // only errors & warns on hot reload
 		watchOptions: {
-			poll: true
+      poll: 1000,
+      ignored: /node_modules/
 		},
 		proxy: [
 			{
@@ -35,5 +36,31 @@ module.exports = {
 			}
 		]
 	},
-	plugins: [new Webpack.ProgressPlugin()]
+  plugins: [new Webpack.ProgressPlugin()],
+  optimization: {
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      // maxSize: 0,
+      minChunks: 2,
+      maxAsyncRequests: 6,
+      maxInitialRequests: 4,
+      automaticNameDelimiter: '~',
+      automaticNameMaxLength: 30,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    },    
+    runtimeChunk: {
+      name: entrypoint => `runtimechunk~${entrypoint.name}`
+    },
+  }
 };
