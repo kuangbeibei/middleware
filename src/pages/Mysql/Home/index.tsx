@@ -33,8 +33,10 @@ import { getTenantList } from "../../Redis/Home/service";
 
 import { filterClusterStatus } from "@funcs/Filter.status";
 
+import { filterKeywordswithChinese } from "@funcs/Filter.Ch";
+
 function MysqlCluster(props) {
-	const { tableModalVisibility, drawerVisibility, history } = props;
+	const { tableModalVisibility, history } = props;
 
 	const [loading, setloading] = useState(true);
 	const [tableList, setTableList] = useState(Array());
@@ -104,9 +106,6 @@ function MysqlCluster(props) {
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
-		if (dataIndex === "instances") {
-			// getList({ spec: selectedKeys[0] });
-		}
 	};
 
 	const handleReset = clearFilters => {
@@ -178,6 +177,12 @@ function MysqlCluster(props) {
 		onFilter: (value, record) => {
 			if (dataIndex === "status") {
 				return filterClusterStatus(value, record, dataIndex);
+			} else if (dataIndex === 'type') {
+				return typeof filterKeywordswithChinese(value, record, dataIndex) === 'function' ? filterKeywordswithChinese(value, record, dataIndex)({
+					ha: {
+						text: '主从复制'
+					}
+				}, 'text') : filterKeywordswithChinese(value, record, dataIndex)
 			} else {
 				return record[dataIndex]
 					? record[dataIndex].toString().includes(value)
@@ -196,23 +201,9 @@ function MysqlCluster(props) {
 	const processColumnText = (dataIndex, text) => {
 		switch (dataIndex) {
 			case "name":
-				return (
-					<a
-						onClick={() =>
-							gotoDetail(text.id)
-						}
-					>
-						{text.name}
-					</a>
-				);
+				return <a onClick={() => gotoDetail(text.id)}>{text.name}</a>;
 			case "type":
-				return text === 'ha' ? '主从复制' : 'InnodbCluster';
-			case "instances":
-				return <a onClick={() =>
-							gotoInstance(text.id)
-						}>{
-					text.instances.length === 2 ? "1主1从" : "1主2从"
-				}</a>;
+				return text === "ha" ? "主从复制" : "InnodbCluster";
 			case "tenantName":
 				return text.tenantName;
 			case "status":
@@ -296,7 +287,11 @@ function MysqlCluster(props) {
 			title: "实例个数",
 			key: "instances",
 			width: "8%",
-			...getColumnSearchProps("instances")
+			render: text => (
+				<a onClick={() => gotoInstance(text.id)}>
+					{text.instances.length === 2 ? "1主1从" : "1主2从"}
+				</a>
+			)
 		},
 		{
 			title: "拓扑",

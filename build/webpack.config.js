@@ -1,5 +1,5 @@
 /*
- * @Author: kuangdan
+ * 基础配置
  * @Date: 2019-10-29 16:38:11
  * @Last Modified: 2019-10-29 16:38:11
  */
@@ -10,6 +10,7 @@ const path = require("path");
 // 第三方模块
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackMerge = require("webpack-merge");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // 自定义模块
 const DevConfig = require("./webpack.dev.conf");
@@ -22,8 +23,6 @@ const ResolvePath = dir => {
 const {
 	env: { ENV }
 } = process;
-
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isDevMode = ENV === "DEV";
 
 module.exports = WebpackMerge(
@@ -32,10 +31,9 @@ module.exports = WebpackMerge(
 			index: ResolvePath("../src/index.tsx")
 		},
 		output: {
-			filename:
-				ENV === "DEV"
-					? "middleware.[name].bundle.js"
-					: "middleware.[name].[hash:5].bundle.js",
+			filename: isDevMode
+				? "middleware.[name].bundle.js"
+				: "middleware.[name].[hash:5].bundle.js",
 			path: ResolvePath("../dist"),
 			chunkFilename: "middleware.[name].chunkfile.js",
 			publicPath: "/"
@@ -58,59 +56,43 @@ module.exports = WebpackMerge(
 		},
 		module: {
 			rules: [
-				// {
-				// 	test: /\.css$/,
-				// 	use: ["style-loader", "css-loader"]
-				// },
-				// {
-				// 	test: /\.less$/,
-				// 	use: [
-				// 		"style-loader",
-				// 		"css-loader",
-				// 		{
-				// 			loader: "less-loader",
-				// 			options: {
-				// 				javascriptEnabled: true
-				// 			}
-				// 		}
-				// 	]
-        // },
-        {
-          test: /\.(le|c)ss$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: isDevMode,
-              },
-            },
-            'css-loader',
-            // 'less-loader',
-            {
-              loader: "less-loader",
-              options: {
-                javascriptEnabled: true
-              }
-            }
-          ],
-        },        
+				{
+					test: /\.(le|c)ss$/,
+					use: [
+						isDevMode
+							? "style-loader"
+							: {
+									loader: MiniCssExtractPlugin.loader,
+									options: {
+										hmr: isDevMode
+									}
+							  },
+						"css-loader",
+						{
+							loader: "less-loader",
+							options: {
+								javascriptEnabled: true
+							}
+						}
+					]
+				},
 				{
 					test: /\.(png|jpg|jpeg|gif|svg)$/,
 					loader: "file-loader",
 					options: {
 						publicPath: "/",
 						name: "middleware.[name].[hash:5].[ext]"
-					},
+					}
 				},
 				{
-                	test: /\.ts(x?)$/,
+					test: /\.ts(x?)$/,
 					exclude: /node_modules/,
 					use: [
 						{
 							loader: "ts-loader"
 						}
 					]
-				},
+				}
 			]
 		},
 		plugins: [
@@ -126,5 +108,5 @@ module.exports = WebpackMerge(
       }),
 		],
 	},
-	ENV === "DEV" ? DevConfig : BuildConfig
+	isDevMode ? DevConfig : BuildConfig
 );

@@ -95,4 +95,15 @@ export const setCookie = function (name, value, daysToLive?) {
 }
 
 // 生成随机整数
-export const generateInteger = (min, max) => Math.floor(Math.random()*(max-min+1)+min);
+export const generateInteger = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+// 从对象中，获取英文对应的国际化中文
+export const getKeysFromVal = (obj, val, k?) => {
+	let res = Array();
+	Object.keys(obj).forEach(key => {
+		if (obj[key][k] && obj[key][k].toString().includes(val)) {
+			res.push(key)
+		}
+	});
+	return res
+}
