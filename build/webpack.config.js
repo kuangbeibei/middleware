@@ -99,14 +99,14 @@ module.exports = WebpackMerge(
 			new HtmlWebpackPlugin({
 				template: ResolvePath("../src/index.html"),
 				filename: `index.html?tag=${new Date().getTime()}`
-			}),
-			new MiniCssExtractPlugin({
-				// Options similar to the same options in webpackOptions.output
-				// both options are optional
-				filename: isDevMode ? "[name].css" : "[name].[hash].css",
-				chunkFilename: isDevMode ? "[id].css" : "[id].[hash].css"
-			})
-		]
+      }),
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: isDevMode ? '[name].css' : 'middleware.[name].[hash].css',
+        chunkFilename: isDevMode ? '[id].css' : 'middleware.[id].[hash].css',
+      }),
+		],
 	},
 	isDevMode ? DevConfig : BuildConfig
 );
