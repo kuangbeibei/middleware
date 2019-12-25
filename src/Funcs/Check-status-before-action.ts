@@ -43,7 +43,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			return () => message.info(`集群状态是${status}，不可部署！`);
 		case "edit":
 			if (status !== "done" && status !== "release") {
-				return (taskId, fn) => fn(taskId);
+				return (taskId, name, fn) => fn(taskId)
 			}
 			return () => message.info(`集群状态是${status}，不可编辑`);
 		case "monitor":
@@ -52,7 +52,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			}
 			return () => message.info(`集群状态是${status}，暂无监控状态`);
 		case "extension":
-			if (status === "done") {
+			if (status === "done") { //目前只有redis有扩容
 				return (id, taskId, fn) => fn(id, taskId);
 			}
 			return () => message.info(`集群状态是${status}, 不可扩容`);
