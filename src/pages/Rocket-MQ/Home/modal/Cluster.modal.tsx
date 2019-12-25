@@ -11,9 +11,9 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import Modal from "@com/Modal";
-import { YHSmallFormItem, YHFlexSpaceBetwenDiv, YHFlexCenterDiv } from "@styled/Form";
+import { YHFlexSpaceBetwenDiv, YHFlexCenterDiv } from "@styled/Form";
 import { isEven, deepCloneObject } from "@utils/tools";
-
+import styled from 'styled-components';
 // import PropTypes from 'prop-types'
 
 import {
@@ -25,7 +25,6 @@ import {
   Icon,
   Tooltip
 } from 'antd';
-import { Item } from "rc-menu";
 
 // RocketMqModal.propTypes = {
 //   name: PropTypes.string.isRequired
@@ -46,14 +45,20 @@ import { Item } from "rc-menu";
   // TODO 样式抽取
   // todo 定义typescript 数据格式
   const initialRocketMqObj:any = {
-    name: '',
+    businessName: '',
     summary: '',
     tenant: 't1',
-    consoleList: [],
-    brokerList: [],
-    nameServerList: [],
+    version: '',
+    brokerInstances: [],
+    consoleInstances: [],
+    nameServerInstances: [],
     list:[]
   }
+
+
+const QuarterFormItem = styled(Form.Item)`
+  width: 24%;
+`
 
 function RocketMqModal(props) {
   
@@ -101,22 +106,28 @@ function RocketMqModal(props) {
   }, [])
 
 
+  const formItemInstanceLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 }
+  };
+
+
   const formItemBasicLayout = {
-    labelCol: { span: 7 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 }
   };
 
 
 
-  const getConsoleListFormItems = () => {
+  const getBrokerFormItems = () => {
  
-    const formItems = clusterObj.consoleList.map((consoleGroup, index) => {
+    const formItems = clusterObj.brokerInstances.map((consoleGroup, index) => {
       
     return (
         <div key={'console_item_' + index} style={{outline: '3px dotted wheat',  outlineOffset: 6, position: 'relative', paddingTop: 10, marginTop: index!=0 ? 36: 15}}>
 
           <Tooltip title="删除">
-            <Icon onClick={()=>{deleteConsole(consoleGroup.key)}} style={{
+            <Icon onClick={()=>{deleteBroker(consoleGroup.key)}} style={{
               fontSize: 25,
               marginBottom: 24,
               cursor: 'pointer',
@@ -129,26 +140,13 @@ function RocketMqModal(props) {
           {
             consoleGroup.data.map((item, idx) => 
               <YHFlexSpaceBetwenDiv key={'console_m_v'+idx}>
-                <YHSmallFormItem
-                  {...formItemBasicLayout}
-                  label={ '版本' + ( idx ? '(备)': '(主)') }
-                >
-                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].version`, {
-                    initialValue: item.ip,
-                    rules: [
-                      {
-                        required: true,
-                        message: "版本必填"
-                      }
-                    ]
-                    })(<Input placeholder="version"></Input>)}
-                </YHSmallFormItem>
+  
 
-                <YHSmallFormItem
-                {...formItemBasicLayout}
+                <QuarterFormItem
+                {...formItemInstanceLayout}
                 label="ip"
                 >
-                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].ip`, {
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].ip`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -157,13 +155,13 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="ip"></Input>)}
-                </YHSmallFormItem>
+                </QuarterFormItem>
 
-                <YHSmallFormItem
-                {...formItemBasicLayout}
+                <QuarterFormItem
+                {...formItemInstanceLayout}
                 label="端口"
                 >
-                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].port`, {
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].port`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -172,13 +170,13 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="port"></Input>)}
-                </YHSmallFormItem>
+                </QuarterFormItem>
 
-                <YHSmallFormItem
-                {...formItemBasicLayout}
+                <QuarterFormItem
+                {...formItemInstanceLayout}
                 label="用户名"
                 >
-                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].username`, {
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].username`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -187,13 +185,13 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="usernname"></Input>)}
-                </YHSmallFormItem>
+                </QuarterFormItem>
 
-                <YHSmallFormItem
-                {...formItemBasicLayout}
+                <QuarterFormItem
+                {...formItemInstanceLayout}
                 label="密码"
                 >
-                  {getFieldDecorator(`params.consoleList[${consoleGroup.key}].data[${idx}].username`, {
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].username`, {
                     initialValue: item.ip,
                     rules: [
                       {
@@ -202,7 +200,7 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="password"></Input>)}
-                </YHSmallFormItem>
+                </QuarterFormItem>
 
               </YHFlexSpaceBetwenDiv>
               )
@@ -215,7 +213,7 @@ function RocketMqModal(props) {
     })
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_console'}>
-        <Button type="primary" onClick={addConsole} style={{marginTop: 30}}> 
+        <Button type="primary" onClick={addBroker} style={{marginTop: 30}}> 
           添加 
           <Icon type="plus-circle" /> 
         </Button>
@@ -223,9 +221,9 @@ function RocketMqModal(props) {
     )
     return formItems;
   }
-  const addConsole = () => {
-    let consoleList = clusterObj.consoleList
-    consoleList.push({
+  const addBroker = () => {
+    let brokerInstances = clusterObj.brokerInstances
+    brokerInstances.push({
       key: Date.now()+ '_console',
       data: [
         {
@@ -242,15 +240,15 @@ function RocketMqModal(props) {
       Object.assign({},
       clusterObj,
       {
-        consoleList: consoleList
+        brokerInstances: brokerInstances
       }
       )
     )
   }
 
-  const deleteConsole = (key)=>{
+  const deleteBroker = (key)=>{
     let cloneObj = deepCloneObject(clusterObj)
-    cloneObj.consoleList = cloneObj.consoleList.filter(item => item.key != key)
+    cloneObj.brokerInstances = cloneObj.brokerInstances.filter(item => item.key != key)
     setClusterObj(
       Object.assign({},
         cloneObj
@@ -259,34 +257,17 @@ function RocketMqModal(props) {
 
   }
 
-  const getBrokerFormItems = ()=> {
+  const getConsoleFormItems = ()=> {
 
-    const formItems = clusterObj.brokerList.map((broker, index) => (
+    const formItems = clusterObj.consoleInstances.map((broker, index) => (
       <YHFlexSpaceBetwenDiv key={'broker_item_' + index}>
-              <YHSmallFormItem
-                  {...formItemBasicLayout}
-                  label="版本"
-                >
-                  {getFieldDecorator(`params.brokerList[${broker.key}].version`, {
-                    initialValue: broker.version,
-                    rules: [
-                      {
-                        required: true,
-                        message: "版本必填"
-                      }
-                    ]
-                    })(
-                      <Select>
-                        <Select.Option value="4.3.9" > 4.3.9 </Select.Option>
-                      </Select>
-                    )}
-                </YHSmallFormItem>
+         
 
-                <YHSmallFormItem
-                  {...formItemBasicLayout}
+                <QuarterFormItem
+                  {...formItemInstanceLayout}
                   label="ip"
                 >
-                  {getFieldDecorator(`params.brokerList[${broker.key}].ip`, {
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
                     initialValue: broker.ip,
                     rules: [
                       {
@@ -295,13 +276,14 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="请输入ip"></Input>)}
-                </YHSmallFormItem>
+                </QuarterFormItem>
 
-                <YHSmallFormItem
-                  {...formItemBasicLayout}
+                <QuarterFormItem
+                  {...formItemInstanceLayout}
+
                   label="端口"
                 >
-                  {getFieldDecorator(`params.brokerList[${broker.key}].port`, {
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].port`, {
                     initialValue: broker.port,
                     rules: [
                       {
@@ -310,13 +292,14 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="请输入端口"></Input>)}
-                </YHSmallFormItem>   
+                </QuarterFormItem>   
 
-                <YHSmallFormItem
-                  {...formItemBasicLayout}
+                <QuarterFormItem
+                  {...formItemInstanceLayout}
+
                   label="用户名"
                 >
-                  {getFieldDecorator(`params.brokerList[${broker.key}].username`, {
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].username`, {
                     initialValue: broker.usrename,
                     rules: [
                       {
@@ -325,13 +308,13 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="请输入用户名"></Input>)}
-                </YHSmallFormItem> 
+                </QuarterFormItem> 
 
-                <YHSmallFormItem
-                  {...formItemBasicLayout}
+                <QuarterFormItem
+                  {...formItemInstanceLayout}
                   label="密码"
                 >
-                  {getFieldDecorator(`params.brokerList[${broker.key}].password`, {
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].password`, {
                     initialValue: broker.password,
                     rules: [
                       {
@@ -340,10 +323,10 @@ function RocketMqModal(props) {
                       }
                     ]
                     })(<Input placeholder="请输入密码"></Input>)}
-                </YHSmallFormItem>   
+                </QuarterFormItem>   
                 
                 <Tooltip title="删除">
-                <Icon onClick={deleteBroker} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
+                <Icon onClick={()=>{deleteConsole(broker.key)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
                 </Tooltip>
                        
 
@@ -351,7 +334,7 @@ function RocketMqModal(props) {
     ))
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <Button type="primary" onClick={addBroker} style={{marginTop: 10}}>
+        <Button type="primary" onClick={addConsole} style={{marginTop: 10}}>
            添加 
            <Icon type="plus-circle" /> 
         </Button>
@@ -361,9 +344,9 @@ function RocketMqModal(props) {
 
   }
 
-  const addBroker = ()=>{
-    let brokerList = clusterObj.brokerList
-    brokerList.push({
+  const addConsole = ()=>{
+    let consoleInstances = clusterObj.consoleInstances
+    consoleInstances.push({
       version: '4.3.9',
       ip: '',
       port: '',
@@ -374,13 +357,13 @@ function RocketMqModal(props) {
     setClusterObj(
       Object.assign({},
       clusterObj,
-      brokerList
+      consoleInstances
       )
     )
   }
-  const deleteBroker = (key)=>{
+  const deleteConsole = (key)=>{
     let cloneObj = deepCloneObject(clusterObj)
-    cloneObj.brokerList = cloneObj.brokerList.filter(item => item.key != key)
+    cloneObj.consoleInstances = cloneObj.consoleInstances.filter(item => item.key != key)
     setClusterObj(
       Object.assign({},
         cloneObj
@@ -390,14 +373,14 @@ function RocketMqModal(props) {
 
   const getNameServerForms = () => {
 
-    const formItems = clusterObj.nameServerList.map((nameServer, index) =>(
+    const formItems = clusterObj.nameServerInstances.map((nameServer, index) =>(
       <YHFlexSpaceBetwenDiv key={nameServer.key}>
-      <YHSmallFormItem
+      {/* <QuarterFormItem
           key={index+'_version'}
-          {...formItemBasicLayout}
+          {...formItemInstanceLayout}
           label="版本"
         >
-          {getFieldDecorator(`params.nameServerList[${nameServer.key}].version`, {
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].version`, {
             initialValue: nameServer.version,
             rules: [
               {
@@ -410,14 +393,14 @@ function RocketMqModal(props) {
                 <Select.Option value="4.3.9" > 4.3.9 </Select.Option>
               </Select>
             )}
-        </YHSmallFormItem>
+        </QuarterFormItem> */}
 
-        <YHSmallFormItem
+        <QuarterFormItem
           key={index+'_ip'}
-          {...formItemBasicLayout}
+          {...formItemInstanceLayout}
           label="ip"
         >
-          {getFieldDecorator(`params.nameServerList[${nameServer.key}].ip`, {
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].ip`, {
             initialValue: nameServer.ip,
             rules: [
               {
@@ -426,14 +409,14 @@ function RocketMqModal(props) {
               }
             ]
             })(<Input placeholder="请输入ip"></Input>)}
-        </YHSmallFormItem>
+        </QuarterFormItem>
 
-        <YHSmallFormItem
+        <QuarterFormItem
           key={index+'_port'}
-          {...formItemBasicLayout}
+          {...formItemInstanceLayout}
           label="端口"
         >
-          {getFieldDecorator(`params.nameServerList[${nameServer.key}].port`, {
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].port`, {
             initialValue: nameServer.port,
             rules: [
               {
@@ -442,14 +425,14 @@ function RocketMqModal(props) {
               }
             ]
             })(<Input placeholder="请输入端口"></Input>)}
-        </YHSmallFormItem>   
+        </QuarterFormItem>   
 
-        <YHSmallFormItem
+        <QuarterFormItem
           key={index+'_username'}
-          {...formItemBasicLayout}
+          {...formItemInstanceLayout}
           label="用户名"
         >
-          {getFieldDecorator(`params.nameServerList[${nameServer.key}].username`, {
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].username`, {
             initialValue: nameServer.username,
             rules: [
               {
@@ -458,14 +441,14 @@ function RocketMqModal(props) {
               }
             ]
             })(<Input placeholder="请输入用户名"></Input>)}
-        </YHSmallFormItem> 
+        </QuarterFormItem> 
 
-        <YHSmallFormItem
+        <QuarterFormItem
            key={index+'_password'}
-          {...formItemBasicLayout}
+          {...formItemInstanceLayout}
           label="密码"
         >
-          {getFieldDecorator(`params.nameServerList[${nameServer.key}].password`, {
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].password`, {
             initialValue: nameServer.password,
             rules: [
               {
@@ -474,7 +457,7 @@ function RocketMqModal(props) {
               }
             ]
             })(<Input placeholder="请输入密码"></Input>)}
-        </YHSmallFormItem>   
+        </QuarterFormItem>   
         
         <Tooltip title="删除">
             <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
@@ -498,8 +481,8 @@ function RocketMqModal(props) {
   }
   const deleteNameServer = (key) => {
     let cloneObj = deepCloneObject(clusterObj)
-    let { nameServerList } = cloneObj
-    cloneObj.nameServerList = nameServerList.filter(item => item.key !== key)
+    let { nameServerInstances } = cloneObj
+    cloneObj.nameServerInstances = nameServerInstances.filter(item => item.key !== key)
     setClusterObj(
       Object.assign({},
        cloneObj
@@ -510,8 +493,8 @@ function RocketMqModal(props) {
   }
   const addNameServer = () => {
     let cloneNmObjv =  deepCloneObject(clusterObj)
-    let nameServerList = cloneNmObjv.nameServerList
-    nameServerList.push({
+    let nameServerInstances = cloneNmObjv.nameServerInstances
+    nameServerInstances.push({
       version: '4.3.9',
       ip: '',
       port: '',
@@ -545,8 +528,8 @@ function RocketMqModal(props) {
       <Form>
         <Divider> 基础信息 </Divider>
         <Form.Item {...formItemBasicLayout} label="集群名称">
-					{getFieldDecorator("params.name", {
-						initialValue: initialRocketMqObj.name,
+					{getFieldDecorator("params.businessName", {
+						initialValue: initialRocketMqObj.businessName,
 						rules: [
 							{
 								required: true,
@@ -586,16 +569,29 @@ function RocketMqModal(props) {
 					)}
 				</Form.Item>
 
-        <Divider >broker</Divider>
+        <Form.Item
+          {...formItemBasicLayout}
+            label={ '版本:'}
+          >
+            {getFieldDecorator(`params.version`, {
+              initialValue: initialRocketMqObj.version,
+              rules: [
+                {
+                  required: true,
+                  message: "版本必填"
+                }
+              ]
+            })(<Input placeholder="version"></Input>)}
+        </Form.Item>
+
+        <Divider >console</Divider>
 
 
         {
-          getBrokerFormItems()
+          getConsoleFormItems()
         }
         
   
-
-
 
         <Divider >name server</Divider>
 
@@ -604,10 +600,10 @@ function RocketMqModal(props) {
 
         }
         
-        <Divider >console</Divider>
+        <Divider >broker</Divider>
 
         {
-          getConsoleListFormItems()
+          getBrokerFormItems()
         }
 
 
