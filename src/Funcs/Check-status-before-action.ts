@@ -38,7 +38,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			return () => message.info(`集群状态是${status}，不可卸载!`);
 		case "deploy":
 			if (status === "ready" || status === "failed") {
-				return (taskId, fn) => fn(taskId);
+				return (taskId, name, fn) => fn(taskId);
 			}
 			return () => message.info(`集群状态是${status}，不可部署！`);
 		case "edit":

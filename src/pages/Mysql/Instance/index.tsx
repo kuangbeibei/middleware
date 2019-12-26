@@ -150,16 +150,16 @@ export default function(props) {
 				);
 			}
 		},
-		{
-			title: "日志",
-			key: "log",
-			width: "8%",
-			render: text => (
-				<YhOp type="info">
-					<Button type="link" icon="code" onClick={() => {}} />
-				</YhOp>
-			)
-		},
+		// {
+		// 	title: "日志",
+		// 	key: "log",
+		// 	width: "8%",
+		// 	render: text => (
+		// 		<YhOp type="info">
+		// 			<Button type="link" icon="code" onClick={() => {}} />
+		// 		</YhOp>
+		// 	)
+		// },
 		{
 			title: "操作",
 			key: "action",
