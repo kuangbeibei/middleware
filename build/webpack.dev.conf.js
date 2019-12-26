@@ -5,7 +5,6 @@
  */
 
 const Webpack = require("webpack");
-
 module.exports = {
 	mode: "development",
 	devServer: {
@@ -28,7 +27,7 @@ module.exports = {
 		},
 		proxy: [
 			{
-				context: ["/api-uum", "/api-mid", "/api-mwp"],
+				context: ["/api-uum", "/api-mid", "/api-mwp", "/api/user/login"],
 				target: "http://manager.dev.yonghui.cn/",
 				secure: true,
 				changeOrigin: false,
@@ -36,5 +35,10 @@ module.exports = {
 			}
 		],
 	},
-	plugins: [new Webpack.ProgressPlugin()]
+  plugins: [
+    new Webpack.ProgressPlugin(),
+    new Webpack.DefinePlugin({
+      'NODE_ENV': JSON.stringify(process.env.ENV)
+    })
+  ]
 };
