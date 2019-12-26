@@ -103,7 +103,7 @@ function FormModal(props) {
 			getClusterDetail(id).then(data => {
 				setPostParams(data);
 				const { backupStrategy, dbConfiguration } = data;
-				stringifyDBconfiguration(dbConfiguration);
+				
 				backupStrategy
 					.replace(/\*/g, "")
 					.split(" ")
@@ -111,27 +111,53 @@ function FormModal(props) {
 					.forEach((item, idx) => {
 						idx === 0 ? setminute(item) : sethour(item);
 					});
+				
+				if (Object.keys(dbConfiguration).length === 0) {
+					getDBconfiguration()
+				} else {
+					stringifyDBconfiguration(dbConfiguration);
+				}
 			});
 		} else {
 			sethour(generateInteger(0, 6));
 			setminute(generateInteger(0, 59));
+			getDBconfiguration()
 		}
 	}, [id]);
 
-	useEffect(() => {
-		if (!id || (id && !postParams.dbConfiguration)) {
-			getDefaultClusterConfig().then(data => {
-				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
-				stringifyDBconfiguration(data);
-			});
-		}
-	}, []);
+	/**
+	 * 获取dbconfiguration
+	 */
+	const getDBconfiguration = () => {
+		getDefaultClusterConfig().then(data => {
+			stringifyDBconfiguration(data);
+		});
+	}
 
+	/**
+	 * 把dbconfiguration变成字符串，显示在textarea
+	 * @param data 
+	 */
 	const stringifyDBconfiguration = (data) => {
 		let val = JSON.stringify(data)
 					.replace(/[\{\}\"]/g, "")
 			.replace(/\,/g, ",\n");
 		adjustPostParams("dbConfiguration", val);
+	}
+
+	/**
+	 * 
+	 * @param type 
+	 * @param val 
+	 */
+	const turnDBConfigurationToObject = text => {
+		return text.split(',\n').reduce((prev, next) => {
+			let idx = next.indexOf(':');
+			let key = next.substr(0, idx);
+			let value = next.substr(idx + 1);
+			prev[key] = value;
+			return prev
+		}, {})
 	}
 
 	/**
@@ -229,6 +255,9 @@ function FormModal(props) {
 
 				if (!data.dbConfiguration) {
 					data.dbConfiguration = {};
+				} else {
+					// 合成为一个对象
+					data.dbConfiguration = turnDBConfigurationToObject(data.dbConfiguration)
 				}
 
 				save(data)

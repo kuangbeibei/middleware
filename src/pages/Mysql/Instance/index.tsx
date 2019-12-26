@@ -44,13 +44,14 @@ export default function(props) {
 				if (data && Array.isArray(data)) {
 					data = data.map(item => {
 						return {
+							...item,
 							ip: `${item.ip}.${Math.random()}`,
 							port: `${item.port}.${Math.random()}`,
 							user: `${item.user}.${Math.random()}`,
 							password: item.password
 								? `${item.password}.${Math.random()}`
-								: ""
-						};
+								: "",
+						}
 					});
 					setTableList(data);
 				}
