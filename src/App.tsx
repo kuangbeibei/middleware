@@ -11,21 +11,7 @@ import PageIndex from "@pages/Index";
 import Nomatch from "@pages/No-match";
 import { postApi } from "@api";
 
-declare var NODE_ENV: string;
 const App: React.SFC = props => {
-
-  useEffect(()=> {
-    // 在本地开发，模拟一次登录操作
-    if (NODE_ENV == 'DEV') {
-      let loginInfo = "yh_username=css&yh_password=123456"
-      let headers = { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", }
-      postApi('/api/user/login')('', loginInfo, {headers} ).then((res) => {
-        if (res.code == 'S200') { console.log('login success') }
-      })
-      return 
-    }
-  }, [])
-
 	return (
 		<Router>
 			<Switch>
