@@ -102,13 +102,13 @@ function FormModal(props) {
 		if (id) {
 			getClusterDetail(id).then(data => {
 				setPostParams(data);
-				const { backupStrategy } = data;
+				const { backupStrategy, dbConfiguration } = data;
+				stringifyDBconfiguration(dbConfiguration);
 				backupStrategy
 					.replace(/\*/g, "")
 					.split(" ")
 					.filter(i => i)
 					.forEach((item, idx) => {
-						console.log("item,", item);
 						idx === 0 ? setminute(item) : sethour(item);
 					});
 			});
@@ -122,13 +122,17 @@ function FormModal(props) {
 		if (!id || (id && !postParams.dbConfiguration)) {
 			getDefaultClusterConfig().then(data => {
 				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
-				let val = JSON.stringify(data)
-					.replace(/[\{\}\"]/g, "")
-					.replace(/\,/g, ",\n");
-				adjustPostParams("dbConfiguration", val);
+				stringifyDBconfiguration(data);
 			});
 		}
 	}, []);
+
+	const stringifyDBconfiguration = (data) => {
+		let val = JSON.stringify(data)
+					.replace(/[\{\}\"]/g, "")
+			.replace(/\,/g, ",\n");
+		adjustPostParams("dbConfiguration", val);
+	}
 
 	/**
 	 * 设置自动备份时间
