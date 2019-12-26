@@ -49,9 +49,7 @@ import {
 	updateMysqlCluster
 } from "./service";
 
-import {
-	generateInteger
-} from "@utils/tools"
+import { generateInteger } from "@utils/tools";
 
 const initIPostParams: IPostParams = {
 	name: "",
@@ -93,8 +91,8 @@ function FormModal(props) {
 		Object.assign({}, initIPostParams)
 	);
 	const [tenantVal, setTenantVal] = useState("");
-	const [hour, sethour] = useState(0); // 随机生成0-6之间的整数
-	const [minute, setminute] = useState(0); // 随机生成0-59之间的整数
+	const [hour, sethour] = useState(0);
+	const [minute, setminute] = useState(0);
 
 	useEffect(() => {
 		setTableModalVisibility();
@@ -103,14 +101,16 @@ function FormModal(props) {
 	useEffect(() => {
 		if (id) {
 			getClusterDetail(id).then(data => {
-				const {
-					backupStrategy
-				} = data;
-				backupStrategy.replace(/\*/g, '').split(' ').filter(i => i).forEach((item, idx) => {
-					console.log('item,', item);
-					idx === 0 ? setminute(item) : sethour(item)
-				})
-				setPostParams(data)
+				setPostParams(data);
+				const { backupStrategy } = data;
+				backupStrategy
+					.replace(/\*/g, "")
+					.split(" ")
+					.filter(i => i)
+					.forEach((item, idx) => {
+						console.log("item,", item);
+						idx === 0 ? setminute(item) : sethour(item);
+					});
 			});
 		} else {
 			sethour(generateInteger(0, 6));
@@ -130,19 +130,18 @@ function FormModal(props) {
 		}
 	}, []);
 
-
 	/**
 	 * 设置自动备份时间
-	 * @param type 
-	 * @param val 
+	 * @param type
+	 * @param val
 	 */
 	const setBackupTime = (type, val) => {
-		if (type === 'hour') {
-			sethour(val)
+		if (type === "hour") {
+			sethour(val);
 		} else {
-			setminute(val)
+			setminute(val);
 		}
-	}
+	};
 
 	/**
 	 * 选择租户
@@ -223,7 +222,7 @@ function FormModal(props) {
 			} else {
 				const data = getFieldsValue();
 				data.backupStrategy = `${minute} ${hour} * * *`;
-				
+
 				if (!data.dbConfiguration) {
 					data.dbConfiguration = {};
 				}
@@ -331,7 +330,8 @@ function FormModal(props) {
 								optionFilterProp="children"
 								filterOption={(input, option) =>
 									typeof option.props.children === "string"
-										? option.props.children.indexOf(input) > -1
+										? option.props.children.indexOf(input) >
+										  -1
 										: false
 								}
 							>
@@ -476,16 +476,37 @@ function FormModal(props) {
 						{...formAdvancesLayout}
 						label="自动备份"
 					>
-						<InputNumber defaultValue={hour} min={0} max={6} formatter={value => `${value}时`} onChange={(val) => setBackupTime('hour', val)}/>
+						{getFieldDecorator("backupStrategy", {
+							initialValue: hour,
+						})(<InputNumber
+							// defaultValue={hour}
+							min={0}
+							max={6}
+							formatter={value => `${value}时`}
+							onChange={val => setBackupTime("hour", val)}
+						/>)}
 					</YHSmallFormItemNarrow>
 					<YHSmallFormItemNarrow>
-						<InputNumber defaultValue={minute} min={0} max={59} formatter={value => `${value}分`} onChange={(val) => setBackupTime('minute', val)}/>
+						{getFieldDecorator("backupStrategy", {
+							initialValue: minute,
+						})(<InputNumber
+							// defaultValue={minute}
+							min={0}
+							max={59}
+							formatter={value => `${value}分`}
+							onChange={val => setBackupTime("minute", val)}
+						/>)}
 					</YHSmallFormItemNarrow>
 					<YHSmallFormItemNarrow
 						{...formAdvancesLayout}
 						label="备份清理策略"
 					>
-						<InputNumber defaultValue={postParams.backupKeepDays} min={-1} formatter={value => `${value}天`}/>
+						{getFieldDecorator("backupKeepDays", {
+							initialValue: postParams.backupKeepDays,
+						})(<InputNumber
+							min={-1}
+							formatter={value => `${value}天`}
+						/>)}
 					</YHSmallFormItemNarrow>
 				</YHFlexDiv>
 				<Divider>自定义配置项目</Divider>
