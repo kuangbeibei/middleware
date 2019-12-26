@@ -14,7 +14,6 @@ import "antd/dist/antd.less";
 import "./assets/style/reset.less";
 import "./assets/style/layout.less";
 
-
 const store = createStore();
 ReactDom.render(
 	<Provider store={store}>

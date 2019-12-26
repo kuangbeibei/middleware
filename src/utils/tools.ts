@@ -90,8 +90,19 @@ export const setCookie = function (name, value, daysToLive?) {
 	if (typeof daysToLive === 'number') {
 		cookie += `max-age=${(daysToLive * 24 * 60 * 60)}`;
 	}
+	document.cookie += cookie;
+}
 
-	document.cookie = cookie;
+// 获取cookie
+export const getCookie = function (name) {
+	const cookie = document.cookie;
+	let val;
+	cookie.split(";").find(item => {
+		let _item = item.trim().split("=");
+		_item[0] === name ? val = _item[1] : undefined;
+		return _item[0] === name;
+	});
+	return val;
 }
 
 // 生成随机整数
