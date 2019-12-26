@@ -16,7 +16,7 @@ import Loading from "@com/UI/Loading";
 import { isEven } from "@tools";
 import { YhOp, YhAdd } from "@styled/Button";
 
-import PasswordColumn from "../../Redis/Instance/Password-unit";
+import PasswordColumn from "@com/Password-unit";
 import StatusControl from "@com/Status.control";
 import OperationControl from "@com/Operation.control";
 
@@ -44,13 +44,14 @@ export default function(props) {
 				if (data && Array.isArray(data)) {
 					data = data.map(item => {
 						return {
+							...item,
 							ip: `${item.ip}.${Math.random()}`,
 							port: `${item.port}.${Math.random()}`,
 							user: `${item.user}.${Math.random()}`,
 							password: item.password
 								? `${item.password}.${Math.random()}`
-								: ""
-						};
+								: "",
+						}
 					});
 					setTableList(data);
 				}

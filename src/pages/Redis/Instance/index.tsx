@@ -15,7 +15,7 @@ import Loading from "@com/UI/Loading";
 
 import { isEven } from "@tools";
 
-import PasswordColumn from "./Password-unit";
+import PasswordColumn from "@com/Password-unit";
 
 const slicePart = (str) => {
 	let idx = str.lastIndexOf(".");

@@ -79,6 +79,12 @@ export default function(props) {
 			<TabPane tab="监控" key="4">
 				{loading ? <Loading /> : <MonitorTab {...props} />}
 			</TabPane>
+			<TabPane tab="告警" key="5">
+				告警
+			</TabPane>
+			<TabPane tab="慢查询" key="6">
+				慢查询
+			</TabPane>
 		</Tabs>
 	);
 }

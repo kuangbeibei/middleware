@@ -42,7 +42,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			}
 			return () => message.info(`集群状态是${status}，不可部署！`);
 		case "edit":
-			if (status !== "done" && status !== "release") {
+			if (status !== "done" && status !== 'running' && status !== 'init') {
 				return (taskId, name, fn) => fn(taskId)
 			}
 			return () => message.info(`集群状态是${status}，不可编辑`);

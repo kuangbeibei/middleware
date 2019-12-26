@@ -317,7 +317,7 @@ function FormModal(props) {
 											]
 										}
 									)(
-										<Input
+										<Input.Password
 											placeholder="请输入密码"
 											onBlur={event => {
 												autoCompleteInput(
@@ -325,7 +325,7 @@ function FormModal(props) {
 													"pass"
 												);
 											}}
-										></Input>
+										/>
 									)}
 								</YHSmallFormItem>
 							</YHFlexDiv>

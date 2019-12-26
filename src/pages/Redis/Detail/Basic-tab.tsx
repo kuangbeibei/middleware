@@ -6,6 +6,7 @@
 
 import * as React from "react";
 import { Descriptions } from "antd";
+import PasswordColumn from "@com/Password-unit";
 
 export default function(props) {
 	const { basicData } = props;
@@ -16,6 +17,15 @@ export default function(props) {
 			""
 		);
 	};
+
+	/**
+	 * 处理密码展示
+	 * @param pass
+	 */
+	const processPass = pass => {
+		return <PasswordColumn pass={pass} />;
+	};
+
 	return (
 		<Descriptions bordered column={1}>
 			{basicData &&
@@ -37,7 +47,7 @@ export default function(props) {
 							configItem.enName === "instances" ||
 							configItem.enName === "defaultConf" ? (
 								<pre>{val}</pre>
-							) : (
+								) : configItem.enName === 'redisPass' ? processPass(configItem.value) : (
 								<span>{configItem.value || "无"}</span>
 							)}
 						</Descriptions.Item>

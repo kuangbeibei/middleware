@@ -49,9 +49,7 @@ import {
 	updateMysqlCluster
 } from "./service";
 
-import {
-	generateInteger
-} from "@utils/tools"
+import { generateInteger } from "@utils/tools";
 
 const initIPostParams: IPostParams = {
 	name: "",
@@ -93,8 +91,8 @@ function FormModal(props) {
 		Object.assign({}, initIPostParams)
 	);
 	const [tenantVal, setTenantVal] = useState("");
-	const [hour, sethour] = useState(0); // 随机生成0-6之间的整数
-	const [minute, setminute] = useState(0); // 随机生成0-59之间的整数
+	const [hour, sethour] = useState(0);
+	const [minute, setminute] = useState(0);
 
 	useEffect(() => {
 		setTableModalVisibility();
@@ -103,46 +101,77 @@ function FormModal(props) {
 	useEffect(() => {
 		if (id) {
 			getClusterDetail(id).then(data => {
-				const {
-					backupStrategy
-				} = data;
-				backupStrategy.replace(/\*/g, '').split(' ').filter(i => i).forEach((item, idx) => {
-					console.log('item,', item);
-					idx === 0 ? setminute(item) : sethour(item)
-				})
-				setPostParams(data)
+				setPostParams(data);
+				const { backupStrategy, dbConfiguration } = data;
+				
+				backupStrategy
+					.replace(/\*/g, "")
+					.split(" ")
+					.filter(i => i)
+					.forEach((item, idx) => {
+						idx === 0 ? setminute(item) : sethour(item);
+					});
+				
+				if (Object.keys(dbConfiguration).length === 0) {
+					getDBconfiguration()
+				} else {
+					stringifyDBconfiguration(dbConfiguration);
+				}
 			});
 		} else {
 			sethour(generateInteger(0, 6));
 			setminute(generateInteger(0, 59));
+			getDBconfiguration()
 		}
 	}, [id]);
 
-	useEffect(() => {
-		if (!id || (id && !postParams.dbConfiguration)) {
-			getDefaultClusterConfig().then(data => {
-				// 如果不是编辑，或者编辑但并没有自定义，才默认渲染
-				let val = JSON.stringify(data)
-					.replace(/[\{\}\"]/g, "")
-					.replace(/\,/g, ",\n");
-				adjustPostParams("dbConfiguration", val);
-			});
-		}
-	}, []);
-
+	/**
+	 * 获取dbconfiguration
+	 */
+	const getDBconfiguration = () => {
+		getDefaultClusterConfig().then(data => {
+			stringifyDBconfiguration(data);
+		});
+	}
 
 	/**
-	 * 设置自动备份时间
+	 * 把dbconfiguration变成字符串，显示在textarea
+	 * @param data 
+	 */
+	const stringifyDBconfiguration = (data) => {
+		let val = JSON.stringify(data)
+					.replace(/[\{\}\"]/g, "")
+			.replace(/\,/g, ",\n");
+		adjustPostParams("dbConfiguration", val);
+	}
+
+	/**
+	 * 
 	 * @param type 
 	 * @param val 
 	 */
-	const setBackupTime = (type, val) => {
-		if (type === 'hour') {
-			sethour(val)
-		} else {
-			setminute(val)
-		}
+	const turnDBConfigurationToObject = text => {
+		return text.split(',\n').reduce((prev, next) => {
+			let idx = next.indexOf(':');
+			let key = next.substr(0, idx);
+			let value = next.substr(idx + 1);
+			prev[key] = value;
+			return prev
+		}, {})
 	}
+
+	/**
+	 * 设置自动备份时间
+	 * @param type
+	 * @param val
+	 */
+	const setBackupTime = (type, val) => {
+		if (type === "hour") {
+			sethour(val);
+		} else {
+			setminute(val);
+		}
+	};
 
 	/**
 	 * 选择租户
@@ -223,9 +252,12 @@ function FormModal(props) {
 			} else {
 				const data = getFieldsValue();
 				data.backupStrategy = `${minute} ${hour} * * *`;
-				
+
 				if (!data.dbConfiguration) {
 					data.dbConfiguration = {};
+				} else {
+					// 合成为一个对象
+					data.dbConfiguration = turnDBConfigurationToObject(data.dbConfiguration)
 				}
 
 				save(data)
@@ -331,7 +363,8 @@ function FormModal(props) {
 								optionFilterProp="children"
 								filterOption={(input, option) =>
 									typeof option.props.children === "string"
-										? option.props.children.indexOf(input) > -1
+										? option.props.children.indexOf(input) >
+										  -1
 										: false
 								}
 							>
@@ -476,16 +509,37 @@ function FormModal(props) {
 						{...formAdvancesLayout}
 						label="自动备份"
 					>
-						<InputNumber defaultValue={hour} min={0} max={6} formatter={value => `${value}时`} onChange={(val) => setBackupTime('hour', val)}/>
+						{getFieldDecorator("backupStrategy", {
+							initialValue: hour,
+						})(<InputNumber
+							// defaultValue={hour}
+							min={0}
+							max={6}
+							formatter={value => `${value}时`}
+							onChange={val => setBackupTime("hour", val)}
+						/>)}
 					</YHSmallFormItemNarrow>
 					<YHSmallFormItemNarrow>
-						<InputNumber defaultValue={minute} min={0} max={59} formatter={value => `${value}分`} onChange={(val) => setBackupTime('minute', val)}/>
+						{getFieldDecorator("backupStrategy", {
+							initialValue: minute,
+						})(<InputNumber
+							// defaultValue={minute}
+							min={0}
+							max={59}
+							formatter={value => `${value}分`}
+							onChange={val => setBackupTime("minute", val)}
+						/>)}
 					</YHSmallFormItemNarrow>
 					<YHSmallFormItemNarrow
 						{...formAdvancesLayout}
 						label="备份清理策略"
 					>
-						<InputNumber defaultValue={postParams.backupKeepDays} min={-1} formatter={value => `${value}天`}/>
+						{getFieldDecorator("backupKeepDays", {
+							initialValue: postParams.backupKeepDays,
+						})(<InputNumber
+							min={-1}
+							formatter={value => `${value}天`}
+						/>)}
 					</YHSmallFormItemNarrow>
 				</YHFlexDiv>
 				<Divider>自定义配置项目</Divider>
