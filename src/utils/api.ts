@@ -64,13 +64,8 @@ axios.interceptors.response.use(
 
 const request = config => {
 	return axios({ ...config })
-		.then((response: any) => {
-			return response;
-		})
-		.catch(err => {
-			console.log('request err,', err)
-			return Promise.reject(err);
-		});
+		.then((response: any) => response)
+		.catch(err => Promise.reject(err));
 };
 
 export const get = (
