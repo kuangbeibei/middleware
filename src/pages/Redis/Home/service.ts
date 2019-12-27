@@ -28,7 +28,7 @@ export async function getRedisClusters({ name="", status="", spec="", tenantId="
 export async function createCluster(data, config) {
     return postApi(ProductRedisApiUrl)(`/mid/v1/deployTask`, data, config).then(res => {
         if (res.code === 200) {
-            return true
+            return res.msg
         } else {
             return res
         }
@@ -39,7 +39,7 @@ export async function createCluster(data, config) {
 export async function updateCluster(taskId, data, config) {
     return postApi(ProductRedisApiUrl)(`/mid/v1/updateParams/redis/${taskId}`, data, config).then(res => {
         if (res.code === 200) {
-            return true
+            return res.msg
         } else {
             return res
         }
@@ -50,7 +50,7 @@ export async function updateCluster(taskId, data, config) {
 export async function deployClusterApi(taskId) {
     return getApi(ProductRedisApiUrl)(`/mid/v1/runTask/redis/${taskId}`).then(res => {
         if (res.code === 200) {
-            return true
+            return res.msg
         } else {
             return res
         }
@@ -102,9 +102,9 @@ export async function deployEntryDetail(taskId) {
 export async function delCluster(id) {
     return delApi(ProductRedisApiUrl)(`/mid/v1/delete/redis/${id}`).then(res => {
         if (res.code === 200) {
-            return  true
+            return  res.msg
         } else {
-            return false
+            return res
         }
     }).catch(e => Promise.reject(e))
 }
@@ -114,9 +114,9 @@ export async function delCluster(id) {
 export async function releaseCluster(taskId) {
     return delApi(ProductRedisApiUrl)(`/mid/v1/releaseTaskResources/redis/${taskId}`).then(res => {
          if (res.code === 200) {
-            return true
+            return res.msg
         } else {
-            return false
+            return res
         }
     }).catch(e => Promise.reject(e))
 }

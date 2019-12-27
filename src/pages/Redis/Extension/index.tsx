@@ -132,15 +132,11 @@ function ExtensionList(props) {
 	const deleteCluster = (id, name?) => {
 		deleteExtensionInstance(id)
 			.then(res => {
-				if (res) {
-					if (res === 'ok') {
-						setLoadListCount(loadListCount => loadListCount + 1);
-						message.success(`删除${id}成功!`);
-					} else {
-						message.error(res.msg);
-					}
+				if (res === 'ok') {
+					setLoadListCount(loadListCount => loadListCount + 1);
+					message.success(`删除${id}成功!`);
 				} else {
-					message.error(`删除${id}失败! `);
+					message.error(res.msg || `删除${id}失败! `);
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -154,7 +150,11 @@ function ExtensionList(props) {
 		message.success("正在部署...", 5);
 		deployExtensionInstance(taskId)
 			.then(res => {
-				setStatusTaskId(taskId)
+				if (res === 'ok') {
+					setStatusTaskId(taskId)
+				} else {
+					message.error(res.msg || `部署${taskId}失败! `)
+				}
 			})
 			.catch(e => message.error(e.message));
     };
