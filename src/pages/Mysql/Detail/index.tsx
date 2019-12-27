@@ -17,6 +17,9 @@ import MonitorTab from "./Monitor-tab";
 import Loading from "@com/UI/Loading";
 
 import { getClusterDetail } from "../Home/service";
+import {
+	getActionlogs
+} from "./service"
 
 export default function(props) {
 	const {
@@ -27,6 +30,7 @@ export default function(props) {
 
 	const [basicData, setbasicData] = useState(Array());
 	const [loading, setloading] = useState(true);
+	const [logs, setlogs] = useState(Array())
 
 	useEffect(() => {
 		changeTab("1");
@@ -47,9 +51,16 @@ export default function(props) {
 				break;
 			case "2":
 				setloading(false);
+				
 				break;
 			case "3":
-				setloading(false);
+				if (logs.length === 0) {
+					getActionlogs(id).then(data => {
+						
+					})
+				} else {
+					setloading(false);
+				}
 				break;
 			default:
 				setloading(false);
@@ -70,7 +81,7 @@ export default function(props) {
 				{loading ? (
 					<Loading />
 				) : (
-					<BackupTab basicData={basicData} {...props} />
+					<BackupTab {...props} />
 				)}
 			</TabPane>
 			<TabPane tab="操作日志" key="3">
