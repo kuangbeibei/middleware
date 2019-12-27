@@ -6,7 +6,6 @@
 
 import axios from "axios";
 import { getCookie } from "@utils/tools";
-import { message } from "antd";
 
 interface IResult {
 	code: string;
@@ -51,12 +50,8 @@ axios.interceptors.response.use(
 			} else {
 				location.href = `${location.origin}/login`;
 			}
-
-			return;
 		} else {
-			console.log('interceptors.response,', err);
 			alert(err);
-			message.error(err.message)
 			return Promise.reject(err);
 		}
 	}

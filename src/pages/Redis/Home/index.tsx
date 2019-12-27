@@ -244,7 +244,10 @@ function RedisCluster(props) {
 					return message.error(data.msg);
 				}
 			})
-			.catch(e => message.error(e));
+			.catch(e => {
+				console.log('拓扑, ', e);
+				message.error(e)
+			});
 	};
 
 	/**
