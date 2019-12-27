@@ -6,6 +6,7 @@
 
 import axios from "axios";
 import { getCookie } from "@utils/tools";
+import { message } from "antd";
 
 interface IResult {
 	code: string;
@@ -53,6 +54,7 @@ axios.interceptors.response.use(
 
 			return;
 		} else {
+			message.error(err.response.statusText || err.response.status)
 			return Promise.reject(err);
 		}
 	}

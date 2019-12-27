@@ -173,14 +173,14 @@ function FormModal(props) {
 				instances.forEach(i => (i.port = Number(i.port)));
 
 				save(OformItems)
-					.then(data => {
-						if (typeof data === "boolean") {
+					.then(res => {
+						if (res === "ok") {
 							setTableModalVisibility();
 							message.success(
 								`redis集群${taskId ? "修改" : "创建"}成功!`
 							);
 						} else {
-							message.error(data.message);
+							message.error(res.msg);
 						}
 					})
 					.catch(e => message.error(e.message));

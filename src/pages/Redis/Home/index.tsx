@@ -199,9 +199,14 @@ function RedisCluster(props) {
 		message.success("正在部署...", 5);
 		deployClusterApi(taskId)
 			.then(res => {
+				if (res.msg === 'ok') {
+					setStatusTaskId(taskId)
+				} else {
+					message.error(res.msg)
+				}
 				// statusTaskIds.push(taskId);
 				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-				setStatusTaskId(taskId)
+				
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -236,7 +241,7 @@ function RedisCluster(props) {
 						setCom(<component.default {...data} />);
 					});
 				} else {
-					return message.error(data.message);
+					return message.error(data.msg);
 				}
 			})
 			.catch(e => message.error(e));
@@ -249,11 +254,11 @@ function RedisCluster(props) {
 	const deleteCluster = (id, name?) => {
 		delCluster(id)
 			.then(res => {
-				if (res) {
+				if (res === 'ok') {
 					setLoadListCount(loadListCount => loadListCount + 1);
 					message.success(`删除集群${name}成功!`);
 				} else {
-					message.error(`删除集群${name}失败! `);
+					message.error(res.msg || `删除集群${name}失败! `);
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -266,14 +271,14 @@ function RedisCluster(props) {
 	const releaseClusterByTaskId = (taskId, name) => {
 		releaseCluster(taskId)
 			.then(res => {
-				if (res) {
+				if (res === 'ok') {
 					message.info(`正在卸载集群${name}...`);
 					setLoadListCount(loadListCount => loadListCount + 1);
 					// statusTaskIds.push(taskId);
 					// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
 					setStatusTaskId(taskId)
 				} else {
-					message.error(`卸载集群${name}失败! `);
+					message.error(res.msg || `卸载集群${name}失败! `);
 				}
 			})
 			.catch(e => message.error(e.message));
