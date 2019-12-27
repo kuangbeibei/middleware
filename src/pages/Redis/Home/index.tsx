@@ -245,11 +245,11 @@ function RedisCluster(props) {
 				}
 			})
 			.catch(e => {
-				console.log('拓扑, ', e, '..', e.response && e.response.status, 'e.message,', e.message);
+				// console.log('拓扑, ', e, '..', e.response && e.response.status, 'e.message,', e.message);
 				if (e.response && e.response.status && e.response.status === 500) {
 					message.error('集群状态异常，不能获取')
 				} else {
-					message.error(e)
+					message.error(e.messagge)
 				}
 			});
 	};
