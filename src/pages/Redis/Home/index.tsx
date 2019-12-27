@@ -199,11 +199,11 @@ function RedisCluster(props) {
 		message.success("正在部署...", 5);
 		deployClusterApi(taskId)
 			.then(res => {
-				if (res.msg === 'ok') {
+				// if (res.msg === 'ok') {
 					setStatusTaskId(taskId)
-				} else {
-					message.error(res.msg)
-				}
+				// } else {
+				// 	message.error(res.msg)
+				// }
 				// statusTaskIds.push(taskId);
 				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
 				
