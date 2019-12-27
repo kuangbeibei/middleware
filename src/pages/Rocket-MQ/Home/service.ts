@@ -5,14 +5,11 @@
  */ 
 
 import { getApi, postApi} from '@api'
-import {
-  ProductApiUrl
-} from "@utils/data"
+import { ProductApiUrl } from "@utils/data"
 
-const {
-  ProductRocketMqApiUrl,
-  ProductUumApiUrl
-} = ProductApiUrl;
+const { ProductRocketMqApiUrl, ProductUumApiUrl } = ProductApiUrl;
+
+
 
 
 // TODO 抽取自定义hooks
@@ -28,25 +25,53 @@ export const getTenants = async () => {
   }).catch(e => Promise.reject(e))
 }
 
+// 添加rmq集群
 export const addRocketMqCluster = (params) => {
+  return postApi(ProductRocketMqApiUrl)('/mid/v1/deployTask', params)
+    .then(res => {
+      if (res.code == 200) {
+        return res.data
+      } else {
+        throw new Error('error: ' + res.code +' ' +  res.msg)
+      }
+    }).catch(e => Promise.reject(e))
+}
 
-  return postApi(ProductRocketMqApiUrl)('/mid/v1/deployTask', params).then(res => {
+// TODO 添加分页等信息
+// 获取rmq集群列表
+export const getRmqClustListByPage = (params) => {
+ let pageIndex = 1, pageSize = 10
+ return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployList/rmqCluster/${pageIndex}/${pageSize}`)
+  .then(res => {
     if (res.code == 200) {
       return res.data
     } else {
-      throw new Error('error: ' + res.code +' ' +  res.msg)
+      throw new Error('error: ' + res.code + ' ' +  res.msg)
     }
   }).catch(e => Promise.reject(e))
-
 }
 
-export const getRmqClustListByPage = (params) => {
- let pageIndex = 1, pageSize = 10
- return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployList/rmqCluster/${pageIndex}/${pageSize}`).then(res => {
-  if (res.code == 200) {
-    return res.data
-  } else {
-    throw new Error('error: ' + res.code + ' ' +  res.msg)
-  }
-}).catch(e => Promise.reject(e))
+// 获取特定的集群部署信息
+export const getRmqCluster = (taskId) => {
+  return getApi(ProductRocketMqApiUrl)(`/mid/v1/params/rmqCluster/${taskId}`)
+    .then(res => {
+      if (res.code == 200) {
+        return res.data
+      } else {
+        throw new Error('error: ' + res.code + ' ' +  res.msg)
+      }
+    }).catch(e => Promise.reject(e))
+}
+
+// 更新rmq集群部署参数
+export const updateRmqCluster = (taskId, params) => {
+  return postApi(ProductRocketMqApiUrl)(`/mid/v1/updateParams/rmqCluster/${taskId}`, params)
+    .then(res => {
+      if (res.code == 200) {
+        return res.data
+      } else {
+        throw new Error('error: ' + res.code + ' ' +  res.msg)
+      }
+  }).catch(e => Promise.reject(e))
+
 }

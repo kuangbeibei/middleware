@@ -39,7 +39,7 @@ import { FormatTime, deepCloneObject } from "@tools";
 import { rmqTypes, rmqDataPrototype } from "./data";
 
 
-import { getTenants, getRmqClustListByPage } from './service'
+import { getTenants, getRmqClustListByPage, getRmqCluster } from './service'
 
 
 let addFlag = false;
@@ -356,12 +356,28 @@ function RocketMqHome(props) {
 
 
   const showFormModal = async (id) => {
-    // 动态加载
-    import("./modal/Cluster.modal").then((component:any) => {
-      setCom(
-        <component.default getRmqList={getRmqList} />
-      )
-    }).catch(e => message.error(e.message))
+
+    if (!id) {
+      // 动态加载
+      import("./modal/Cluster.modal").then((component:any) => {
+        setCom(
+          <component.default getRmqList={getRmqList} />
+        )
+      }).catch(e => message.error(e.message))
+      return 
+    }
+
+    getRmqCluster(id).then(data => {
+      console.log(data, '返回的数据----->>')
+          // 动态加载
+      import("./modal/Cluster.modal").then((component:any) => {
+        setCom(
+          <component.default id={id} clusterData={data} getRmqList={getRmqList} />
+        )
+      }).catch(e => message.error(e.message))
+    })
+    console.log(id, 'id--->>>>')
+    return
   }
 
   const showTopoModal = async () => {

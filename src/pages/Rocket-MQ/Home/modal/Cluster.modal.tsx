@@ -15,7 +15,7 @@ import { YHFlexSpaceBetwenDiv, YHFlexCenterDiv } from "@styled/Form";
 import { isEven, deepCloneObject } from "@utils/tools";
 import styled from 'styled-components';
 // import PropTypes from 'prop-types'
-import { getTenants, addRocketMqCluster } from '../service'
+import { getTenants, addRocketMqCluster, updateRmqCluster } from '../service'
 import { IrmqDataPrototype } from '../data'
 
 import {
@@ -64,12 +64,10 @@ const QuarterFormItem = styled(Form.Item)`
 `
 
 function RocketMqModal(props) {
-  
-  const [testList, settestList] = useState(Array())
-
-   
-  let [clusterObj, setClusterObj] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
-  let [tenantList, setTenantList] = useState(Array()); // 租户列表 - 待传入
+  let { clusterData, id } = props // 如果为undefined 则是编辑
+  let [ clusterObj, setClusterObj ] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
+  let [ tenantList, setTenantList ] = useState(Array()); // 租户列表 - 待传入
+  let [ addFlag, setAddFlag ] = useState(true); // 默认为添加
 
 
 
@@ -104,21 +102,14 @@ function RocketMqModal(props) {
     const { form: { getFieldsValue, validateFields } } = props;
     let values = getFieldsValue()
     console.log('点击了确定按钮，获取到的表单的值为', values.params)
-    
-    // TODO 验证参数合法性
     let { params } = values
 
     let brokersData:any = []
     params.brokerInstances && Object.values(params.brokerInstances).forEach((item: any)=> {
       brokersData.push(...item.data)
     })
-
-    let consolesData:any = []
-    consolesData = params.consoleInstances && Object.values(params.consoleInstances)
-
-    let nameServersData:any = []
-    nameServersData = params.nameServerInstances && Object.values(params.nameServerInstances)
-    
+    let consolesData:any = params.consoleInstances ? Object.values(params.consoleInstances) : []
+    let nameServersData:any = params.nameServerInstances ? Object.values(params.nameServerInstances) : []
     let datas: any = [brokersData, consolesData, nameServersData]
     datas.forEach(item => item.port = Number(item.port))
 
@@ -146,24 +137,62 @@ function RocketMqModal(props) {
     } = fomatData()
 
     check(()=>{
-      addRocketMqCluster(postData).then((data) => {
-        if(data.taskId) {
-          console.log('添加集群成功')
-          getRmqList()
-          setTableModalVisibility()
-        }
-      })
+      if (addFlag) {
+        addRocketMqCluster(postData).then((data) => {
+          if(data.taskId) {
+            console.log('添加集群成功')
+            getRmqList()
+            setTableModalVisibility()
+          }
+        })
+      } else {
+        updateRmqCluster(id, postData.params).then((data) => {
+          if(data.taskId) {
+            getRmqList()
+            setTableModalVisibility()
+          }
+        })
+      }
+
     })
     
   }
 
   useEffect(()=>{
+    console.log(addFlag, 'ke')
+    if (clusterData) {
+      console.log(JSON.stringify(clusterData), '----->>>>')
+      setAddFlag(false)
+      setClusterObj(formatEditData(clusterData))
+    }
     setTableModalVisibility();
     // 获取租户列表 TODO 传入 modal组件
     getTenants().then((list) => {
       setTenantList(list)
     })
   }, [])
+
+
+  const formatEditData = (editClusterData)=> {
+    // 格式化，添加key
+    let { nameServerInstances, brokerInstances, consoleInstances  } = editClusterData
+    nameServerInstances && nameServerInstances.forEach(item => item.key = Date.now()+'_ns')
+    consoleInstances && consoleInstances.forEach(item => item.key = Date.now()+'_console')
+    if (brokerInstances) {
+      editClusterData.brokerInstances = brokerInstances.reduce((arr, item, index) => {
+        if (index % 2 ==0) {
+          arr.push({
+            key: Date.now() + '_broker',
+            data: [item]
+          })
+        } else {
+          arr[arr.length - 1].data.push(item)
+        }
+        return arr
+      }, [])
+    }
+    return editClusterData
+  }
 
 
   const formItemInstanceLayout = {
@@ -181,8 +210,9 @@ function RocketMqModal(props) {
 
   const getBrokerFormItems = () => {
  
-    const formItems = clusterObj.brokerInstances.map((consoleGroup, index) => {
+    const formItems = clusterObj.brokerInstances && clusterObj.brokerInstances.map((consoleGroup, index) => {
       
+    // TODO 样式调整
     return (
         <div key={'console_item_' + index} style={{outline: '3px dotted wheat',  outlineOffset: 6, position: 'relative', paddingTop: 10, marginTop: index!=0 ? 36: 15}}>
 
@@ -268,12 +298,10 @@ function RocketMqModal(props) {
           }
 
         </div>
-
-
       );
     })
     formItems.push(
-      <YHFlexSpaceBetwenDiv key={'add_btn_console'}>
+      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
         <Button type="primary" onClick={addBroker} style={{marginTop: 30}}> 
           添加 
           <Icon type="plus-circle" /> 
@@ -285,7 +313,7 @@ function RocketMqModal(props) {
   const addBroker = () => {
     let brokerInstances = clusterObj.brokerInstances
     brokerInstances.push({
-      key: Date.now()+ '_console',
+      key: Date.now()+ '_broker',
       data: [
         {
           type: 'Master',
@@ -326,7 +354,7 @@ function RocketMqModal(props) {
 
   const getConsoleFormItems = ()=> {
 
-    const formItems = clusterObj.consoleInstances.map((broker, index) => (
+    const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
       <YHFlexSpaceBetwenDiv key={'broker_item_' + index}>
          
                 <QuarterFormItem
@@ -417,7 +445,7 @@ function RocketMqModal(props) {
       port: '',
       user: '',
       pass: '',
-      key: Date.now()+'_broker'
+      key: Date.now()+'_console'
     })
     setClusterObj(
       Object.assign({},
@@ -438,7 +466,7 @@ function RocketMqModal(props) {
 
   const getNameServerForms = () => {
 
-    const formItems = clusterObj.nameServerInstances.map((nameServer, index) =>(
+    const formItems = clusterObj.nameServerInstances && clusterObj.nameServerInstances.map((nameServer, index) =>(
       <YHFlexSpaceBetwenDiv key={nameServer.key}>
 
         <QuarterFormItem
@@ -516,7 +544,7 @@ function RocketMqModal(props) {
 
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_ns'}>
-        <Button  type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
+        <Button type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
          添加 
          <Icon type="plus-circle" /> 
         </Button>
@@ -548,7 +576,6 @@ function RocketMqModal(props) {
       key: Date.now()+'_ns'
     })
 
-    let newPostParams = Object.assign({}, getFieldsValue());
     setClusterObj(
       Object.assign({},
         cloneNmObjv
@@ -570,10 +597,10 @@ function RocketMqModal(props) {
     >
 
       <Form>
-        <Divider> 基础信息 </Divider>
+        <Divider> 基础信息 {addFlag+'-'}</Divider>
         <Form.Item {...formItemBasicLayout} label="集群名称">
 					{getFieldDecorator("params.businessName", {
-						initialValue: initialRocketMqObj.businessName,
+						initialValue: clusterObj.businessName,
 						rules: [
 							{
 								required: true,
@@ -584,7 +611,7 @@ function RocketMqModal(props) {
 				</Form.Item>
         <Form.Item {...formItemBasicLayout} label="概要">
 					{getFieldDecorator("params.summary", {
-						initialValue: initialRocketMqObj.summary,
+						initialValue: clusterObj.summary,
 						rules: [
 							{
 								required: true,
@@ -595,7 +622,7 @@ function RocketMqModal(props) {
 				</Form.Item>
 				<Form.Item {...formItemBasicLayout} label="请选择租户">
         {getFieldDecorator("params.tenantId", {
-							initialValue: initialRocketMqObj.tenantId ,
+							initialValue: clusterObj.tenantId ,
 							rules: [
 								{
 									message: "请选择租户",
@@ -631,7 +658,7 @@ function RocketMqModal(props) {
             label={ '版本:'}
           >
             {getFieldDecorator(`params.version`, {
-              initialValue: initialRocketMqObj.version,
+              initialValue: clusterObj.version,
               rules: [
                 {
                   required: true,
