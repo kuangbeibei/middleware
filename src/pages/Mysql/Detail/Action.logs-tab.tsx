@@ -9,7 +9,10 @@ import { useState, useEffect } from "react";
 
 import { Timeline } from "antd";
 
-export default function(props) {
+export default function (props) {
+	const {
+		logs
+	} = props;
 	return (
 		<Timeline>
 			<Timeline.Item color="green">
