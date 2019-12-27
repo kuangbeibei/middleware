@@ -88,6 +88,7 @@ export async function deployTaskOutput(taskId) {
 // 集群拓扑
 export async function deployEntryDetail(taskId) {
     return getApi(ProductRedisApiUrl)(`/mid/v1/deployEntryDetail/redis/${taskId}`).then(res => {
+        console.log('res111', res)
         try {
             return res.data.nodes && {
                 nodes: res.data.nodes
@@ -95,7 +96,10 @@ export async function deployEntryDetail(taskId) {
         } catch (e) {
             return res
         }
-    }).catch(e => Promise.reject(e))
+    }).catch(e => {
+        console.log('e111,', e)
+        Promise.reject(e)
+    })
 }
 
 // 删除集群
