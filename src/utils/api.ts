@@ -50,8 +50,6 @@ axios.interceptors.response.use(
 			} else {
 				location.href = `${location.origin}/login`;
 			}
-
-			return;
 		} else {
 			return Promise.reject(err);
 		}
@@ -60,12 +58,8 @@ axios.interceptors.response.use(
 
 const request = config => {
 	return axios({ ...config })
-		.then((response: any) => {
-			return response;
-		})
-		.catch(err => {
-			return Promise.reject(err);
-		});
+		.then((response: any) => response)
+		.catch(err => Promise.reject(err));
 };
 
 export const get = (
