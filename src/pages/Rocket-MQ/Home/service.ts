@@ -34,7 +34,7 @@ export const addRocketMqCluster = (params) => {
     if (res.code == 200) {
       return res.data
     } else {
-      throw new Error('error: ' + res.code  +  res.msg)
+      throw new Error('error: ' + res.code +' ' +  res.msg)
     }
   }).catch(e => Promise.reject(e))
 

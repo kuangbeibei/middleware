@@ -32,21 +32,26 @@ interface INameServerInstance {
   pass: string,
 }
 
-interface IrmqDataPrototype {
+ export interface IrmqDataPrototype{
     // componentType: string,
-    id: string,
+    id?: string,
     businessName: string,
     tenantId: string,
     summary: string,
     version: string,
     nameServerMoreConf?: string,
     brokerMoreConf?:string,
-    nameServerInstances: Array<INameServerInstance>,
-    brokerInstances:  Array<IBrokerInstance>,
-    consoleInstances: Array<IConsoleInstance>,
+    // nameServerInstances: Array<INameServerInstance>,
+    // brokerInstances:  Array<IBrokerInstance>,
+    // consoleInstances: Array<IConsoleInstance>,
+
+    nameServerInstances: Array<any>,
+    brokerInstances:  Array<any>,
+    consoleInstances: Array<any>,
 
     createTime?: string,
 }
+
 
 // 添加rocketMQ集群详细信息
 export const rmqDataPrototype:IrmqDataPrototype = {

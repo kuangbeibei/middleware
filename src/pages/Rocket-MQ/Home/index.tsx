@@ -27,6 +27,7 @@ import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import TableTitle from "../Components/TableTitle";
 import OperationControl from "@com/Operation.control";
+import StatusControl from "@com/Status.control";
 
 
 import {
@@ -208,7 +209,7 @@ function RocketMqHome(props) {
 			title: "名称",
 			dataIndex: "businessName",
 			key: "businessName",
-			width: 280,
+			width: 150,
 			render: (name, record) =>
 				name ? (
 					<YhOp
@@ -226,6 +227,12 @@ function RocketMqHome(props) {
 						onBlur={getNameWhenBlur}
 					/>
 				)
+    },
+    {
+      title: "状态",
+      key: "status",
+      dataIndex: "status",
+      render: (status) => <StatusControl text={status} />
     },
     {
       title: "摘要",
@@ -351,10 +358,8 @@ function RocketMqHome(props) {
   const showFormModal = async (id) => {
     // 动态加载
     import("./modal/Cluster.modal").then((component:any) => {
-      console.log('加载进来了吗？？？')
       setCom(
         <component.default getRmqList={getRmqList} />
-        
       )
     }).catch(e => message.error(e.message))
   }
@@ -362,7 +367,6 @@ function RocketMqHome(props) {
   const showTopoModal = async () => {
     // 动态加载
     import("./modal/Topo.modal").then((component) => {
-      console.log('topo')
       setCom(
         <component.default />
       )

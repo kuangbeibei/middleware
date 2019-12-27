@@ -16,6 +16,7 @@ import { isEven, deepCloneObject } from "@utils/tools";
 import styled from 'styled-components';
 // import PropTypes from 'prop-types'
 import { getTenants, addRocketMqCluster } from '../service'
+import { IrmqDataPrototype } from '../data'
 
 import {
   Form,
@@ -26,6 +27,7 @@ import {
   Icon,
   Tooltip,
   InputNumber,
+  message
 } from 'antd';
 
 // RocketMqModal.propTypes = {
@@ -46,15 +48,14 @@ import {
 
   // TODO 样式抽取
   // todo 定义typescript 数据格式
-  const initialRocketMqObj:any = {
+  const initialRocketMqObj: IrmqDataPrototype = {
     businessName: '',
     summary: '',
     tenantId: '',
-    version: '',
+    version: '4.3.0',
     brokerInstances: [],
     consoleInstances: [],
     nameServerInstances: [],
-    list:[]
   }
 
 
@@ -76,14 +77,30 @@ function RocketMqModal(props) {
     getRmqList,
     tableModalVisibility,
     setTableModalVisibility,
-    form: { getFieldDecorator, getFieldsValue, getFieldValue, setFieldsValue },
+    form: { getFieldDecorator, getFieldsValue, getFieldValue, setFieldsValue, validateFields },
   } = props
   
-  const handleCancel = ()=>{
+  const handleCancel = () => {
     setTableModalVisibility()
   }
 
-  const handleOK = ()=>{
+  const check = (callback) => {
+    validateFields(err => {
+      if (!err) {
+        let { params } = getFieldsValue()
+        let { brokerInstances, consoleInstances, nameServerInstances } = params
+        let list: any = [brokerInstances, consoleInstances, nameServerInstances]
+        if (list.some(item => !item || Object.values(item).length <=0)) {
+          return message.warning("集群的 Console/ Name Server/ Broker 实例至少都需要添加一个")
+        }
+        callback()
+      } else {
+        message.warning('信息填写不完全')
+      }
+    })
+  }
+
+  const fomatData = ()=>{
     const { form: { getFieldsValue, validateFields } } = props;
     let values = getFieldsValue()
     console.log('点击了确定按钮，获取到的表单的值为', values.params)
@@ -97,34 +114,13 @@ function RocketMqModal(props) {
     })
 
     let consolesData:any = []
-    consolesData = params.consoleInstances ? Object.values(params.consoleInstances): []
+    consolesData = params.consoleInstances && Object.values(params.consoleInstances)
 
-    
     let nameServersData:any = []
-    nameServersData = params.nameServerInstances ? Object.values(params.nameServerInstances) : []
+    nameServersData = params.nameServerInstances && Object.values(params.nameServerInstances)
     
-
-
-    // console.log(brokersData, '1')
-    // console.log(consolesData, '2')
-    // console.log(nameServersData, '3')
-
-    // ([brokersData, nameServersData, consolesData] as []).forEach(arr => {
-
-    // })
-
-    brokersData.forEach(item => {
-      item.port = Number(item.port)
-    })
-
-    consolesData.forEach(item => {
-      item.port = Number(item.port)
-    })
-
-    nameServersData.forEach(item => {
-      item.port = Number(item.port)
-    })
-
+    let datas: any = [brokersData, consolesData, nameServersData]
+    datas.forEach(item => item.port = Number(item.port))
 
     const postParam = {
       type: 'rmqCluster',
@@ -140,14 +136,25 @@ function RocketMqModal(props) {
         brokerMoreConf: ''
       }
     }
-    console.log('传递的参数', postParam)
-    addRocketMqCluster(postParam).then((data) => {
-      if(data.taskId) {
-        console.log('添加集群成功')
-        getRmqList()
-        setTableModalVisibility()
-      }
+    return postParam
+  }
+
+  const handleOK = () => {
+    let postData: {
+      type: string,
+      params: IrmqDataPrototype
+    } = fomatData()
+
+    check(()=>{
+      addRocketMqCluster(postData).then((data) => {
+        if(data.taskId) {
+          console.log('添加集群成功')
+          getRmqList()
+          setTableModalVisibility()
+        }
+      })
     })
+    
   }
 
   useEffect(()=>{
@@ -235,10 +242,10 @@ function RocketMqModal(props) {
                     rules: [
                       {
                         required: true,
-                        message: "用户民必填"
+                        message: "用户名必填"
                       }
                     ]
-                    })(<Input placeholder="usernname"></Input>)}
+                    })(<Input placeholder="请输入用户名"></Input>)}
                 </QuarterFormItem>
 
                 <QuarterFormItem
@@ -253,7 +260,7 @@ function RocketMqModal(props) {
                         message: "密码必填"
                       }
                     ]
-                    })(<Input placeholder="password"></Input>)}
+                    })(<Input.Password placeholder="请输入密码" />)}
                 </QuarterFormItem>
 
               </YHFlexSpaceBetwenDiv>
@@ -322,7 +329,6 @@ function RocketMqModal(props) {
     const formItems = clusterObj.consoleInstances.map((broker, index) => (
       <YHFlexSpaceBetwenDiv key={'broker_item_' + index}>
          
-
                 <QuarterFormItem
                   {...formItemInstanceLayout}
                   label="ip"
@@ -382,7 +388,7 @@ function RocketMqModal(props) {
                         message: "密码必填"
                       }
                     ]
-                    })(<Input placeholder="请输入密码"></Input>)}
+                    })(<Input.Password placeholder="请输入密码" />)}
                 </QuarterFormItem>   
                 
                 <Tooltip title="删除">
@@ -496,7 +502,7 @@ function RocketMqModal(props) {
                 message: "密码必填"
               }
             ]
-            })(<Input placeholder="请输入密码"></Input>)}
+            })(<Input.Password placeholder="请输入密码" />)}
         </QuarterFormItem>   
         
         <Tooltip title="删除">
@@ -632,7 +638,9 @@ function RocketMqModal(props) {
                   message: "版本必填"
                 }
               ]
-            })(<Input placeholder="version"></Input>)}
+            })(<Select placeholder="请选择版本">
+              <Select.Option key="4.3.0">4.3.0</Select.Option>
+            </Select>)}
         </Form.Item>
 
         <Divider >console</Divider>
