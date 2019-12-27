@@ -80,7 +80,7 @@ function CommonMoitor(props) {
 						<Iframe
 							url={`${d.url}&refresh=${refresh}s&from=${start ||
 								fromTime}&to=${end ||
-								toTime}&var-cluster=fzzj_redis_${clusterName}_${clusterId}&var-instance=${ip}:${
+								toTime}&var-cluster=fzzj_redis_${clusterName}_${clusterId}&var-${type === 'node' ? 'node' : 'instance'}=${ip}:${
 								type === "machine" ? "9100" : port
 							}&theme=light&panelId=${d.panelId}`}
 						/>
