@@ -159,9 +159,7 @@ function RocketMqModal(props) {
   }
 
   useEffect(()=>{
-    console.log(addFlag, 'ke')
     if (clusterData) {
-      console.log(JSON.stringify(clusterData), '----->>>>')
       setAddFlag(false)
       setClusterObj(formatEditData(clusterData))
     }
@@ -597,7 +595,7 @@ function RocketMqModal(props) {
     >
 
       <Form>
-        <Divider> 基础信息 {addFlag+'-'}</Divider>
+        <Divider> 基础信息 </Divider>
         <Form.Item {...formItemBasicLayout} label="集群名称">
 					{getFieldDecorator("params.businessName", {
 						initialValue: clusterObj.businessName,
