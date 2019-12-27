@@ -4,13 +4,14 @@ const ProductRedisApiUrl = '/api-mid-deploy-redis.api.fz.yonghui.cn'; // redis
 const ProductMysqlApiUrl = '/api-mid-deploy-mysql.api.fz.yonghui.cn'; // mysql-中间件
 const ProductUumApiUrl = '/api-uum.api.fz.yonghui.cn'; // 风光-运维端租户
 const ProductAlarmApiUrl = '/api-mwp.api.fz.yonghui.cn'; // 昆仑-告警
-
+const ProductRocketMqApiUrl = '/api-mid-deploy-rmq.api.fz.yonghui.cn' // rocketMQ-中间件 TODO 要修改
 
 export const ProductApiUrl = {
 	ProductRedisApiUrl,
 	ProductMysqlApiUrl,
-    ProductUumApiUrl,
-    ProductAlarmApiUrl
+  ProductUumApiUrl,
+  ProductAlarmApiUrl,
+  ProductRocketMqApiUrl,
 }
 
 export const clusterStatus = {

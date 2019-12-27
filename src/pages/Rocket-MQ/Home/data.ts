@@ -8,16 +8,72 @@
  */
 export const rmqTypes = ["rmqNameServer", "rmqBroker", "rmqConsole"];
 
-interface IrmqDataPrototype {
-    id: string,
-    businessName: string,
-    componentType: string,
-    createTime: string
+
+
+interface IBrokerInstance {
+  ip: string,
+  port: number,
+  user: string,
+  pass: string,
 }
 
+interface IConsoleInstance {
+  ip: string,
+  port: number,
+  user: string,
+  pass: string,
+}
+
+
+interface INameServerInstance {
+  ip: string,
+  port: number,
+  user: string,
+  pass: string,
+}
+
+interface IrmqDataPrototype {
+    // componentType: string,
+    id: string,
+    businessName: string,
+    tenantId: string,
+    summary: string,
+    version: string,
+    nameServerMoreConf?: string,
+    brokerMoreConf?:string,
+    nameServerInstances: Array<INameServerInstance>,
+    brokerInstances:  Array<IBrokerInstance>,
+    consoleInstances: Array<IConsoleInstance>,
+
+    createTime?: string,
+}
+
+// 添加rocketMQ集群详细信息
 export const rmqDataPrototype:IrmqDataPrototype = {
     id: '',
     businessName: '',
-    componentType: '',
-    createTime: '',
+    tenantId: '',
+    summary: '',
+    version: '',
+    nameServerInstances: [],
+    brokerInstances:  [],
+    consoleInstances: [],
+}
+
+
+// 表格显示基础信息
+interface rocketMQInfo {
+  id: number,
+  taskId: number,
+  status: string,
+  businessName: string,
+  summary: string,
+  tenantId: string,
+  note: string,
+  nameServerNum: number,
+  brokerNum: number,
+  createTime: string,
+  updateTime: string,
+  version: number,
+  tenantName: string
 }

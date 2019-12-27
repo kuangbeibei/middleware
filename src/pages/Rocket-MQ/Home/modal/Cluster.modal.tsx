@@ -15,6 +15,7 @@ import { YHFlexSpaceBetwenDiv, YHFlexCenterDiv } from "@styled/Form";
 import { isEven, deepCloneObject } from "@utils/tools";
 import styled from 'styled-components';
 // import PropTypes from 'prop-types'
+import { getTenants, addRocketMqCluster } from '../service'
 
 import {
   Form,
@@ -23,7 +24,8 @@ import {
   Divider,
   Button,
   Icon,
-  Tooltip
+  Tooltip,
+  InputNumber,
 } from 'antd';
 
 // RocketMqModal.propTypes = {
@@ -47,7 +49,7 @@ import {
   const initialRocketMqObj:any = {
     businessName: '',
     summary: '',
-    tenant: 't1',
+    tenantId: '',
     version: '',
     brokerInstances: [],
     consoleInstances: [],
@@ -64,10 +66,14 @@ function RocketMqModal(props) {
   
   const [testList, settestList] = useState(Array())
 
-  
-  let [clusterObj, setClusterObj] = useState(Object.assign( {}, initialRocketMqObj));
-  let [tenantList, setTenantList] = useState(Array());
+   
+  let [clusterObj, setClusterObj] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
+  let [tenantList, setTenantList] = useState(Array()); // 租户列表 - 待传入
+
+
+
   const { 
+    getRmqList,
     tableModalVisibility,
     setTableModalVisibility,
     form: { getFieldDecorator, getFieldsValue, getFieldValue, setFieldsValue },
@@ -80,29 +86,76 @@ function RocketMqModal(props) {
   const handleOK = ()=>{
     const { form: { getFieldsValue, validateFields } } = props;
     let values = getFieldsValue()
-    console.log('点击了确定按钮，获取到的表单的值为', values.params, clusterObj)
+    console.log('点击了确定按钮，获取到的表单的值为', values.params)
     
+    // TODO 验证参数合法性
+    let { params } = values
+
+    let brokersData:any = []
+    params.brokerInstances && Object.values(params.brokerInstances).forEach((item: any)=> {
+      brokersData.push(...item.data)
+    })
+
+    let consolesData:any = []
+    consolesData = params.consoleInstances ? Object.values(params.consoleInstances): []
+
+    
+    let nameServersData:any = []
+    nameServersData = params.nameServerInstances ? Object.values(params.nameServerInstances) : []
+    
+
+
+    // console.log(brokersData, '1')
+    // console.log(consolesData, '2')
+    // console.log(nameServersData, '3')
+
+    // ([brokersData, nameServersData, consolesData] as []).forEach(arr => {
+
+    // })
+
+    brokersData.forEach(item => {
+      item.port = Number(item.port)
+    })
+
+    consolesData.forEach(item => {
+      item.port = Number(item.port)
+    })
+
+    nameServersData.forEach(item => {
+      item.port = Number(item.port)
+    })
+
+
+    const postParam = {
+      type: 'rmqCluster',
+      params: {
+        businessName: params.businessName,
+        summary: params.summary,
+        tenantId: params.tenantId,
+        version: params.version,
+        nameServerInstances: nameServersData,
+        brokerInstances: brokersData,
+        consoleInstances: consolesData,
+        nameServerMoreConf: '',
+        brokerMoreConf: ''
+      }
+    }
+    console.log('传递的参数', postParam)
+    addRocketMqCluster(postParam).then((data) => {
+      if(data.taskId) {
+        console.log('添加集群成功')
+        getRmqList()
+        setTableModalVisibility()
+      }
+    })
   }
 
   useEffect(()=>{
-    console.log('加载cluster成功了--->>>>>')
     setTableModalVisibility();
-    // TODO获取租户列表
-    setTenantList([
-      {
-        name: 'tenant1',
-        id: 't1'
-      }, {
-        name: 'tenant2',
-        id: 't2'
-      }
-    ])
-
-    setFieldsValue({
-      'params': JSON.parse(JSON.stringify(initialRocketMqObj))
+    // 获取租户列表 TODO 传入 modal组件
+    getTenants().then((list) => {
+      setTenantList(list)
     })
-
-    
   }, [])
 
 
@@ -144,7 +197,7 @@ function RocketMqModal(props) {
 
                 <QuarterFormItem
                 {...formItemInstanceLayout}
-                label="ip"
+                label={idx == 0 ? "ip(主)": "ip(备)"}
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].ip`, {
                     initialValue: item.ip,
@@ -162,22 +215,23 @@ function RocketMqModal(props) {
                 label="端口"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].port`, {
-                    initialValue: item.ip,
+                    initialValue: item.port,
                     rules: [
                       {
                         required: true,
                         message: "port必填"
                       }
                     ]
-                    })(<Input placeholder="port"></Input>)}
+                    })(
+                    <Input type="number" placeholder="port"></Input>)}
                 </QuarterFormItem>
 
                 <QuarterFormItem
                 {...formItemInstanceLayout}
                 label="用户名"
                 >
-                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].username`, {
-                    initialValue: item.ip,
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].user`, {
+                    initialValue: item.user,
                     rules: [
                       {
                         required: true,
@@ -191,8 +245,8 @@ function RocketMqModal(props) {
                 {...formItemInstanceLayout}
                 label="密码"
                 >
-                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].username`, {
-                    initialValue: item.ip,
+                  {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].pass`, {
+                    initialValue: item.pass,
                     rules: [
                       {
                         required: true,
@@ -227,12 +281,18 @@ function RocketMqModal(props) {
       key: Date.now()+ '_console',
       data: [
         {
+          type: 'Master',
           ip: '',
-          type: 'Master'
+          port: '',
+          user: '',
+          pass: ''
         },
         {
+          type: 'Vice',
           ip: '',
-          type: 'Vice'
+          port: '',
+          user: '',
+          pass: ''
         }
       ]
     })
@@ -291,7 +351,7 @@ function RocketMqModal(props) {
                         message: "端口必填"
                       }
                     ]
-                    })(<Input placeholder="请输入端口"></Input>)}
+                    })(<Input type="number" placeholder="请输入端口"></Input>)}
                 </QuarterFormItem>   
 
                 <QuarterFormItem
@@ -299,8 +359,8 @@ function RocketMqModal(props) {
 
                   label="用户名"
                 >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].username`, {
-                    initialValue: broker.usrename,
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].user`, {
+                    initialValue: broker.user,
                     rules: [
                       {
                         required: true,
@@ -314,8 +374,8 @@ function RocketMqModal(props) {
                   {...formItemInstanceLayout}
                   label="密码"
                 >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].password`, {
-                    initialValue: broker.password,
+                  {getFieldDecorator(`params.consoleInstances[${broker.key}].pass`, {
+                    initialValue: broker.pass,
                     rules: [
                       {
                         required: true,
@@ -347,11 +407,10 @@ function RocketMqModal(props) {
   const addConsole = ()=>{
     let consoleInstances = clusterObj.consoleInstances
     consoleInstances.push({
-      version: '4.3.9',
       ip: '',
       port: '',
-      username: '',
-      password: '',
+      user: '',
+      pass: '',
       key: Date.now()+'_broker'
     })
     setClusterObj(
@@ -375,25 +434,6 @@ function RocketMqModal(props) {
 
     const formItems = clusterObj.nameServerInstances.map((nameServer, index) =>(
       <YHFlexSpaceBetwenDiv key={nameServer.key}>
-      {/* <QuarterFormItem
-          key={index+'_version'}
-          {...formItemInstanceLayout}
-          label="版本"
-        >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].version`, {
-            initialValue: nameServer.version,
-            rules: [
-              {
-                required: true,
-                message: "版本必填"
-              }
-            ]
-            })(
-              <Select>
-                <Select.Option value="4.3.9" > 4.3.9 </Select.Option>
-              </Select>
-            )}
-        </QuarterFormItem> */}
 
         <QuarterFormItem
           key={index+'_ip'}
@@ -424,16 +464,16 @@ function RocketMqModal(props) {
                 message: "端口必填"
               }
             ]
-            })(<Input placeholder="请输入端口"></Input>)}
+            })(<Input type="number" placeholder="请输入端口"></Input>)}
         </QuarterFormItem>   
 
         <QuarterFormItem
-          key={index+'_username'}
+          key={index+'_user'}
           {...formItemInstanceLayout}
           label="用户名"
         >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].username`, {
-            initialValue: nameServer.username,
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].user`, {
+            initialValue: nameServer.user,
             rules: [
               {
                 required: true,
@@ -444,12 +484,12 @@ function RocketMqModal(props) {
         </QuarterFormItem> 
 
         <QuarterFormItem
-           key={index+'_password'}
+           key={index+'_pass'}
           {...formItemInstanceLayout}
           label="密码"
         >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].password`, {
-            initialValue: nameServer.password,
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].pass`, {
+            initialValue: nameServer.pass,
             rules: [
               {
                 required: true,
@@ -495,16 +535,14 @@ function RocketMqModal(props) {
     let cloneNmObjv =  deepCloneObject(clusterObj)
     let nameServerInstances = cloneNmObjv.nameServerInstances
     nameServerInstances.push({
-      version: '4.3.9',
       ip: '',
       port: '',
-      username: 'eee',
-      password: '',
+      user: '',
+      pass: '',
       key: Date.now()+'_ns'
     })
 
     let newPostParams = Object.assign({}, getFieldsValue());
-    console.log(newPostParams, 'kevinnooooo')
     setClusterObj(
       Object.assign({},
         cloneNmObjv
@@ -550,23 +588,36 @@ function RocketMqModal(props) {
 					})(<Input placeholder="请输入概要"></Input>)}
 				</Form.Item>
 				<Form.Item {...formItemBasicLayout} label="请选择租户">
-					{getFieldDecorator("params.tenant", {
-						initialValue: initialRocketMqObj.tenant,
-						rules: [
-							{
-								required: true,
-								message: "请选择租户"
-							}
-						]
-					})(
-						<Select>
-              {
-                tenantList.map(item =>{
-                  return (<Select.Option key={item.name}  value={item.id}>{item.name}</Select.Option>)
-                })
-              }
-						</Select>
-					)}
+        {getFieldDecorator("params.tenantId", {
+							initialValue: initialRocketMqObj.tenantId ,
+							rules: [
+								{
+									message: "请选择租户",
+									required: true
+								}
+							]
+						})(
+							<Select
+								showSearch
+								placeholder="请选择租户"
+								defaultActiveFirstOption={false}
+								notFoundContent={null}
+								// onChange={handleTenantChange}
+								optionFilterProp="children"
+								filterOption={(input, option) =>
+									typeof option.props.children === "string"
+										? option.props.children.indexOf(input) > -1
+										: false
+								}
+							>
+								{tenantList.length > 0 &&
+									tenantList.map(tenant => (
+										<Select.Option key={tenant.userId}>
+											{tenant.name}
+										</Select.Option>
+									))}
+							</Select>
+						)}
 				</Form.Item>
 
         <Form.Item

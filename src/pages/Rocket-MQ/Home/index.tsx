@@ -30,12 +30,16 @@ import OperationControl from "@com/Operation.control";
 
 
 import {
-	getRmqComponentClusterRecords,
-	createRmqComponentClusterRecord,
-	deleteRmqComponentClusterRecord
+	// getRmqComponentClusterRecords,
+	// createRmqComponentClusterRecord,
+	// deleteRmqComponentClusterRecord
 } from "./service";
 import { FormatTime, deepCloneObject } from "@tools";
 import { rmqTypes, rmqDataPrototype } from "./data";
+
+
+import { getTenants, getRmqClustListByPage } from './service'
+
 
 let addFlag = false;
 
@@ -47,6 +51,8 @@ function RocketMqHome(props) {
 	let [loading, setloading] = useState(true);
 	let [delLoading, setDelLoading] = useState(false);
   let [addLoading, setAddLoading] = useState(false);
+  let [tenantList, setTenantList] = useState(Array());
+
 
   let {
     tableModalVisibility,
@@ -56,37 +62,34 @@ function RocketMqHome(props) {
   
   let [com, setCom] = useState()
 
-	useEffect(() => {
-    console.log('kevin---->>>>>');
-		getRmqComponentClusterRecords().then(tableList => {
 
-      let fakeList = [
-        {
-          id: '1',
-          businessName: 'MQ001',
-          summary: "集群一的概要信息",
-          instance: '2N4B',
-          topo: '',
-          tenant: 'user001',
-          createTime: '2019-12-20 08:24:00',
-          updateTime: '2019-12-30 09:32:00'
-        },
-        {
-          id: '2',
-          businessName: 'MQ003',
-          summary: "集群二的信息",
-          instance: '4N2B',
-          topo: '',
-          tenant: 'user002',
-          createTime: '2019-12-20 12:90:00',
-          updateTime: '2019-12-30 12:20:00'
-        }
-      ]
+  useEffect(()=> {
+    getRmqList()
+    getTenantList()
+  }, [])
 
-			setTableList(fakeList);
-			setloading(false);
-		});
-	}, [loadingListCount]);
+  // 获取列表
+  const getRmqList = ()=> {
+    getRmqClustListByPage({}).then(data=>{
+      setTableList(data.rmqClusters)
+      setloading(false)
+    })
+  }
+  const getTenantList = ()=>{
+    getTenants().then((list) => {
+      setTenantList(list)
+    })
+  }
+	// useEffect(() => {
+	// 	getRmqComponentClusterRecords().then(tableList => {
+
+  //     let fakeList = [
+  //     ]
+
+	// 		setTableList(fakeList);
+	// 		setloading(false);
+	// 	});
+	// }, [loadingListCount]);
 
 	/**
 	 * 删除一个未创建的RMQ类型
@@ -114,47 +117,47 @@ function RocketMqHome(props) {
 	/**
 	 * 创建一个RMQ 类型
 	 */
-	const createRmqType = () => {
-		setAddLoading(true);
-		if (!newItemName || !newItemType)
-			return message.info("请确保已填写名称并选择类型！");
-		createRmqComponentClusterRecord({
-			businessName: newItemName,
-			componentType: newItemType
-		})
-			.then(() => {
-				message.success(`${newItemName}集群创建成功!`);
-				setLoadListCount(loadingListCount + 1);
-				addFlag = false;
-				setAddLoading(false);
-			})
-			.catch(e => {
-				message.error(`${newItemName}集群创建失败!`);
-				addFlag = false;
-				setAddLoading(false);
-			});
-	};
+	// const createRmqType = () => {
+	// 	setAddLoading(true);
+	// 	if (!newItemName || !newItemType)
+	// 		return message.info("请确保已填写名称并选择类型！");
+	// 	createRmqComponentClusterRecord({
+	// 		businessName: newItemName,
+	// 		componentType: newItemType
+	// 	})
+	// 		.then(() => {
+	// 			message.success(`${newItemName}集群创建成功!`);
+	// 			setLoadListCount(loadingListCount + 1);
+	// 			addFlag = false;
+	// 			setAddLoading(false);
+	// 		})
+	// 		.catch(e => {
+	// 			message.error(`${newItemName}集群创建失败!`);
+	// 			addFlag = false;
+	// 			setAddLoading(false);
+	// 		});
+	// };
 
 	/**
 	 * 删除RMQ集群
 	 */
-	const deleteRmqCluster = (id, name) => {
-		setDelLoading(true);
-		//先进行状态判断
-		if (addFlag) {
-			return message.warning("请先关闭添加集群的操作");
-		}
-		deleteRmqComponentClusterRecord(id)
-			.then(() => {
-				message.success(`${name}删除成功!`);
-				setLoadListCount(loadingListCount + 1);
-				setDelLoading(false);
-			})
-			.catch(e => {
-				message.error(`${name}删除失败!`);
-				setDelLoading(false);
-			});
-	};
+	// const deleteRmqCluster = (id, name) => {
+	// 	setDelLoading(true);
+	// 	//先进行状态判断
+	// 	if (addFlag) {
+	// 		return message.warning("请先关闭添加集群的操作");
+	// 	}
+	// 	deleteRmqComponentClusterRecord(id)
+	// 		.then(() => {
+	// 			message.success(`${name}删除成功!`);
+	// 			setLoadListCount(loadingListCount + 1);
+	// 			setDelLoading(false);
+	// 		})
+	// 		.catch(e => {
+	// 			message.error(`${name}删除失败!`);
+	// 			setDelLoading(false);
+	// 		});
+	// };
 
 	/**
 	 * 获取newItemName
@@ -194,8 +197,6 @@ function RocketMqHome(props) {
 	/**
 	 * table列表的展示表头
 	 */
-  // 字段： id 名称  概要  实例个数  拓扑 租户 创建时间  更新时间  操作
-  // TODO  确认字段
 	const columns = [
 		{
 			title: "ID",
@@ -226,13 +227,11 @@ function RocketMqHome(props) {
 					/>
 				)
     },
-    // TODO 对接字段
     {
       title: "摘要",
       key: 'summary',
       dataIndex: 'summary'
     },
-    // TODO 对接字段
     { 
       title: "实例个数",
       key: "instance",
@@ -245,7 +244,7 @@ function RocketMqHome(props) {
             gotToRocketMQInstancesDetail(record.id);
           }}
         >
-          {record.instance}
+          NameServer:{record.nameServerNum}  Broker:{record.brokerNum}
         </YhOp>
         )
       }
@@ -270,43 +269,21 @@ function RocketMqHome(props) {
     },
     {
       title: "租户",
-      key: "tenant",
-      dataIndex: 'tenant'
+      key: "tenantName",
+      dataIndex: 'tenantName'
     },
-		// {
-		// 	title: "类型",
-		// 	dataIndex: "componentType",
-		// 	key: "componentType",
-		// 	width: 280,
-		// 	render: text =>
-		// 		text ? (
-		// 			text
-		// 		) : (
-		// 			<Select
-		// 				style={{ width: "100%" }}
-		// 				placeholder="请选择集群类型"
-		// 				onChange={getTypeWhenChange}
-		// 			>
-		// 				{rmqTypes.map(type => (
-		// 					<Select.Option key={type} value={type}>
-		// 						{type}
-		// 					</Select.Option>
-		// 				))}
-		// 			</Select>
-		// 		)
-		// },
 		{
 			title: "创建时间",
 			key: "createTime",
 			dataIndex: "createTime",
-      // render: text => (text ? FormatTime(text) : "")
+      render: time => (time ? FormatTime(time) : "---")
       
     },
     {
       title: "更新时间",
       key:"updateTime",
-      dataIndex: 'updateTime'
-      // render: time => (time ? FormatTime(time): "")
+      dataIndex: 'updateTime',
+      render: time => (time ? FormatTime(time): "---")
     },
 		{
 			title: "操作",
@@ -373,10 +350,10 @@ function RocketMqHome(props) {
 
   const showFormModal = async (id) => {
     // 动态加载
-    import("./modal/Cluster.modal").then((component) => {
+    import("./modal/Cluster.modal").then((component:any) => {
       console.log('加载进来了吗？？？')
       setCom(
-        <component.default />
+        <component.default getRmqList={getRmqList} />
         
       )
     }).catch(e => message.error(e.message))
