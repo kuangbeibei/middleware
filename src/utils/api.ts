@@ -51,7 +51,6 @@ axios.interceptors.response.use(
 				location.href = `${location.origin}/login`;
 			}
 		} else {
-			alert(err);
 			return Promise.reject(err);
 		}
 	}
