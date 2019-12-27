@@ -54,8 +54,9 @@ axios.interceptors.response.use(
 
 			return;
 		} else {
-			console.log('err了,', err);
-			message.error(err.response.statusText || err.response.status)
+			console.log('interceptors.response,', err);
+			alert(err);
+			message.error(err.message)
 			return Promise.reject(err);
 		}
 	}
@@ -67,6 +68,7 @@ const request = config => {
 			return response;
 		})
 		.catch(err => {
+			console.log('request err,', err)
 			return Promise.reject(err);
 		});
 };
