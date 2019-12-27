@@ -26,14 +26,22 @@ export async function getRedisExtendList(id) {
 // 创建扩容实例
 export async function createExtension(data) {
     return postApi(ProductRedisApiUrl)(`/mid/v1/deployTask`, data).then(res => {
-        
+        try {
+            return res.msg
+        } catch (e) {
+            return res
+        }
     }).catch(e => Promise.reject(e))
 }
 
 // 更新扩容实例
 export async function updateExtension(data, taskId) {
     return postApi(ProductRedisApiUrl)(`/mid/v1/updateParams/redisExtend/${taskId}`, data).then(res => {
-
+        try {
+            return res.msg
+        } catch (e) {
+            return res
+        }
     }).catch(e => Promise.reject(e))
 }
 
@@ -53,15 +61,17 @@ export async function getExtensionDetail(taskId) {
 // 部署扩容实例
 export async function deployExtensionInstance(taskId) {
     return getApi(ProductRedisApiUrl)(`/mid/v1/runTask/redisExtend/${taskId}`).then(res => {
-
+        
     }).catch(e => Promise.reject(e))
 }
 
 // 删除扩容实例
 export async function deleteExtensionInstance(id) {
     return delApi(ProductRedisApiUrl)(`/mid/v1/delete/redisExtend/${id}`).then(res => {
-        if (res.code === 200) {
-            return true
+        try {
+            return res.msg
+        } catch (e) {
+            return res
         }
     }).catch(e => Promise.reject(e))
 }

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect } from 'react'
 import {
 	BrowserRouter as Router,
 	Route,
@@ -9,15 +8,17 @@ import {
 
 import PageIndex from "@pages/Index";
 import Nomatch from "@pages/No-match";
-import { postApi } from "@api";
 
 const App: React.SFC = props => {
 	return (
 		<Router>
 			<Switch>
-				
-				<Route exact path="/middleware" render={() => <Redirect to="/middleware/mysql" push />} />
-				
+				<Route
+					exact
+					path="/middleware"
+					render={() => <Redirect to="/middleware/mysql" push />}
+				/>
+
 				{/* Page */}
 				<PageIndex {...props} />
 

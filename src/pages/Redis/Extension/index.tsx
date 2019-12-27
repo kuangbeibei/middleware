@@ -133,8 +133,12 @@ function ExtensionList(props) {
 		deleteExtensionInstance(id)
 			.then(res => {
 				if (res) {
-					setLoadListCount(loadListCount => loadListCount + 1);
-					message.success(`删除${id}成功!`);
+					if (res === 'ok') {
+						setLoadListCount(loadListCount => loadListCount + 1);
+						message.success(`删除${id}成功!`);
+					} else {
+						message.error(res.msg);
+					}
 				} else {
 					message.error(`删除${id}失败! `);
 				}

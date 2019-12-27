@@ -165,8 +165,12 @@ function FormModal(props) {
 
 				save(data)
 					.then(res => {
-						message.success("扩容成功!");
-						initFormModal();
+						if (res === 'ok') {
+							message.success("扩容成功!");
+							initFormModal();
+						} else {
+							message.error(res.msg)
+						}
 					})
 					.catch(e => message.error(e.message));
 			}
