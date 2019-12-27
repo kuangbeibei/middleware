@@ -16,7 +16,7 @@ module.exports = {
 		},
 		publicPath: "/",
 		open: true,
-		inline: true,
+		// inline: true,
 		historyApiFallback: true, // true for index.html upon 404, object for multiple paths
 		hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
 		https: false, // true for self-signed, object for cert authority

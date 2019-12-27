@@ -1,10 +1,11 @@
 /*
- * @Author: kuangdan 
- * @Date: 2019-11-01 10:32:55 
- * @Last Modified: 2019-11-01 10:32:55 
+ * @Author: kuangdan
+ * @Date: 2019-11-01 10:32:55
+ * @Last Modified: 2019-11-01 10:32:55
  */
 
 import axios from "axios";
+import { getCookie } from "@utils/tools";
 
 interface IResult {
 	code: string;
@@ -32,8 +33,25 @@ axios.interceptors.response.use(
 	},
 	err => {
 		if (err.response.status === 401) {
-			location.href = `${location.origin}/login`;
-			return 
+			if (location.hostname === "127.0.0.1") {
+				// 开发中自动登陆
+				let loginInfo = "yh_username=css&yh_password=123456";
+				let headers = {
+					"Content-Type":
+						"application/x-www-form-urlencoded; charset=UTF-8"
+				};
+				postApi("/api/user/login")("", loginInfo, { headers }).then(
+					res => {
+						if (res.code == "S200") {
+							location.reload()
+						}
+					}
+				);
+			} else {
+				location.href = `${location.origin}/login`;
+			}
+
+			return;
 		} else {
 			return Promise.reject(err);
 		}
@@ -46,7 +64,7 @@ const request = config => {
 			return response;
 		})
 		.catch(err => {
-			return Promise.reject(err)
+			return Promise.reject(err);
 		});
 };
 
@@ -90,9 +108,11 @@ export const put = (url: string, params?: object, config?: object) => {
 	});
 };
 
-export const getApi = ProductApiUrl => (url, params?, config?) => get(ProductApiUrl + url, params, config);
-export const postApi = ProductApiUrl => (url, params?, config?) => post(ProductApiUrl + url, params, config);
-export const delApi = ProductApiUrl => (url, params?, config?) => del(ProductApiUrl + url, params, config);
-export const putApi = ProductApiUrl => (url, params?, config?) => put(ProductApiUrl + url, params, config);
-
-
+export const getApi = ProductApiUrl => (url, params?, config?) =>
+	get(ProductApiUrl + url, params, config);
+export const postApi = ProductApiUrl => (url, params?, config?) =>
+	post(ProductApiUrl + url, params, config);
+export const delApi = ProductApiUrl => (url, params?, config?) =>
+	del(ProductApiUrl + url, params, config);
+export const putApi = ProductApiUrl => (url, params?, config?) =>
+	put(ProductApiUrl + url, params, config);
