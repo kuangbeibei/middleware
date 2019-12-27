@@ -12,14 +12,12 @@ interface IDynamicImportProps {
 	load: Function;
 	children: any;
 }
-let count = 0
 class DynamicImport extends React.Component<IDynamicImportProps> {
 	state = {
 		component: null
 	};
 	public async componentDidMount() {
-    const { default: component } = await this.props.load();
-    console.log(++count, 'render component count')
+		const { default: component } = await this.props.load();
 		this.setState({
 			component
 		});
@@ -44,19 +42,19 @@ const MysqlHome = props => (
 	<DynamicImport load={() => import("@pages/Mysql/Home")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const MysqlDetail = props => (
 	<DynamicImport load={() => import("@pages/Mysql/Detail")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 const MysqlInstance = props => (
 	<DynamicImport load={() => import("@pages/Mysql/Instance")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 // Redis 入口
 const Redis = props => (
@@ -91,7 +89,7 @@ const RedisDetail = props => (
 	<DynamicImport load={() => import("@pages/Redis/Detail")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
-)
+);
 
 // Redis 扩容
 const RedisExtension = props => (
@@ -116,18 +114,16 @@ const RocketmqHome = props => (
 
 // Rocketmq 实例详情页
 const RocketmqInstancesDetail = props => (
-  <DynamicImport load={() => import("@pages/Rocket-MQ/ClusterDetail")}>
-    {Component => childrenOfDynamicImport(Component, props)}
-  </DynamicImport>
-)
+	<DynamicImport load={() => import("@pages/Rocket-MQ/ClusterDetail")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+);
 
 const RocketmqDetail = props => (
-  <DynamicImport load={() => import("@pages/Rocket-MQ/Detail")}>
-    {Component => childrenOfDynamicImport(Component, props)}
-  </DynamicImport>
-)
-
-
+	<DynamicImport load={() => import("@pages/Rocket-MQ/Detail")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+);
 
 const RocketNameServer = props => (
 	<DynamicImport load={() => import("@pages/Rocket-MQ/Nameserver")}>
@@ -162,7 +158,7 @@ export default {
 	RocketmqHome,
 	RocketNameServer,
 	RocketBroker,
-  RocketConsole,
-  RocketmqInstancesDetail,
-  RocketmqDetail
+	RocketConsole,
+	RocketmqInstancesDetail,
+	RocketmqDetail
 } as any;

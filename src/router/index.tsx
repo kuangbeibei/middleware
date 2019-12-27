@@ -10,15 +10,12 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Allpages from "@pages/Entries";
 
-const requireLogin = () => {
-	
-}
+const requireLogin = () => {};
 
 const routes = (middlewareRouteMap, props) => {
 	return middlewareRouteMap.map((r: IRoute) => {
 		const route = (r: IRoute) => {
 			const C = r.component && Allpages[r.component];
-
 			return C ? (
 				<Route
 					path={r.key}
@@ -40,9 +37,7 @@ const routes = (middlewareRouteMap, props) => {
 function renderPageWithRoutes(middlewareRouteMap: IRoute[], props) {
 	return (
 		<>
-			<Switch>
-				{...routes(middlewareRouteMap, props)}
-			</Switch>
+			<Switch>{...routes(middlewareRouteMap, props)}</Switch>
 		</>
 	);
 }
