@@ -32,7 +32,8 @@ import {
 	getClusterDetail,
 	deployCluster,
 	unload,
-	deleteCluster
+	deleteCluster,
+	showtopology
 } from "./service";
 
 import { getTenantList } from "../../Redis/Home/service";
@@ -101,40 +102,46 @@ function MysqlCluster(props) {
 	 * @param id 
 	 */
 	const unloadAction = id => {
-		unload(id).then(msg => {
-			if (msg === 'ok') {
-				getList({})
-				message.success(`集群${id} 卸载成功`);
-			} else {
-				message.error(`${msg}`)
-			}
-		}).catch(e => message.error(e.message))
-	}
+		unload(id)
+			.then(msg => {
+				if (msg === "ok") {
+					getList({});
+					message.success(`集群${id} 卸载成功`);
+				} else {
+					message.error(`${msg}`);
+				}
+			})
+			.catch(e => message.error(e.message));
+	};
 
 	/**
 	 * 删除集群
 	 * @param id
 	 */
 	const deleteAction = id => {
-		deleteCluster(id).then(msg => {
-			if (msg === 'ok') {
-				getList({})
-				message.success(`集群${id} 删除成功`)
-			} else {
-				message.error(`${msg}`)
-			}
-		}).catch(e => message.error(e.message))
-	}
+		deleteCluster(id)
+			.then(msg => {
+				if (msg === "ok") {
+					getList({});
+					message.success(`集群${id} 删除成功`);
+				} else {
+					message.error(`${msg}`);
+				}
+			})
+			.catch(e => message.error(e.message));
+	};
 
 	/**
 	 * 部署集群
 	 * @param id
 	 */
 	const depolyAction = id => {
-		deployCluster(id).then(msg => {
-			getList({})
-		}).catch(e => message.error(e.message))
-	}
+		deployCluster(id)
+			.then(msg => {
+				getList({});
+			})
+			.catch(e => message.error(e.message));
+	};
 
 	const showFormModal = async (id?) => {
 		import("./Form.modal").then(component => {
@@ -180,6 +187,24 @@ function MysqlCluster(props) {
 	 */
 	const gotoInstance = id => {
 		history.push(`/middleware/mysql/${id}/instance`);
+	};
+
+	/**
+	 * 调取“拓扑图”接口
+	 * @param taskId
+	 */
+	const getMapRelationsInfo = id => {
+		showtopology(id)
+			.then(res => {
+				if (res.message === 'ok') {
+					import("./Topology.modal").then(component => {
+						setCom(<component.default {...Object.assign({})} data={res.data} />);
+					});
+				} else {
+					message.error(res.message)
+				}
+			})
+			.catch(e => message.error(e.message));
 	};
 
 	const getColumnSearchProps = dataIndex => ({
@@ -279,11 +304,27 @@ function MysqlCluster(props) {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a onClick={() => checkStatusBeforeOperate('deploy', text.status)(text.id, text.name, depolyAction)}>部署</a>
+					<a
+						onClick={() =>
+							checkStatusBeforeOperate("deploy", text.status)(
+								text.id,
+								text.name,
+								depolyAction
+							)
+						}
+					>
+						部署
+					</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
-						onClick={() => checkStatusBeforeOperate('edit', text.status)(text.id, text.name, showFormModal)}
+						onClick={() =>
+							checkStatusBeforeOperate("edit", text.status)(
+								text.id,
+								text.name,
+								showFormModal
+							)
+						}
 					>
 						编辑
 					</a>
@@ -292,7 +333,13 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定卸载集群${text.name}?`}
-						onConfirm={() => checkStatusBeforeOperate('release', text.status)(text.id, text.name, unloadAction)}
+						onConfirm={() =>
+							checkStatusBeforeOperate("release", text.status)(
+								text.id,
+								text.name,
+								unloadAction
+							)
+						}
 						okText="是"
 						cancelText="否"
 					>
@@ -303,7 +350,13 @@ function MysqlCluster(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定删除集群${text.name}?`}
-						onConfirm={() => checkStatusBeforeOperate('delete', text.status)(text.id, text.name, deleteAction)}
+						onConfirm={() =>
+							checkStatusBeforeOperate("delete", text.status)(
+								text.id,
+								text.name,
+								deleteAction
+							)
+						}
 						okText="是"
 						cancelText="否"
 					>
@@ -363,7 +416,12 @@ function MysqlCluster(props) {
 						<Button
 							type="link"
 							icon="apartment"
-							onClick={() => {}}
+							onClick={() =>
+								checkStatusBeforeOperate(
+									"mapRelations",
+									text.status
+								)(text.id, text.name, getMapRelationsInfo)
+							}
 						/>
 					</Tooltip>
 				</YhOp>
