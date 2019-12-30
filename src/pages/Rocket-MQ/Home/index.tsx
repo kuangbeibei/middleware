@@ -363,22 +363,20 @@ function RocketMqHome(props) {
       // 动态加载
       import("./modal/Cluster.modal").then((component:any) => {
         setCom(
-          <component.default getRmqList={getRmqList} />
+          <component.default  tenantList={tenantList} getRmqList={getRmqList} />
         )
       }).catch(e => message.error(e.message))
       return 
     }
 
     getRmqCluster(id).then(data => {
-      console.log(data, '返回的数据----->>')
-          // 动态加载
+      // 动态加载
       import("./modal/Cluster.modal").then((component:any) => {
         setCom(
-          <component.default id={id} clusterData={data} getRmqList={getRmqList} />
+          <component.default  id={id} clusterData={data} tenantList={tenantList} getRmqList={getRmqList} />
         )
       }).catch(e => message.error(e.message))
     })
-    console.log(id, 'id--->>>>')
     return
   }
 

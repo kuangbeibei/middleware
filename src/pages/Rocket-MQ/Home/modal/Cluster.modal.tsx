@@ -66,12 +66,13 @@ const QuarterFormItem = styled(Form.Item)`
 function RocketMqModal(props) {
   let { clusterData, id } = props // 如果为undefined 则是编辑
   let [ clusterObj, setClusterObj ] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
-  let [ tenantList, setTenantList ] = useState<Array<any>>(Array()); // 租户列表 - 待传入
+  // let [ tenantList, setTenantList ] = useState<Array<any>>(Array()); // 租户列表 - 待传入
   let [ addFlag, setAddFlag ] = useState<boolean>(true); // 默认为添加
 
 
 
   const { 
+    tenantList,
     getRmqList,
     tableModalVisibility,
     setTableModalVisibility,
@@ -164,10 +165,6 @@ function RocketMqModal(props) {
       setClusterObj(formatEditData(clusterData))
     }
     setTableModalVisibility();
-    // 获取租户列表 TODO 传入 modal组件
-    getTenants().then((list) => {
-      setTenantList(list)
-    })
   }, [])
 
 
@@ -212,7 +209,18 @@ function RocketMqModal(props) {
       
     // TODO 样式调整
     return (
-        <div key={'console_item_' + index} style={{outline: '3px dotted wheat',  outlineOffset: 6, position: 'relative', paddingTop: 10, marginTop: index!=0 ? 36: 15}}>
+        <div  key={'console_item_' + index} style={
+          { 
+          // width: '96%' ,
+          // border: '1px solid black',
+          width: 'calc(100% - 30px)',
+          // outline: '1px dotted wheat',
+          outlineOffset: 2,
+          position: 'relative',
+          paddingTop: 10,
+          marginTop: index!=0 ? 25: 15}
+        
+        }>
 
           <Tooltip title="删除">
             <Icon onClick={()=>{deleteBroker(consoleGroup.key)}} style={{
@@ -220,8 +228,10 @@ function RocketMqModal(props) {
               marginBottom: 24,
               cursor: 'pointer',
               position: 'absolute',
-              right: -18,
-              top: -18,
+              // right: -18,
+              // top: -18,
+              right: -34,
+              top: 50,
               background: 'white'
               }} type="minus-circle" />
           </Tooltip>
@@ -233,6 +243,7 @@ function RocketMqModal(props) {
                 <QuarterFormItem
                 {...formItemInstanceLayout}
                 label={idx == 0 ? "ip(主)": "ip(备)"}
+                labelAlign="left"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].ip`, {
                     initialValue: item.ip,
@@ -300,7 +311,7 @@ function RocketMqModal(props) {
     })
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <Button type="primary" onClick={addBroker} style={{marginTop: 30}}> 
+        <Button type="primary" onClick={addBroker} style={{marginTop: 10}}> 
           添加 
           <Icon type="plus-circle" /> 
         </Button>
@@ -353,11 +364,15 @@ function RocketMqModal(props) {
   const getConsoleFormItems = ()=> {
 
     const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
-      <YHFlexSpaceBetwenDiv key={'broker_item_' + index}>
+      <YHFlexSpaceBetwenDiv key={'broker_item_' + index} style={{
+        position: 'relative',
+        width: 'calc(100% - 30px)',
+      }}>
          
                 <QuarterFormItem
                   {...formItemInstanceLayout}
                   label="ip"
+                  labelAlign="left"
                 >
                   {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
                     initialValue: broker.ip,
@@ -418,7 +433,15 @@ function RocketMqModal(props) {
                 </QuarterFormItem>   
                 
                 <Tooltip title="删除">
-                <Icon onClick={()=>{deleteConsole(broker.key)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
+                <Icon onClick={()=>{deleteConsole(broker.key)}} style={{
+                cursor: 'pointer',
+                fontSize: 25, 
+                marginBottom: 24,
+                position: 'absolute',
+                  right: -34,
+                  top: 6,
+
+                }} type="minus-circle" />
                 </Tooltip>
                        
 
@@ -465,12 +488,17 @@ function RocketMqModal(props) {
   const getNameServerForms = () => {
 
     const formItems = clusterObj.nameServerInstances && clusterObj.nameServerInstances.map((nameServer, index) =>(
-      <YHFlexSpaceBetwenDiv key={nameServer.key}>
+      <YHFlexSpaceBetwenDiv key={nameServer.key} style={{
+        position: 'relative',
+        width: 'calc(100% - 30px)',
+        // border: '1px solid black'
+      }}>
 
         <QuarterFormItem
           key={index+'_ip'}
           {...formItemInstanceLayout}
           label="ip"
+          labelAlign="left"
         >
           {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].ip`, {
             initialValue: nameServer.ip,
@@ -531,8 +559,16 @@ function RocketMqModal(props) {
             })(<Input.Password placeholder="请输入密码" />)}
         </QuarterFormItem>   
         
-        <Tooltip title="删除">
-            <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{fontSize: 25, marginBottom: 24, cursor: 'pointer'}} type="minus-circle" />
+        <Tooltip title="删除" style= {{
+          
+        }}>
+            <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{
+              fontSize: 25, 
+              marginBottom: 24,
+              position: 'absolute',
+                right: -34,
+                top: 6,
+              cursor: 'pointer'}} type="minus-circle" />
         </Tooltip>
 
                
@@ -592,6 +628,8 @@ function RocketMqModal(props) {
       width={'70%'}
       handleCancel={handleCancel}
       handleOk= {handleOK}
+      okText="确定"
+      cancelText="取消"
     >
 
       <Form>

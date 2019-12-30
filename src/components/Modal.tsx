@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Modal } from "antd";
 
 export default function(props) {
-	const { modalName, visible, handleOk, handleCancel, width } = props;
+	const { modalName, visible, handleOk, handleCancel, width, okText, cancelText } = props;
 
 	return (
 		<Modal
@@ -19,7 +19,9 @@ export default function(props) {
 			visible={visible}
 			onOk={handleOk}
 			onCancel={handleCancel}
-			maskClosable={false}
+      maskClosable={false}
+      okText={okText || 'OK'}
+      cancelText= {cancelText || 'Cancel'}
 		>
 			{props.children}
 		</Modal>
