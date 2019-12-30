@@ -40,6 +40,7 @@ import { rmqTypes, rmqDataPrototype } from "./data";
 
 
 import { getTenants, getRmqClustListByPage, getRmqCluster } from './service'
+import useTenants from "@hooks/use-tenants";
 
 
 let addFlag = false;
@@ -52,8 +53,9 @@ function RocketMqHome(props) {
 	let [loading, setloading] = useState(true);
 	let [delLoading, setDelLoading] = useState(false);
   let [addLoading, setAddLoading] = useState(false);
-  let [tenantList, setTenantList] = useState(Array());
-
+  // let [tenantList, setTenantList] = useState(Array());
+  
+  let tenantList = useTenants()
 
   let {
     tableModalVisibility,
@@ -66,7 +68,7 @@ function RocketMqHome(props) {
 
   useEffect(()=> {
     getRmqList()
-    getTenantList()
+    // getTenantList()
   }, [])
 
   // 获取列表
@@ -76,11 +78,11 @@ function RocketMqHome(props) {
       setloading(false)
     })
   }
-  const getTenantList = ()=>{
-    getTenants().then((list) => {
-      setTenantList(list)
-    })
-  }
+  // const getTenantList = ()=>{
+  //   getTenants().then((list) => {
+  //    setTenantList(list)
+  //   })
+  // }
 	// useEffect(() => {
 	// 	getRmqComponentClusterRecords().then(tableList => {
 

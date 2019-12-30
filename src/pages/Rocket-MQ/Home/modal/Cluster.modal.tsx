@@ -66,8 +66,8 @@ const QuarterFormItem = styled(Form.Item)`
 function RocketMqModal(props) {
   let { clusterData, id } = props // 如果为undefined 则是编辑
   let [ clusterObj, setClusterObj ] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
-  let [ tenantList, setTenantList ] = useState(Array()); // 租户列表 - 待传入
-  let [ addFlag, setAddFlag ] = useState(true); // 默认为添加
+  let [ tenantList, setTenantList ] = useState<Array<any>>(Array()); // 租户列表 - 待传入
+  let [ addFlag, setAddFlag ] = useState<boolean>(true); // 默认为添加
 
 
 
@@ -111,8 +111,8 @@ function RocketMqModal(props) {
     let consolesData:any = params.consoleInstances ? Object.values(params.consoleInstances) : []
     let nameServersData:any = params.nameServerInstances ? Object.values(params.nameServerInstances) : []
     let datas: any = [brokersData, consolesData, nameServersData]
-    datas.forEach(item => item.port = Number(item.port))
-
+    datas.forEach(list => list.forEach(item => item.port = Number(item.port)))
+    
     const postParam = {
       type: 'rmqCluster',
       params: {
@@ -136,7 +136,7 @@ function RocketMqModal(props) {
       params: IrmqDataPrototype
     } = fomatData()
 
-    check(()=>{
+    check( async ()=>{
       if (addFlag) {
         addRocketMqCluster(postData).then((data) => {
           if(data.taskId) {
