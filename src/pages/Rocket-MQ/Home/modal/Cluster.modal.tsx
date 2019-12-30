@@ -141,7 +141,7 @@ function RocketMqModal(props) {
       if (addFlag) {
         addRocketMqCluster(postData).then((data) => {
           if(data.taskId) {
-            console.log('添加集群成功')
+            message.success("添加成功")
             getRmqList()
             setTableModalVisibility()
           }
@@ -149,6 +149,7 @@ function RocketMqModal(props) {
       } else {
         updateRmqCluster(id, postData.params).then((data) => {
           if(data.taskId) {
+            message.success("编辑成功")
             getRmqList()
             setTableModalVisibility()
           }

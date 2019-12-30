@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import {
 	Button,
@@ -30,17 +30,13 @@ import OperationControl from "@com/Operation.control";
 import StatusControl from "@com/Status.control";
 
 
-import {
-	// getRmqComponentClusterRecords,
-	// createRmqComponentClusterRecord,
-	// deleteRmqComponentClusterRecord
-} from "./service";
 import { FormatTime, deepCloneObject } from "@tools";
 import { rmqTypes, rmqDataPrototype } from "./data";
 
 
-import { getTenants, getRmqClustListByPage, getRmqCluster } from './service'
+import { getRmqClustListByPage, getRmqCluster, runRmqClusterTask, deleteCluster, releaseCluster } from './service'
 import useTenants from "@hooks/use-tenants";
+import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 
 
 let addFlag = false;
@@ -53,7 +49,6 @@ function RocketMqHome(props) {
 	let [loading, setloading] = useState(true);
 	let [delLoading, setDelLoading] = useState(false);
   let [addLoading, setAddLoading] = useState(false);
-  // let [tenantList, setTenantList] = useState(Array());
   
   let tenantList = useTenants()
 
@@ -78,21 +73,6 @@ function RocketMqHome(props) {
       setloading(false)
     })
   }
-  // const getTenantList = ()=>{
-  //   getTenants().then((list) => {
-  //    setTenantList(list)
-  //   })
-  // }
-	// useEffect(() => {
-	// 	getRmqComponentClusterRecords().then(tableList => {
-
-  //     let fakeList = [
-  //     ]
-
-	// 		setTableList(fakeList);
-	// 		setloading(false);
-	// 	});
-	// }, [loadingListCount]);
 
 	/**
 	 * 删除一个未创建的RMQ类型
@@ -187,8 +167,6 @@ function RocketMqHome(props) {
 
   const gotToRocketMQInstancesDetail = (id) => {
     addFlag = false;
-    // addFlag = false;
-		// type = type.toLowerCase();
 		props.history.push(`/middleware/rocketmq/instances/${id}`);
   }
 
@@ -302,17 +280,56 @@ function RocketMqHome(props) {
 				return <OperationControl {...props} text={text} menu={menu} />;
 			}
 		}
-	];
-	const menu = text => {
+  ];
+
+
+  
+  // 部署rmq集群
+  const runRmqTask = async (taksId) => {
+    runRmqClusterTask(taksId).then(data => {
+      message.success('部署成功')
+    }).catch(err=>{
+      message.success('部署失败')
+    })
+  }
+
+  // 删除rmq集群
+  const deleteRmqTask = async (taskId) => {
+    deleteCluster(taskId).then(data=> {
+      message.success('删除集群成功')
+      getRmqList()
+    }).catch(err => {
+      message.warning('删除集群失败')
+    })
+  }
+
+  // 释放资源
+  const releaseRmqTask = async (taskId) => {
+    releaseCluster(taskId).then(data => {
+      message.success('释放资源成功')
+    }).catch(err => {
+      message.warning('释放资源失败')
+    })
+  }
+
+  
+	const menu = item => {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a onClick={() => {}}>部署</a>
+					<a onClick={() => {
+            checkStatusBeforeOperate('deploy', item.status)(
+              item.taskId,
+              item.name,
+              runRmqTask
+            )
+
+          }}>部署</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
 						onClick={() => {
-							showFormModal(text.id);
+							showFormModal(item.id);
 						}}
 					>
 						编辑
@@ -322,7 +339,13 @@ function RocketMqHome(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定卸载集群?`}
-						onConfirm={() => {}}
+						onConfirm={() => {
+              checkStatusBeforeOperate('release', item.status)(
+                item.taskId,
+                item.name,
+                releaseRmqTask
+              )
+            }}
 						okText="是"
 						cancelText="否"
 					>
@@ -333,7 +356,13 @@ function RocketMqHome(props) {
 					<Popconfirm
 						placement="topRight"
 						title={`确定删除集群?`}
-						onConfirm={() => {}}
+						onConfirm={() => {
+              checkStatusBeforeOperate("delete", item.status)(
+								item.id,
+								item.name,
+								deleteRmqTask
+							)
+            }}
 						okText="是"
 						cancelText="否"
 					>
