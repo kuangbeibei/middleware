@@ -1,42 +1,79 @@
 import * as React from 'react';
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { Descriptions } from "antd";
+import PasswordColumn from "@com/Password-unit";
 
+
+
+import { getClusterConfigInfo } from '../service'
 function BasicInfo (props) {
 
+  let { match: { params: { id: clusterId } } } = props
+  let [clusterConfig, setClusterConfig] = useState([])
 
 
+  const processPass = pass => {
+		return <PasswordColumn pass={pass} />;
+	};
 
+
+  const processInstancesData = val => {
+		return val.reduce(
+			(prev, cur, idx) => {
+        let curInfo = (
+          <div key={cur.ip}>
+            <span>{cur.ip}:{cur.port}    用户名: {cur.user} </span>   密码: <PasswordColumn pass={cur.pass} />
+          </div>
+        )
+        prev.push(curInfo)
+        return prev
+      },
+			[]
+		);
+	};
+
+  useEffect(()=>{
+    getClusterConfigInfo(clusterId).then(data => {
+      console.log(data, 'data')
+      setClusterConfig(data)
+    })
+  }, [clusterId])
+  
 
   return (
     <Descriptions  column={1}  bordered>
-      <Descriptions.Item label="名称">Cloud Database</Descriptions.Item>
-      <Descriptions.Item label="版本">4.0.14</Descriptions.Item>
-      <Descriptions.Item label="密码">*****</Descriptions.Item>
-      <Descriptions.Item label="实例列表">
-        10.254.192.3:6379 <br />
-        10.254.192.4:6379 <br />
-        10.254.192.8:6379 <br />
-        10.254.192.13:6379 <br />
-        10.254.192.14:6379 <br />
-        10.254.192.15:6379 <br />
-      </Descriptions.Item>
 
 
-      <Descriptions.Item label="更多配置">
-        cluster-node-timeout 6000
-      </Descriptions.Item>
-      <Descriptions.Item label="默认配置">
-          
-        bind 0.0.0.0 <br />
-        cluster-enabled yes <br />
-        cluster-config-file nodes.conf <br />
-        cluster-node-timeout 5000 <br />
-        appendonly yes <br />
-        aof-use-rdb-preamble yes <br />
-        daemonize yes <br />
+      {
 
-      </Descriptions.Item>
+        clusterConfig.map((item:any) => {
+          let val
+          if (typeof item.value === 'string') {
+						val = item.value.replace(/\n/g, "\n");
+          }
+          if (Array.isArray(item.value)) {
+            val = processInstancesData(item.value)
+          }
+
+          return (
+            <Descriptions.Item label={item.name} key={item.value}>
+
+              {
+                Array.isArray(item.value) ? <div className="instances-td" > {val} </div> : <pre> {val || '--'} </pre>
+
+              }
+
+            </Descriptions.Item>
+          )
+
+        })
+
+
+      }
+
+
+
+
   </Descriptions>
   )
 }

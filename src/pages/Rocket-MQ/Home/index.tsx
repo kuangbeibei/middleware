@@ -195,7 +195,6 @@ function RocketMqHome(props) {
 					<YhOp
             color = {'#0070cc'}
 						onClick={() => {
-              console.log(name, 'kevinkang')
               gotToRocketMQDetail(record.id)
 						}}
 					>
