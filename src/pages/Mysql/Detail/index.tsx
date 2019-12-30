@@ -28,9 +28,9 @@ export default function(props) {
 		}
 	} = props;
 
-	const [basicData, setbasicData] = useState(Array());
+	const [basicData, setbasicData] = useState({});
 	const [loading, setloading] = useState(true);
-	const [logs, setlogs] = useState(Array())
+	const [logs, setlogs] = useState(Array());
 
 	useEffect(() => {
 		changeTab("1");
@@ -40,7 +40,7 @@ export default function(props) {
 		setloading(true);
 		switch (key) {
 			case "1":
-				if (basicData.length === 0) {
+				if (Object.keys(basicData).length === 0) {
 					getClusterDetail(id).then(data => {
 						setbasicData(data);
 						setloading(false);
@@ -81,7 +81,7 @@ export default function(props) {
 				{loading ? (
 					<Loading />
 				) : (
-					<BackupTab {...props} />
+					<BackupTab {...props} {...basicData} />
 				)}
 			</TabPane>
 			<TabPane tab="操作日志" key="3">

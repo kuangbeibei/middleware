@@ -15,8 +15,6 @@ import { transDataToArray } from "./tool";
 export default function(props) {
 	const { basicData } = props;
 	let _basicData = transDataToArray(basicData);
-	console.log(_basicData);
-
 	/**
 	 * 处理实例
 	 * @param val
