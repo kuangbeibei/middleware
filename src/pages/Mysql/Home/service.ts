@@ -24,7 +24,7 @@ export async function getMysqlClusters({
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -37,7 +37,7 @@ export async function getDefaultClusterConfig() {
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -50,7 +50,7 @@ export async function getClusterDetail(id) {
 			try {
 				return res.data;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -63,7 +63,7 @@ export async function createMysqlCluster(data) {
 			try {
 				return res.message;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -76,7 +76,7 @@ export async function updateMysqlCluster(id, data) {
 			try {
 				return res.message;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
@@ -111,13 +111,19 @@ export async function unload(id) {
 // 删除
 export async function deleteCluster(id) {
 	return delApi(ProductMysqlApiUrl)(`/v1/clusters/${id}`)
-		.then()
 		.then(res => {
 			try {
 				return res.message;
 			} catch (e) {
-				Promise.reject(res.message)
+				Promise.reject(res.message);
 			}
 		})
 		.catch(e => Promise.reject(e));
+}
+
+// 拓扑图
+export async function showtopology(id) {
+	return getApi(ProductMysqlApiUrl)(
+		`/v1/info/topology/${id}`
+	).then(res => res).catch(e => Promise.reject(e));
 }
