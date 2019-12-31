@@ -17,7 +17,7 @@ import styled from 'styled-components';
 // import PropTypes from 'prop-types'
 import { getTenants, addRocketMqCluster, updateRmqCluster } from '../service'
 import { IrmqDataPrototype } from '../data'
-import './Cluster.modal.less';
+import './cluster.modal.less';
 import InstanceWrapper from './InstanceWrapper'
 import {
   Form,
