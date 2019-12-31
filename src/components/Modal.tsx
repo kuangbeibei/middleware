@@ -20,8 +20,8 @@ export default function(props) {
 			onOk={handleOk}
 			onCancel={handleCancel}
       maskClosable={false}
-      okText={okText || 'OK'}
-      cancelText= {cancelText || 'Cancel'}
+      okText={okText || '确定'}
+      cancelText= {cancelText || '取消'}
 		>
 			{props.children}
 		</Modal>

@@ -102,7 +102,6 @@ export const deleteCluster = (taskId) => {
 }
 
 // 释放资源
-
 export const releaseCluster = (taskId) => {
   return delApi(ProductRocketMqApiUrl)(`mid/v1/releaseTaskResources/rmqCluster/${taskId}`)
   .then(res => {
@@ -110,6 +109,18 @@ export const releaseCluster = (taskId) => {
       return res.data
     } else {
       throw new Error('error: ' + res.code + ' ' +  res.msg)
+    }
+  }).catch(e => Promise.reject(e))
+}
+
+// 获取部署日志
+export const getDeployTaskOutput = (taskId) => {
+  return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployTaskOutput/${taskId}`)
+  .then(res => {
+    if (res.code == 200) {
+      return res.data
+    } else {
+      throw new Error('error: ' + res.code +' ' +  res.msg)
     }
   }).catch(e => Promise.reject(e))
 }

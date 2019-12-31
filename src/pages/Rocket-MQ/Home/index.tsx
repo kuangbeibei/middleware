@@ -34,7 +34,7 @@ import { FormatTime, deepCloneObject } from "@tools";
 import { rmqTypes, rmqDataPrototype } from "./data";
 
 
-import { getRmqClustListByPage, getRmqCluster, runRmqClusterTask, deleteCluster, releaseCluster } from './service'
+import { getRmqClustListByPage, getRmqCluster, runRmqClusterTask, deleteCluster, releaseCluster, getDeployTaskOutput } from './service'
 import useTenants from "@hooks/use-tenants";
 import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 
@@ -97,50 +97,6 @@ function RocketMqHome(props) {
 		}
 	};
 
-	/**
-	 * 创建一个RMQ 类型
-	 */
-	// const createRmqType = () => {
-	// 	setAddLoading(true);
-	// 	if (!newItemName || !newItemType)
-	// 		return message.info("请确保已填写名称并选择类型！");
-	// 	createRmqComponentClusterRecord({
-	// 		businessName: newItemName,
-	// 		componentType: newItemType
-	// 	})
-	// 		.then(() => {
-	// 			message.success(`${newItemName}集群创建成功!`);
-	// 			setLoadListCount(loadingListCount + 1);
-	// 			addFlag = false;
-	// 			setAddLoading(false);
-	// 		})
-	// 		.catch(e => {
-	// 			message.error(`${newItemName}集群创建失败!`);
-	// 			addFlag = false;
-	// 			setAddLoading(false);
-	// 		});
-	// };
-
-	/**
-	 * 删除RMQ集群
-	 */
-	// const deleteRmqCluster = (id, name) => {
-	// 	setDelLoading(true);
-	// 	//先进行状态判断
-	// 	if (addFlag) {
-	// 		return message.warning("请先关闭添加集群的操作");
-	// 	}
-	// 	deleteRmqComponentClusterRecord(id)
-	// 		.then(() => {
-	// 			message.success(`${name}删除成功!`);
-	// 			setLoadListCount(loadingListCount + 1);
-	// 			setDelLoading(false);
-	// 		})
-	// 		.catch(e => {
-	// 			message.error(`${name}删除失败!`);
-	// 			setDelLoading(false);
-	// 		});
-	// };
 
 	/**
 	 * 获取newItemName
@@ -238,10 +194,8 @@ function RocketMqHome(props) {
     {
       title: "拓扑",
       key: "topo",
-      render: text => (
+      render: () => (
 				<YhOp
-					// color={text.status === "done" ? null : "#999"}
-					// default={text.status !== "done"}
 				>
 					<Tooltip placement="top" title={"集群拓扑"}>
 						<Button
@@ -252,6 +206,21 @@ function RocketMqHome(props) {
 					</Tooltip>
 				</YhOp>
       )
+    },
+    {
+      title: "日志",
+      key: 'log',
+      render: (item, record) => {
+        return (
+          <YhOp type="info">
+					  <Tooltip placement="top" title={"日志"}>
+					    <Button type="link" icon="code" onClick={() => {
+                showLogModal(record.taskId)
+              }} />
+            </Tooltip>
+				  </YhOp>
+        )
+      }
     },
     {
       title: "租户",
@@ -385,10 +354,10 @@ function RocketMqHome(props) {
   }, [tableModalVisibility.visible]) // 监听store里面的visible元素
 
 
+  // 集群信息新增编辑弹框
   const showFormModal = async (id) => {
-
+    // 新增
     if (!id) {
-      // 动态加载
       import("./modal/Cluster.modal").then((component:any) => {
         setCom(
           <component.default  tenantList={tenantList} getRmqList={getRmqList} />
@@ -397,24 +366,38 @@ function RocketMqHome(props) {
       return 
     }
 
+    // 编辑
     getRmqCluster(id).then(data => {
-      // 动态加载
       import("./modal/Cluster.modal").then((component:any) => {
         setCom(
           <component.default  id={id} clusterData={data} tenantList={tenantList} getRmqList={getRmqList} />
         )
       }).catch(e => message.error(e.message))
     })
-    return
   }
 
+
+  // 拓扑图弹框
   const showTopoModal = async () => {
-    // 动态加载
     import("./modal/Topo.modal").then((component) => {
       setCom(
         <component.default />
       )
     }).catch(e => message.error(e.message))
+  }
+
+
+  const showLogModal =  (taskId) =>{
+    getDeployTaskOutput(taskId).then((data) => {
+      if (data && data.length >= 1) {
+        import ("./modal/Log.modal").then((component)=> {
+          setCom(<component.default logInfo={data} />)
+        })
+      } else {
+        message.warning('暂无日志')
+      }
+    })
+
   }
 
 	return (

@@ -19,7 +19,9 @@ export const YhText = styled["span"]`
 			return "#bfbfbf";
 		} else if (p.type === "ready") {
 			return "#52c41a";
-		}
+		} else if (p.type === "fatal") {
+      return "red"
+    }
 	}};
 	width: ${p => (p.width ? p.width : 50)}px;
 	height: ${p => (p.height ? p.height : 30)}px;
