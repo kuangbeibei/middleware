@@ -25,7 +25,6 @@ import { YhOp, YhAdd, YhId } from "@styled/Button";
 import Loading from "@com/UI/Loading";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
-import TableTitle from "../Components/TableTitle";
 import OperationControl from "@com/Operation.control";
 import StatusControl from "@com/Status.control";
 
@@ -34,7 +33,7 @@ import { FormatTime, deepCloneObject } from "@tools";
 import { rmqTypes, rmqDataPrototype } from "./data";
 
 
-import { getRmqClustListByPage, getRmqCluster, runRmqClusterTask, deleteCluster, releaseCluster, getDeployTaskOutput } from './service'
+import { getRmqClustListByPage, getRmqCluster, runRmqClusterTask, deleteCluster, releaseCluster, getDeployTaskOutput, getTopoData } from './service'
 import useTenants from "@hooks/use-tenants";
 import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 
@@ -42,13 +41,13 @@ import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 let addFlag = false;
 
 function RocketMqHome(props) {
-	let [loadingListCount, setLoadListCount] = useState(0);
+	// let [loadingListCount, setLoadListCount] = useState(0);
 	let [tableList, setTableList] = useState(Array());
 	let [newItemName, setNewItemName] = useState("");
 	let [newItemType, setNewItemType] = useState("");
 	let [loading, setloading] = useState(true);
-	let [delLoading, setDelLoading] = useState(false);
-  let [addLoading, setAddLoading] = useState(false);
+	// let [delLoading, setDelLoading] = useState(false);
+  // let [addLoading, setAddLoading] = useState(false);
   
   let tenantList = useTenants()
 
@@ -194,14 +193,14 @@ function RocketMqHome(props) {
     {
       title: "拓扑",
       key: "topo",
-      render: () => (
+      render: (item, record) => (
 				<YhOp
 				>
 					<Tooltip placement="top" title={"集群拓扑"}>
 						<Button
 							type="link"
 							icon="apartment"
-							onClick={() =>{ showTopoModal() }}
+							onClick={() =>{ showTopoModal(record.id) }}
 						/>
 					</Tooltip>
 				</YhOp>
@@ -378,12 +377,18 @@ function RocketMqHome(props) {
 
 
   // 拓扑图弹框
-  const showTopoModal = async () => {
-    import("./modal/Topo.modal").then((component) => {
-      setCom(
-        <component.default />
-      )
-    }).catch(e => message.error(e.message))
+  const showTopoModal = async (id) => {
+    getTopoData(id).then(data => {
+      if (data) {
+        import("./modal/Topo.modal").then((component:any) => {
+          setCom(
+            <component.default data={data} />
+          )
+        }).catch(e => message.error(e.message))
+      } else {
+
+      }
+    })
   }
 
 

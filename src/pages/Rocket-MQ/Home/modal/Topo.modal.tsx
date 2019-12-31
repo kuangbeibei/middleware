@@ -13,7 +13,7 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 import Modal from "@com/Modal";
 // import PropTypes from 'prop-types'
 import { jsPlumb } from 'jsplumb'
-import { YHSmallFormItem, YHFlexDiv } from "@styled/Form";
+import { YHSmallFormItem, YHFlexSpaceAroundDiv } from "@styled/Form";
 import './topo.modal.less'
 
 import {
@@ -29,11 +29,9 @@ function TopoModal(props) {
   let [loading, setLoading] = useState(true)
 
   
-  const { 
-    tableModalVisibility,
-    setTableModalVisibility
-  } = props
+  const { tableModalVisibility, setTableModalVisibility, data } = props
   
+
   const handleCancel = ()=>{
     setTableModalVisibility()
   }
@@ -81,7 +79,29 @@ function TopoModal(props) {
                 length: 14,
                 width: 10,
                 foldback: 0.8
-              }],                         
+              },
+            ],   
+            ['Label', {
+              label: "",
+              location: 0.5,
+              // id: 'arrow',
+              // length: 14,
+              // width: 10,
+              // foldback: 0.8
+            },
+          ],  
+          
+          
+          ['Arrow', {
+            location: -0,
+            id: 'arrow222',
+            length: 14,
+            width: 10,
+            direction: -1,
+            foldback: 0.8
+          },
+        ]
+                    
             ],
             source: item[0], target: item[1], paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
           })
@@ -106,7 +126,7 @@ function TopoModal(props) {
   };
 
   
-  const solutionIcons = Array.from({length: 3}).map((item,index) => {
+  const solutionIcons = Array.from({length: 1}).map((item,index) => {
     return (<Icon key={index} type="solution" />)
   })
 
@@ -114,7 +134,7 @@ function TopoModal(props) {
     <Modal
       modalName = {`拓扑图`}
       visible={tableModalVisibility.visible}
-      width={'60%'}
+      width={'50%'}
       handleCancel={handleCancel}
       handleOk= {handleOK}
     >
@@ -122,18 +142,18 @@ function TopoModal(props) {
         <div className="topo-container">
 
           <div  id="k1" className="card consumer">
-            <YHFlexDiv className="icon-wrapper">
+            <YHFlexSpaceAroundDiv className="icon-wrapper">
               { solutionIcons }
-            </YHFlexDiv>
+            </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
               消费者
             </div>
           </div>
 
           <div id="k3" className="card producer">
-            <YHFlexDiv className="icon-wrapper">
+            <YHFlexSpaceAroundDiv className="icon-wrapper">
               { solutionIcons }
-            </YHFlexDiv>
+            </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
               生产者
             </div>
@@ -141,18 +161,18 @@ function TopoModal(props) {
 
 
           <div id="k2" className="card name-server">
-            <YHFlexDiv className="icon-wrapper">
+            <YHFlexSpaceAroundDiv className="icon-wrapper">
               <Icon type="database" />
-            </YHFlexDiv>
+            </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
               NameServer
             </div>
           </div> 
 
           <div id="k4" className="card broker">
-            <YHFlexDiv className="icon-wrapper">
+            <YHFlexSpaceAroundDiv className="icon-wrapper">
               <Icon type="database" />
-            </YHFlexDiv>
+            </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
               broker
             </div>

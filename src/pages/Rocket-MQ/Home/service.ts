@@ -114,6 +114,7 @@ export const releaseCluster = (taskId) => {
 }
 
 // 获取部署日志
+
 export const getDeployTaskOutput = (taskId) => {
   return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployTaskOutput/${taskId}`)
   .then(res => {
@@ -123,4 +124,16 @@ export const getDeployTaskOutput = (taskId) => {
       throw new Error('error: ' + res.code +' ' +  res.msg)
     }
   }).catch(e => Promise.reject(e))
+}
+
+// 获取拓扑信息
+export const getTopoData = (id) => {
+  return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployEntryDetail/rmqCluster/${id}`)
+    .then(res => {
+      if (res.code == 200) {
+        return res.data
+      } else {
+        throw new Error('error: ' + res.code +' ' +  res.msg)
+      }
+    }).catch(e => Promise.reject(e))
 }
