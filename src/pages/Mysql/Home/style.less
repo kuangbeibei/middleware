@@ -1,0 +1,136 @@
+.flexdiv {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.client, .load-balance, .mysql-router, .instance {
+    position: relative;
+    border: 1px solid #000;
+    width: 120px;
+    text-align: center;
+    color: #000;
+}
+
+.client, .load-balance {
+    height: 80px;
+    line-height: 80px;
+}
+
+.mysql-router, .instance {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 220px;
+    height: 100px;
+}
+
+.client::after, .load-balance::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 132px;
+    width: 120px;
+    height: 1px;
+    background: #000;
+}
+
+.routers, .instances {
+    border: 1px dashed gray;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.routers {
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 27px;
+        left: 305px;
+        width: 1px;
+        height: 210px;
+        background: indianred;
+    }
+
+    &::after {
+        position: absolute;
+        top: 27px;
+        left: 305px;
+        width: 1px;
+        height: 210px;
+        background: indianred;
+    }
+}
+
+.instances {
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 91px;
+        left: -104px;
+        width: 104px;
+        height: 1px;
+        background: indianred;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: 130px;
+        left: -54px;
+        width: 1px;
+        height: 260px;
+        background: blue;
+    }
+}
+
+.mysql-router {
+    .router-ip {
+        box-sizing: border-box;
+        padding-left: 10px;
+        height: 35px;
+        line-height: 35px;
+    }
+    .write-port, .read-port {
+        position: relative;
+        border-top: 1px solid #000;
+        padding-right: 10px;
+        height: 30px;
+        line-height: 30px;
+    }
+    .write-port::after, .read-port::after {
+        content: "";
+        position: absolute;
+        left: 240px;
+        top: 15px;
+        width: 45px;
+        height: 1px;
+        background: indianred;
+    }
+
+    .read-port::after {
+        background: blue;
+        width: 95px;
+    }
+}
+
+.instance {
+    position: relative;
+    .ip-port, .role {
+        height: 50px;
+        line-height: 50px;
+    }
+    .role {
+        border-top: 1px solid #000;
+    }
+}
+
+.instance:nth-child(1)::before, .instance:nth-child(2)::before, .instance:nth-child(3)::before {
+    content: "";
+    position: absolute;
+    top: 75px;
+    left: -75px;
+    height: 1px;
+    width: 55px;
+    background-color: blue;
+}
