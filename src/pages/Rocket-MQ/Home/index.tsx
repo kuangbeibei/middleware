@@ -42,7 +42,8 @@ let addFlag = false;
 
 function RocketMqHome(props) {
 	// let [loadingListCount, setLoadListCount] = useState(0);
-	let [tableList, setTableList] = useState(Array());
+  let [tableList, setTableList] = useState(Array());
+  let [pageInfo, setPageInfo] = useState();
 	let [newItemName, setNewItemName] = useState("");
 	let [newItemType, setNewItemType] = useState("");
 	let [loading, setloading] = useState(true);
@@ -67,7 +68,8 @@ function RocketMqHome(props) {
 
   // 获取列表
   const getRmqList = ()=> {
-    getRmqClustListByPage({}).then(data=>{
+    getRmqClustListByPage().then(data=>{
+      setPageInfo(data.pageInfo)
       setTableList(data.rmqClusters)
       setloading(false)
     })
@@ -405,6 +407,18 @@ function RocketMqHome(props) {
 
   }
 
+  const changeList = (pagination, y, z)=>{
+    let { current, pageSize } = pagination
+    // 获取列表
+    const getRmqList = ()=> {
+      getRmqClustListByPage(current, pageSize).then(data=>{
+        setPageInfo(data.pageInfo)
+        setTableList(data.rmqClusters)
+        setloading(false)
+      })
+    }
+  }
+
 	return (
 		<>
 			<YhAdd
@@ -418,7 +432,16 @@ function RocketMqHome(props) {
 			{loading ? (
 				<Loading />
 			) : (
-        <Table columns={columns} dataSource={tableList} rowKey="id" />
+        <Table
+          onChange= { changeList }
+          pagination={
+            {
+              defaultCurrent: 1,
+              defaultPageSize: 10,
+              total: pageInfo.totalCount
+            }
+          }
+          columns={columns} dataSource={tableList} rowKey="id" />
       )}
       
       {

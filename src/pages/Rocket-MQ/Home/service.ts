@@ -39,8 +39,7 @@ export const addRocketMqCluster = (params) => {
 
 // TODO 添加分页等信息
 // 获取rmq集群列表
-export const getRmqClustListByPage = (params) => {
- let pageIndex = 1, pageSize = 10
+export const getRmqClustListByPage = (pageIndex:number= 1, pageSize:number = 10) => {
  return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployList/rmqCluster/${pageIndex}/${pageSize}`)
   .then(res => {
     if (res.code == 200) {
