@@ -3,34 +3,27 @@ import * as React from 'react';
 
 function InstanceWrapper(props) {
 
-  // console.log(props, 'propsss----')
+  let { title } = props
   return (
-    <div className="instance-wrapper">
-      <div className="header">
-        <span>
-            IP地址
-        </span>
-        <span>
-            端口
-        </span>
-        <span>
-            用户名
-        </span>
-        <span>
-            密码
-        </span>
+    <div className = "intance-warpper">
+      <div className="instance-title">
+        <label>{title} </label>
       </div>
+      <div className="instance-form-wrapper">
+        <div className="header">
+          <span>IP地址</span>
+          <span>端口</span>
+          <span>用户名</span>
+          <span>密码</span>
+        </div>
+        <div className="instance-form-content">
+          {props.children}
+        </div>
+      </div>
+    </div>
 
-      {
-        (
-          props.children ? props.children : null
-        )
-      }
-      
-     </div> 
+
   )
-
-  
 }
 
 export default InstanceWrapper

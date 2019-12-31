@@ -328,7 +328,7 @@ function RocketMqHome(props) {
 				<Menu.Item key="2">
 					<a
 						onClick={() => {
-							showFormModal(item.id);
+							showFormModal(item.taskId);
 						}}
 					>
 						编辑

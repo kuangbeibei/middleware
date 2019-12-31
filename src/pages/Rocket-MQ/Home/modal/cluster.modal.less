@@ -1,38 +1,67 @@
 .cluster-form-basic {
-
+  padding-top: 10px;
+  padding-left: 20px;
   .ant-form-item-required::before {
     content: '';
     margin-right: 0;
   }
-
-
 }
 
 
 // 实例 - wrapper
-.instance-wrapper {
-  width: 100%;
-  border: 1px solid #d3d3d3 ;
-  padding-bottom: 15px;
-  .header {
-    // width: calc(100% - 30px);
-    border-bottom: 1px solid #d3d3d3;
-    padding-right: 30px;
-    padding-left: 15px;
-    background-color: #f7f8fa;
-    color: #999;
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    span {
-      width: 24%;
-      text-align: left;
-      line-height: 50px;
-    }
+
+.intance-warpper {
+  display: flex;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+
+  &:last-child {
+    padding-bottom: 35px;
   }
 
-  .ant-form-item {
-    margin-bottom: 15px;
+  .instance-title {
+    box-sizing: border-box;
+    // width: 8.3333333%;
+    display: block;
+    flex-shrink: 0;
+    flex-basis: 8.333333%;
   }
+
+
+  .instance-form-wrapper {
+    width: 100%;
+    border: 1px solid #d3d3d3 ;
+    padding-bottom: 15px;
+    .header {
+      // width: calc(100% - 30px);
+      border-bottom: 1px solid #d3d3d3;
+      padding-right: 30px;
+      padding-left: 15px;
+      background-color: #f7f8fa;
+      color: #999;
+      height: 50px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      span {
+        width: 24%;
+        text-align: left;
+        line-height: 50px;
+      }
+    }
+
+    .instance-form-content {
+      padding-left: 15px;
+
+
+
+      .ant-form-item {
+        margin-bottom: 15px;
+      }
+    }
+
+  }
+
+
 }

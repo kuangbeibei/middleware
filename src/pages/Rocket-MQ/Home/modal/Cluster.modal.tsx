@@ -47,7 +47,6 @@ import {
 // }
 
 
-  // TODO 样式抽取
   // todo 定义typescript 数据格式
   const initialRocketMqObj: IrmqDataPrototype = {
     businessName: '',
@@ -74,14 +73,29 @@ const DeleteIcon = styled(`span`)`
   text-align: center;
   display: inline-block;
   position: absolute;
-  right: -25px;
+  right: -29px;
   top: 9px;
 `
+
+
+const RmqFormItemWrapper = (props) => {
+  return (
+    <YHFlexSpaceBetwenDiv style={ {position: 'relative', width: 'calc(100% - 38px)' }}>
+      {props.children}
+    </YHFlexSpaceBetwenDiv>
+  )
+}
+
+const BrokerFormWrapper = styled(`div`)`
+    width: calc(100% - 38px);
+    position: relative;
+    padding-top: 10px;
+    margin-top: 10px;
+  `
 
 function RocketMqModal(props) {
   let { clusterData, id } = props // 如果为undefined 则是编辑
   let [ clusterObj, setClusterObj ] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
-  // let [ tenantList, setTenantList ] = useState<Array<any>>(Array()); // 租户列表 - 待传入
   let [ addFlag, setAddFlag ] = useState<boolean>(true); // 默认为添加
 
 
@@ -206,14 +220,8 @@ function RocketMqModal(props) {
   }
 
 
+
   const formItemInstanceLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 17 }
-  };
-
-
-
-  const formItemInstanceLayout2 = {
     labelCol: { span: 0 },
     wrapperCol: { span: 24 }
   };
@@ -221,33 +229,271 @@ function RocketMqModal(props) {
 
 
 
+
+
+  const getConsoleFormItems = ()=> {
+
+    const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
+      <RmqFormItemWrapper key={'broker_item_' + index}>
+         
+        <QuarterFormItem
+          {...formItemInstanceLayout}
+          label=""
+          labelAlign="left"
+        >
+          {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
+            initialValue: broker.ip,
+            rules: [
+              {
+                required: true,
+                message: "ip必填"
+              }
+            ]
+            })(<Input placeholder="请输入ip"></Input>)}
+        </QuarterFormItem>
+
+        <QuarterFormItem
+          {...formItemInstanceLayout}
+
+          label="端口"
+        >
+          {getFieldDecorator(`params.consoleInstances[${broker.key}].port`, {
+            initialValue: broker.port,
+            rules: [
+              {
+                required: true,
+                message: "端口必填"
+              }
+            ]
+            })(<Input type="number" placeholder="请输入端口"></Input>)}
+        </QuarterFormItem>   
+
+        <QuarterFormItem
+          {...formItemInstanceLayout}
+
+          label="用户名"
+        >
+          {getFieldDecorator(`params.consoleInstances[${broker.key}].user`, {
+            initialValue: broker.user,
+            rules: [
+              {
+                required: true,
+                message: "用户名必填"
+              }
+            ]
+            })(<Input placeholder="请输入用户名"></Input>)}
+        </QuarterFormItem> 
+
+        <QuarterFormItem
+          {...formItemInstanceLayout}
+          label="密码"
+        >
+          {getFieldDecorator(`params.consoleInstances[${broker.key}].pass`, {
+            initialValue: broker.pass,
+            rules: [
+              {
+                required: true,
+                message: "密码必填"
+              }
+            ]
+            })(<Input.Password placeholder="请输入密码" />)}
+        </QuarterFormItem>   
+        
+        <Tooltip title="删除">
+          <DeleteIcon onClick={()=>{deleteConsole(broker.key)}} >-</DeleteIcon>
+        </Tooltip>
+                       
+      </RmqFormItemWrapper>
+    ))
+
+
+
+    formItems.push(
+      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
+        <span onClick= {addConsole} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Console </span>
+      </YHFlexSpaceBetwenDiv>
+    )
+
+ 
+    let content = (
+      <InstanceWrapper title="Console"> {formItems} </InstanceWrapper>
+    )
+   
+
+    return content
+
+  }
+
+  const addConsole = ()=>{
+    let consoleInstances = clusterObj.consoleInstances
+    consoleInstances.push({
+      ip: '',
+      port: '',
+      user: '',
+      pass: '',
+      key: Date.now()+'_console'
+    })
+    setClusterObj(
+      Object.assign({},
+      clusterObj,
+      consoleInstances
+      )
+    )
+  }
+  const deleteConsole = (key)=>{
+    let cloneObj = deepCloneObject(clusterObj)
+    cloneObj.consoleInstances = cloneObj.consoleInstances.filter(item => item.key != key)
+    setClusterObj(
+      Object.assign({},
+        cloneObj
+      )
+    )
+  }
+
+  const getNameServerForms = () => {
+
+    const formItems = clusterObj.nameServerInstances && clusterObj.nameServerInstances.map((nameServer, index) =>(
+      <RmqFormItemWrapper key={nameServer.key}>
+
+        <QuarterFormItem
+          key={index+'_ip'}
+          {...formItemInstanceLayout}
+          label="ip"
+          labelAlign="left"
+        >
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].ip`, {
+            initialValue: nameServer.ip,
+            rules: [
+              {
+                required: true,
+                message: "ip必填"
+              }
+            ]
+            })(<Input placeholder="请输入ip"></Input>)}
+        </QuarterFormItem>
+
+        <QuarterFormItem
+          key={index+'_port'}
+          {...formItemInstanceLayout}
+          label="端口"
+        >
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].port`, {
+            initialValue: nameServer.port,
+            rules: [
+              {
+                required: true,
+                message: "端口必填"
+              }
+            ]
+            })(<Input type="number" placeholder="请输入端口"></Input>)}
+        </QuarterFormItem>   
+
+        <QuarterFormItem
+          key={index+'_user'}
+          {...formItemInstanceLayout}
+          label="用户名"
+        >
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].user`, {
+            initialValue: nameServer.user,
+            rules: [
+              {
+                required: true,
+                message: "用户名必填"
+              }
+            ]
+            })(<Input placeholder="请输入用户名"></Input>)}
+        </QuarterFormItem> 
+
+        <QuarterFormItem
+           key={index+'_pass'}
+          {...formItemInstanceLayout}
+          label="密码"
+        >
+          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].pass`, {
+            initialValue: nameServer.pass,
+            rules: [
+              {
+                required: true,
+                message: "密码必填"
+              }
+            ]
+            })(<Input.Password placeholder="请输入密码" />)}
+        </QuarterFormItem>   
+        
+        <Tooltip title="删除">
+                <DeleteIcon onClick = { ()=>{deleteNameServer(nameServer.key)}}>-</DeleteIcon>
+
+        </Tooltip>
+
+               
+
+      </RmqFormItemWrapper>
+    ))
+
+
+
+    formItems.push(
+      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
+        <span onClick= {addNameServer} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Name Server</span>
+      </YHFlexSpaceBetwenDiv>
+    )
+
+
+    let content = (
+      <InstanceWrapper title="Name Server"> {formItems} </InstanceWrapper>
+    )
+
+    return content
+
+
+  }
+  const deleteNameServer = (key) => {
+    let cloneObj = deepCloneObject(clusterObj)
+    let { nameServerInstances } = cloneObj
+    cloneObj.nameServerInstances = nameServerInstances.filter(item => item.key !== key)
+    setClusterObj(
+      Object.assign({},
+       cloneObj
+      )
+    )
+
+    
+  }
+  const addNameServer = () => {
+    let cloneNmObjv =  deepCloneObject(clusterObj)
+    let nameServerInstances = cloneNmObjv.nameServerInstances
+    nameServerInstances.push({
+      ip: '',
+      port: '',
+      user: '',
+      pass: '',
+      key: Date.now()+'_ns'
+    })
+
+    setClusterObj(
+      Object.assign({},
+        cloneNmObjv
+      )
+    )
+  }
+
+
+  
+
   const getBrokerFormItems = () => {
  
     const formItems = clusterObj.brokerInstances && clusterObj.brokerInstances.map((consoleGroup, index) => {
       
-    // TODO 样式调整
+   
     return (
-        <div  key={'console_item_' + index} style={
-          { 
-          // width: '96%' ,
-          // border: '1px solid black',
-          width: 'calc(100% - 30px)',
-          // outline: '1px dotted wheat',
-          outlineOffset: 2,
-          position: 'relative',
-          paddingTop: 10,
-          marginTop: index!=0 ? 25: 15}
-        
-        }>
-
-
+        <BrokerFormWrapper key={consoleGroup.key}>
           {
             consoleGroup.data.map((item, idx) => 
               <YHFlexSpaceBetwenDiv key={'console_m_v'+idx}>
   
 
                 <QuarterFormItem
-                {...formItemInstanceLayout2}
+                {...formItemInstanceLayout}
                 label={idx == 0 ? "ip(主)": "ip(备)"}
                 labelAlign="left"
                 >
@@ -263,7 +509,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout2}
+                {...formItemInstanceLayout}
                 label="端口"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].port`, {
@@ -279,7 +525,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout2}
+                {...formItemInstanceLayout}
                 label="用户名"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].user`, {
@@ -294,7 +540,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout2}
+                {...formItemInstanceLayout}
                 label="密码"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].pass`, {
@@ -310,19 +556,7 @@ function RocketMqModal(props) {
 
 
                 <Tooltip title="删除">
-                  {/* <Icon onClick={()=>{deleteBroker(consoleGroup.key)}} style={{
-                    fontSize: 25,
-                    marginBottom: 24,
-                    cursor: 'pointer',
-                    position: 'absolute',
-                    // right: -18,
-                    // top: -18,
-                    right: -34,
-                    top: 50,
-                    background: 'white'
-                    }} type="minus-circle" /> */}
-                <DeleteIcon style={{top: 45}} onClick={()=>{deleteBroker(consoleGroup.key)}} >-</DeleteIcon>
-                    
+                  <DeleteIcon style={{top: 45}} onClick={()=>{deleteBroker(consoleGroup.key)}} >-</DeleteIcon>
                 </Tooltip>
 
 
@@ -333,17 +567,9 @@ function RocketMqModal(props) {
               
           }
 
-        </div>
+          </BrokerFormWrapper>
       );
     })
-    // formItems.push(
-    //   <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-    //     <Button type="primary" onClick={addBroker} style={{marginTop: 10}}> 
-    //       添加 
-    //       <Icon type="plus-circle" /> 
-    //     </Button>
-    //   </YHFlexSpaceBetwenDiv>
-    // )
 
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
@@ -352,35 +578,12 @@ function RocketMqModal(props) {
     )
 
 
+
     let content = (
-      <div 
-      style={{
-        display: 'flex'
-      }}>
-        <div 
-          style={{
-            boxSizing: 'border-box',
-            width: '8.33333333%',
-          }}>
-          <label>Broker </label>
-        </div>
-
-        {/* <div style={{width: '100%'}}>
-          {formItems}
-        </div> */}
-
-        <InstanceWrapper>
-          <div style={{paddingLeft: 15}}>
-            {formItems}
-
-          </div>
-        </InstanceWrapper>
-
-      </div>
+      <InstanceWrapper title="Broker"> {formItems} </InstanceWrapper>
     )
     return content
 
-    // return formItems;
   }
   const addBroker = () => {
     let brokerInstances = clusterObj.brokerInstances
@@ -426,347 +629,6 @@ function RocketMqModal(props) {
 
 
 
-
-  const getConsoleFormItems = ()=> {
-
-    const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
-      <YHFlexSpaceBetwenDiv key={'broker_item_' + index} style={{
-        position: 'relative',
-        width: 'calc(100% - 30px)',
-      }}>
-         
-                <QuarterFormItem
-                  {...formItemInstanceLayout2}
-                  label=""
-                  labelAlign="left"
-                >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
-                    initialValue: broker.ip,
-                    rules: [
-                      {
-                        required: true,
-                        message: "ip必填"
-                      }
-                    ]
-                    })(<Input placeholder="请输入ip"></Input>)}
-                </QuarterFormItem>
-
-                <QuarterFormItem
-                  {...formItemInstanceLayout2}
-
-                  label="端口"
-                >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].port`, {
-                    initialValue: broker.port,
-                    rules: [
-                      {
-                        required: true,
-                        message: "端口必填"
-                      }
-                    ]
-                    })(<Input type="number" placeholder="请输入端口"></Input>)}
-                </QuarterFormItem>   
-
-                <QuarterFormItem
-                  {...formItemInstanceLayout2}
-
-                  label="用户名"
-                >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].user`, {
-                    initialValue: broker.user,
-                    rules: [
-                      {
-                        required: true,
-                        message: "用户名必填"
-                      }
-                    ]
-                    })(<Input placeholder="请输入用户名"></Input>)}
-                </QuarterFormItem> 
-
-                <QuarterFormItem
-                  {...formItemInstanceLayout2}
-                  label="密码"
-                >
-                  {getFieldDecorator(`params.consoleInstances[${broker.key}].pass`, {
-                    initialValue: broker.pass,
-                    rules: [
-                      {
-                        required: true,
-                        message: "密码必填"
-                      }
-                    ]
-                    })(<Input.Password placeholder="请输入密码" />)}
-                </QuarterFormItem>   
-                
-                <Tooltip title="删除">
-
-{/*                 
-                <Icon onClick={()=>{deleteConsole(broker.key)}} style={{
-                cursor: 'pointer',
-                fontSize: 25, 
-                marginBottom: 24,
-                position: 'absolute',
-                  right: -34,
-                  top: 6,
-
-                }} type="minus-circle" /> */}
-                <DeleteIcon onClick={()=>{deleteConsole(broker.key)}} >-</DeleteIcon>
-                </Tooltip>
-                       
-
-      </YHFlexSpaceBetwenDiv>
-    ))
-
-
-
-    formItems.push(
-      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <span onClick= {addConsole} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Console </span>
-      </YHFlexSpaceBetwenDiv>
-    )
-
-    let content = (
-      <div 
-      style={{
-        display: 'flex'
-      }}>
-        <div 
-          style={{
-            boxSizing: 'border-box',
-            width: '8.33333333%',
-          }}>
-          <label>Console </label>
-        </div>
-
-        {/* <div style={{width: '100%'}}>
-          {formItems}
-        </div> */}
-
-        <InstanceWrapper>
-          <div style={{paddingLeft: 15}}>
-            {formItems}
-
-          </div>
-        </InstanceWrapper>
-
-      </div>
-    )
-
-   
-
-    // formItems.push(
-    //   <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-    //     <Button type="primary" onClick={addConsole} style={{marginTop: 10}}>
-    //        添加 
-    //        <Icon type="plus-circle" /> 
-    //     </Button>
-    //   </YHFlexSpaceBetwenDiv>
-    // )
-    // return formItems;
-    return content
-
-  }
-
-  const addConsole = ()=>{
-    let consoleInstances = clusterObj.consoleInstances
-    consoleInstances.push({
-      ip: '',
-      port: '',
-      user: '',
-      pass: '',
-      key: Date.now()+'_console'
-    })
-    setClusterObj(
-      Object.assign({},
-      clusterObj,
-      consoleInstances
-      )
-    )
-  }
-  const deleteConsole = (key)=>{
-    let cloneObj = deepCloneObject(clusterObj)
-    cloneObj.consoleInstances = cloneObj.consoleInstances.filter(item => item.key != key)
-    setClusterObj(
-      Object.assign({},
-        cloneObj
-      )
-    )
-  }
-
-  const getNameServerForms = () => {
-
-    const formItems = clusterObj.nameServerInstances && clusterObj.nameServerInstances.map((nameServer, index) =>(
-      <YHFlexSpaceBetwenDiv key={nameServer.key} style={{
-        position: 'relative',
-        width: 'calc(100% - 30px)',
-        // border: '1px solid black'
-      }}>
-
-        <QuarterFormItem
-          key={index+'_ip'}
-          {...formItemInstanceLayout2}
-          label="ip"
-          labelAlign="left"
-        >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].ip`, {
-            initialValue: nameServer.ip,
-            rules: [
-              {
-                required: true,
-                message: "ip必填"
-              }
-            ]
-            })(<Input placeholder="请输入ip"></Input>)}
-        </QuarterFormItem>
-
-        <QuarterFormItem
-          key={index+'_port'}
-          {...formItemInstanceLayout2}
-          label="端口"
-        >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].port`, {
-            initialValue: nameServer.port,
-            rules: [
-              {
-                required: true,
-                message: "端口必填"
-              }
-            ]
-            })(<Input type="number" placeholder="请输入端口"></Input>)}
-        </QuarterFormItem>   
-
-        <QuarterFormItem
-          key={index+'_user'}
-          {...formItemInstanceLayout2}
-          label="用户名"
-        >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].user`, {
-            initialValue: nameServer.user,
-            rules: [
-              {
-                required: true,
-                message: "用户名必填"
-              }
-            ]
-            })(<Input placeholder="请输入用户名"></Input>)}
-        </QuarterFormItem> 
-
-        <QuarterFormItem
-           key={index+'_pass'}
-          {...formItemInstanceLayout2}
-          label="密码"
-        >
-          {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].pass`, {
-            initialValue: nameServer.pass,
-            rules: [
-              {
-                required: true,
-                message: "密码必填"
-              }
-            ]
-            })(<Input.Password placeholder="请输入密码" />)}
-        </QuarterFormItem>   
-        
-        <Tooltip title="删除" style= {{
-          
-        }}>
-            {/* <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{
-              fontSize: 25, 
-              marginBottom: 24,
-              position: 'absolute',
-                right: -34,
-                top: 6,
-              cursor: 'pointer'}} type="minus-circle" /> */}
-                <DeleteIcon onClick = { ()=>{deleteNameServer(nameServer.key)}}>-</DeleteIcon>
-
-        </Tooltip>
-
-               
-
-      </YHFlexSpaceBetwenDiv>
-    ))
-
-    // formItems.push(
-    //   <YHFlexSpaceBetwenDiv key={'add_btn_ns'}>
-    //     <Button type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
-    //      添加 
-    //      <Icon type="plus-circle" /> 
-    //     </Button>
-    //   </YHFlexSpaceBetwenDiv>
-    // )
-
-    formItems.push(
-      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <span onClick= {addNameServer} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Name Server</span>
-      </YHFlexSpaceBetwenDiv>
-    )
-    // return formItems;
-
-
-    let content = (
-      <div 
-      style={{
-        display: 'flex'
-      }}>
-        <div 
-          style={{
-            boxSizing: 'border-box',
-            width: '8.33333333%',
-          }}>
-          <label>Name Server </label>
-        </div>
-
-        {/* <div style={{width: '100%'}}>
-          {formItems}
-        </div> */}
-
-        <InstanceWrapper>
-          <div style={{paddingLeft: 15}}>
-            {formItems}
-
-          </div>
-        </InstanceWrapper>
-
-      </div>
-    )
-
-    return content
-
-
-  }
-  const deleteNameServer = (key) => {
-    let cloneObj = deepCloneObject(clusterObj)
-    let { nameServerInstances } = cloneObj
-    cloneObj.nameServerInstances = nameServerInstances.filter(item => item.key !== key)
-    setClusterObj(
-      Object.assign({},
-       cloneObj
-      )
-    )
-
-    
-  }
-  const addNameServer = () => {
-    let cloneNmObjv =  deepCloneObject(clusterObj)
-    let nameServerInstances = cloneNmObjv.nameServerInstances
-    nameServerInstances.push({
-      ip: '',
-      port: '',
-      user: '',
-      pass: '',
-      key: Date.now()+'_ns'
-    })
-
-    setClusterObj(
-      Object.assign({},
-        cloneNmObjv
-      )
-    )
-  }
-
-
-  
-
   const formItemBasicLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 8 }
@@ -776,7 +638,7 @@ function RocketMqModal(props) {
     <Modal
       modalName = {`创建rocketMQ集群`}
       visible={tableModalVisibility.visible}
-      width={'70%'}
+      width={'60%'}
       handleCancel={handleCancel}
       handleOk= {handleOK}
       okText="确定"
@@ -784,7 +646,6 @@ function RocketMqModal(props) {
     >
 
       <Form>
-        <Divider> 基础信息 </Divider>
 
         <div className="cluster-form-basic">
                 
