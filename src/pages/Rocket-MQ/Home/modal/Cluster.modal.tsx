@@ -362,7 +362,7 @@ function RocketMqModal(props) {
             boxSizing: 'border-box',
             width: '8.33333333%',
           }}>
-          <label>Console </label>
+          <label>Broker </label>
         </div>
 
         {/* <div style={{width: '100%'}}>
@@ -713,7 +713,7 @@ function RocketMqModal(props) {
             boxSizing: 'border-box',
             width: '8.33333333%',
           }}>
-          <label>Console </label>
+          <label>Name Server </label>
         </div>
 
         {/* <div style={{width: '100%'}}>
