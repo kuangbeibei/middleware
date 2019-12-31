@@ -863,7 +863,7 @@ function RocketMqModal(props) {
 
 
         </div>
-        <Divider >console</Divider>
+        <Divider />
 
 
         {
@@ -872,14 +872,14 @@ function RocketMqModal(props) {
         
   
 
-        <Divider >name server</Divider>
+        <Divider />
 
         {
           getNameServerForms()
 
         }
         
-        <Divider >broker</Divider>
+        <Divider />
 
         {
           getBrokerFormItems()
