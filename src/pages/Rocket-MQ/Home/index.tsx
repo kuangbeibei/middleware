@@ -214,7 +214,7 @@ function RocketMqHome(props) {
       render: (status) => <StatusControl text={status} />
     },
     {
-      title: "摘要",
+      title: "描述",
       key: 'summary',
       dataIndex: 'summary'
     },

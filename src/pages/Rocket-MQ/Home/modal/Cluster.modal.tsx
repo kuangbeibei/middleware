@@ -17,7 +17,8 @@ import styled from 'styled-components';
 // import PropTypes from 'prop-types'
 import { getTenants, addRocketMqCluster, updateRmqCluster } from '../service'
 import { IrmqDataPrototype } from '../data'
-
+import './cluster.modal.less';
+import InstanceWrapper from './InstanceWrapper'
 import {
   Form,
   Input,
@@ -61,6 +62,20 @@ import {
 
 const QuarterFormItem = styled(Form.Item)`
   width: 24%;
+`
+
+const DeleteIcon = styled(`span`)`
+  width: 20px;
+  height: 20px;
+  background-color: #006EFF;
+  color: white;
+  line-height: 20px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+  right: -25px;
+  top: 9px;
 `
 
 function RocketMqModal(props) {
@@ -197,10 +212,12 @@ function RocketMqModal(props) {
   };
 
 
-  const formItemBasicLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 12 }
+
+  const formItemInstanceLayout2 = {
+    labelCol: { span: 0 },
+    wrapperCol: { span: 24 }
   };
+
 
 
 
@@ -223,26 +240,14 @@ function RocketMqModal(props) {
         
         }>
 
-          <Tooltip title="删除">
-            <Icon onClick={()=>{deleteBroker(consoleGroup.key)}} style={{
-              fontSize: 25,
-              marginBottom: 24,
-              cursor: 'pointer',
-              position: 'absolute',
-              // right: -18,
-              // top: -18,
-              right: -34,
-              top: 50,
-              background: 'white'
-              }} type="minus-circle" />
-          </Tooltip>
+
           {
             consoleGroup.data.map((item, idx) => 
               <YHFlexSpaceBetwenDiv key={'console_m_v'+idx}>
   
 
                 <QuarterFormItem
-                {...formItemInstanceLayout}
+                {...formItemInstanceLayout2}
                 label={idx == 0 ? "ip(主)": "ip(备)"}
                 labelAlign="left"
                 >
@@ -254,11 +259,11 @@ function RocketMqModal(props) {
                         message: "ip必填"
                       }
                     ]
-                    })(<Input placeholder="ip"></Input>)}
+                    })(<Input addonBefore={idx == 0 ? "主": "备"  } placeholder="ip"></Input>)}
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout}
+                {...formItemInstanceLayout2}
                 label="端口"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].port`, {
@@ -274,7 +279,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout}
+                {...formItemInstanceLayout2}
                 label="用户名"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].user`, {
@@ -289,7 +294,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                {...formItemInstanceLayout}
+                {...formItemInstanceLayout2}
                 label="密码"
                 >
                   {getFieldDecorator(`params.brokerInstances[${consoleGroup.key}].data[${idx}].pass`, {
@@ -303,22 +308,79 @@ function RocketMqModal(props) {
                     })(<Input.Password placeholder="请输入密码" />)}
                 </QuarterFormItem>
 
+
+                <Tooltip title="删除">
+                  {/* <Icon onClick={()=>{deleteBroker(consoleGroup.key)}} style={{
+                    fontSize: 25,
+                    marginBottom: 24,
+                    cursor: 'pointer',
+                    position: 'absolute',
+                    // right: -18,
+                    // top: -18,
+                    right: -34,
+                    top: 50,
+                    background: 'white'
+                    }} type="minus-circle" /> */}
+                <DeleteIcon style={{top: 45}} onClick={()=>{deleteBroker(consoleGroup.key)}} >-</DeleteIcon>
+                    
+                </Tooltip>
+
+
               </YHFlexSpaceBetwenDiv>
               )
+
+
+              
           }
 
         </div>
       );
     })
+    // formItems.push(
+    //   <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
+    //     <Button type="primary" onClick={addBroker} style={{marginTop: 10}}> 
+    //       添加 
+    //       <Icon type="plus-circle" /> 
+    //     </Button>
+    //   </YHFlexSpaceBetwenDiv>
+    // )
+
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <Button type="primary" onClick={addBroker} style={{marginTop: 10}}> 
-          添加 
-          <Icon type="plus-circle" /> 
-        </Button>
+        <span onClick= {addBroker} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Broker </span>
       </YHFlexSpaceBetwenDiv>
     )
-    return formItems;
+
+
+    let content = (
+      <div 
+      style={{
+        display: 'flex'
+      }}>
+        <div 
+          style={{
+            boxSizing: 'border-box',
+            width: '8.33333333%',
+          }}>
+          <label>Broker </label>
+        </div>
+
+        {/* <div style={{width: '100%'}}>
+          {formItems}
+        </div> */}
+
+        <InstanceWrapper>
+          <div style={{paddingLeft: 15}}>
+            {formItems}
+
+          </div>
+        </InstanceWrapper>
+
+      </div>
+    )
+    return content
+
+    // return formItems;
   }
   const addBroker = () => {
     let brokerInstances = clusterObj.brokerInstances
@@ -362,6 +424,9 @@ function RocketMqModal(props) {
 
   }
 
+
+
+
   const getConsoleFormItems = ()=> {
 
     const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
@@ -371,8 +436,8 @@ function RocketMqModal(props) {
       }}>
          
                 <QuarterFormItem
-                  {...formItemInstanceLayout}
-                  label="ip"
+                  {...formItemInstanceLayout2}
+                  label=""
                   labelAlign="left"
                 >
                   {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
@@ -387,7 +452,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>
 
                 <QuarterFormItem
-                  {...formItemInstanceLayout}
+                  {...formItemInstanceLayout2}
 
                   label="端口"
                 >
@@ -403,7 +468,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem>   
 
                 <QuarterFormItem
-                  {...formItemInstanceLayout}
+                  {...formItemInstanceLayout2}
 
                   label="用户名"
                 >
@@ -419,7 +484,7 @@ function RocketMqModal(props) {
                 </QuarterFormItem> 
 
                 <QuarterFormItem
-                  {...formItemInstanceLayout}
+                  {...formItemInstanceLayout2}
                   label="密码"
                 >
                   {getFieldDecorator(`params.consoleInstances[${broker.key}].pass`, {
@@ -434,6 +499,8 @@ function RocketMqModal(props) {
                 </QuarterFormItem>   
                 
                 <Tooltip title="删除">
+
+{/*                 
                 <Icon onClick={()=>{deleteConsole(broker.key)}} style={{
                 cursor: 'pointer',
                 fontSize: 25, 
@@ -442,21 +509,61 @@ function RocketMqModal(props) {
                   right: -34,
                   top: 6,
 
-                }} type="minus-circle" />
+                }} type="minus-circle" /> */}
+                <DeleteIcon onClick={()=>{deleteConsole(broker.key)}} >-</DeleteIcon>
                 </Tooltip>
                        
 
       </YHFlexSpaceBetwenDiv>
     ))
+
+
+
     formItems.push(
       <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-        <Button type="primary" onClick={addConsole} style={{marginTop: 10}}>
-           添加 
-           <Icon type="plus-circle" /> 
-        </Button>
+        <span onClick= {addConsole} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Console </span>
       </YHFlexSpaceBetwenDiv>
     )
-    return formItems;
+
+    let content = (
+      <div 
+      style={{
+        display: 'flex'
+      }}>
+        <div 
+          style={{
+            boxSizing: 'border-box',
+            width: '8.33333333%',
+          }}>
+          <label>Console </label>
+        </div>
+
+        {/* <div style={{width: '100%'}}>
+          {formItems}
+        </div> */}
+
+        <InstanceWrapper>
+          <div style={{paddingLeft: 15}}>
+            {formItems}
+
+          </div>
+        </InstanceWrapper>
+
+      </div>
+    )
+
+   
+
+    // formItems.push(
+    //   <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
+    //     <Button type="primary" onClick={addConsole} style={{marginTop: 10}}>
+    //        添加 
+    //        <Icon type="plus-circle" /> 
+    //     </Button>
+    //   </YHFlexSpaceBetwenDiv>
+    // )
+    // return formItems;
+    return content
 
   }
 
@@ -497,7 +604,7 @@ function RocketMqModal(props) {
 
         <QuarterFormItem
           key={index+'_ip'}
-          {...formItemInstanceLayout}
+          {...formItemInstanceLayout2}
           label="ip"
           labelAlign="left"
         >
@@ -514,7 +621,7 @@ function RocketMqModal(props) {
 
         <QuarterFormItem
           key={index+'_port'}
-          {...formItemInstanceLayout}
+          {...formItemInstanceLayout2}
           label="端口"
         >
           {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].port`, {
@@ -530,7 +637,7 @@ function RocketMqModal(props) {
 
         <QuarterFormItem
           key={index+'_user'}
-          {...formItemInstanceLayout}
+          {...formItemInstanceLayout2}
           label="用户名"
         >
           {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].user`, {
@@ -546,7 +653,7 @@ function RocketMqModal(props) {
 
         <QuarterFormItem
            key={index+'_pass'}
-          {...formItemInstanceLayout}
+          {...formItemInstanceLayout2}
           label="密码"
         >
           {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].pass`, {
@@ -563,13 +670,15 @@ function RocketMqModal(props) {
         <Tooltip title="删除" style= {{
           
         }}>
-            <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{
+            {/* <Icon onClick = { ()=>{deleteNameServer(nameServer.key)}} style={{
               fontSize: 25, 
               marginBottom: 24,
               position: 'absolute',
                 right: -34,
                 top: 6,
-              cursor: 'pointer'}} type="minus-circle" />
+              cursor: 'pointer'}} type="minus-circle" /> */}
+                <DeleteIcon onClick = { ()=>{deleteNameServer(nameServer.key)}}>-</DeleteIcon>
+
         </Tooltip>
 
                
@@ -577,15 +686,52 @@ function RocketMqModal(props) {
       </YHFlexSpaceBetwenDiv>
     ))
 
+    // formItems.push(
+    //   <YHFlexSpaceBetwenDiv key={'add_btn_ns'}>
+    //     <Button type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
+    //      添加 
+    //      <Icon type="plus-circle" /> 
+    //     </Button>
+    //   </YHFlexSpaceBetwenDiv>
+    // )
+
     formItems.push(
-      <YHFlexSpaceBetwenDiv key={'add_btn_ns'}>
-        <Button type="primary" onClick={addNameServer} style={{marginTop: 10}}> 
-         添加 
-         <Icon type="plus-circle" /> 
-        </Button>
+      <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
+        <span onClick= {addNameServer} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Name Server</span>
       </YHFlexSpaceBetwenDiv>
     )
-    return formItems;
+    // return formItems;
+
+
+    let content = (
+      <div 
+      style={{
+        display: 'flex'
+      }}>
+        <div 
+          style={{
+            boxSizing: 'border-box',
+            width: '8.33333333%',
+          }}>
+          <label>Name Server </label>
+        </div>
+
+        {/* <div style={{width: '100%'}}>
+          {formItems}
+        </div> */}
+
+        <InstanceWrapper>
+          <div style={{paddingLeft: 15}}>
+            {formItems}
+
+          </div>
+        </InstanceWrapper>
+
+      </div>
+    )
+
+    return content
+
 
   }
   const deleteNameServer = (key) => {
@@ -621,6 +767,10 @@ function RocketMqModal(props) {
 
   
 
+  const formItemBasicLayout = {
+    labelCol: { span: 2 },
+    wrapperCol: { span: 8 }
+  };
 
   return(
     <Modal
@@ -635,64 +785,68 @@ function RocketMqModal(props) {
 
       <Form>
         <Divider> 基础信息 </Divider>
-        <Form.Item {...formItemBasicLayout} label="集群名称">
-					{getFieldDecorator("params.businessName", {
-						initialValue: clusterObj.businessName,
-						rules: [
-							{
-								required: true,
-								message: "请输入集群名称"
-							}
-						]
-					})(<Input placeholder="请输入集群名称"></Input>)}
-				</Form.Item>
-        <Form.Item {...formItemBasicLayout} label="概要">
-					{getFieldDecorator("params.summary", {
-						initialValue: clusterObj.summary,
-						rules: [
-							{
-								required: true,
-								message: "请输入概要"
-							}
-						]
-					})(<Input placeholder="请输入概要"></Input>)}
-				</Form.Item>
-				<Form.Item {...formItemBasicLayout} label="请选择租户">
-        {getFieldDecorator("params.tenantId", {
-							initialValue: clusterObj.tenantId ,
-							rules: [
-								{
-									message: "请选择租户",
-									required: true
-								}
-							]
-						})(
-							<Select
-								showSearch
-								placeholder="请选择租户"
-								defaultActiveFirstOption={false}
-								notFoundContent={null}
-								// onChange={handleTenantChange}
-								optionFilterProp="children"
-								filterOption={(input, option) =>
-									typeof option.props.children === "string"
-										? option.props.children.indexOf(input) > -1
-										: false
-								}
-							>
-								{tenantList.length > 0 &&
-									tenantList.map(tenant => (
-										<Select.Option key={tenant.userId}>
-											{tenant.name}
-										</Select.Option>
-									))}
-							</Select>
-						)}
-				</Form.Item>
 
-        <Form.Item
+        <div className="cluster-form-basic">
+                
+          <Form.Item {...formItemBasicLayout} labelAlign="left" label="集群名称">
+            {getFieldDecorator("params.businessName", {
+              initialValue: clusterObj.businessName,
+              rules: [
+                {
+                  required: true,
+                  message: "请输入集群名称"
+                }
+              ]
+            })(<Input placeholder="请输入集群名称"></Input>)}
+          </Form.Item>
+          <Form.Item {...formItemBasicLayout} labelAlign="left" label="集群描述">
+            {getFieldDecorator("params.summary", {
+              initialValue: clusterObj.summary,
+              rules: [
+                {
+                  required: true,
+                  message: "请输入描述信息"
+                }
+              ]
+            })(<Input placeholder="请输入概要"></Input>)}
+          </Form.Item>
+          <Form.Item {...formItemBasicLayout} labelAlign="left" label="租户名称">
+          {getFieldDecorator("params.tenantId", {
+                initialValue: clusterObj.tenantId ,
+                rules: [
+                  {
+                    message: "请选择租户",
+                    required: true
+                  }
+                ]
+              })(
+                <Select
+                  showSearch
+                  placeholder="请选择租户"
+                  defaultActiveFirstOption={false}
+                  notFoundContent={null}
+                  // onChange={handleTenantChange}
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    typeof option.props.children === "string"
+                      ? option.props.children.indexOf(input) > -1
+                      : false
+                  }
+                >
+                  {tenantList.length > 0 &&
+                    tenantList.map(tenant => (
+                      <Select.Option key={tenant.userId}>
+                        {tenant.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+              )}
+          </Form.Item>
+
+          <Form.Item
           {...formItemBasicLayout}
-            label={ '版本:'}
+            labelAlign="left"
+            label={ '集群版本:'}
           >
             {getFieldDecorator(`params.version`, {
               initialValue: clusterObj.version,
@@ -707,7 +861,9 @@ function RocketMqModal(props) {
             </Select>)}
         </Form.Item>
 
-        <Divider >console</Divider>
+
+        </div>
+        <Divider />
 
 
         {
@@ -716,14 +872,14 @@ function RocketMqModal(props) {
         
   
 
-        <Divider >name server</Divider>
+        <Divider />
 
         {
           getNameServerForms()
 
         }
         
-        <Divider >broker</Divider>
+        <Divider />
 
         {
           getBrokerFormItems()
