@@ -61,7 +61,7 @@ export async function getExtensionDetail(taskId) {
 // 部署扩容实例
 export async function deployExtensionInstance(taskId) {
     return getApi(ProductRedisApiUrl)(`/mid/v1/runTask/redisExtend/${taskId}`).then(res => {
-        if (res.code === '200') {
+        if (res.code == 200) {
             return res.msg
         } else {
             return res
