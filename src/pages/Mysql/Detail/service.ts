@@ -7,8 +7,8 @@
 import { getApi, postApi, delApi, putApi } from "@api";
 import { ProductApiUrl } from "@utils/data";
 
+const { ProductMysqlApiUrl } = ProductApiUrl;
+
 export async function getActionlogs(id) {
-    return getApi(ProductApiUrl)(`/v1/logs/operator/${id}?page=1&pageSize=100`).then(res => {
-        console.log('res, ', res);
-    }).catch(e => Promise.reject(e.message))
+    return getApi(ProductMysqlApiUrl)(`/v1/logs/operator/${id}?page=1&pageSize=100`).then(res => res).catch(e => Promise.reject(e.message))
 }

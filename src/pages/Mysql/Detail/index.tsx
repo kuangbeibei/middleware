@@ -17,9 +17,7 @@ import MonitorTab from "./Monitor-tab";
 import Loading from "@com/UI/Loading";
 
 import { getClusterDetail } from "../Home/service";
-import {
-	getActionlogs
-} from "./service"
+import { getActionlogs } from "./service";
 
 export default function(props) {
 	const {
@@ -51,13 +49,16 @@ export default function(props) {
 				break;
 			case "2":
 				setloading(false);
-				
+
 				break;
 			case "3":
 				if (logs.length === 0) {
-					getActionlogs(id).then(data => {
-						
-					})
+					getActionlogs(id).then(res => {
+						if (res.code === 200) {
+							setlogs(res.data.logs);
+							setloading(false);
+						}
+					});
 				} else {
 					setloading(false);
 				}
@@ -85,7 +86,11 @@ export default function(props) {
 				)}
 			</TabPane>
 			<TabPane tab="操作日志" key="3">
-				{loading ? <Loading /> : <ActionsLogTab {...props} />}
+				{loading ? (
+					<Loading />
+				) : (
+					<ActionsLogTab {...props} logs={logs} />
+				)}
 			</TabPane>
 			<TabPane tab="监控" key="4">
 				{loading ? <Loading /> : <MonitorTab {...props} />}

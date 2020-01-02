@@ -9,38 +9,25 @@ import { useState, useEffect } from "react";
 
 import { Timeline } from "antd";
 
+import { FormatTime } from "@utils/tools";
+
 export default function (props) {
 	const {
 		logs
 	} = props;
+
 	return (
-		<Timeline>
-			<Timeline.Item color="green">
-				Create a services site 2015-09-01
-			</Timeline.Item>
-			<Timeline.Item color="green">
-				Create a services site 2015-09-01
-			</Timeline.Item>
-			<Timeline.Item color="red">
-				<p>Solve initial network problems 1</p>
-				<p>Solve initial network problems 2</p>
-				<p>Solve initial network problems 3 2015-09-01</p>
-			</Timeline.Item>
-			<Timeline.Item>
-				<p>Technical testing 1</p>
-				<p>Technical testing 2</p>
-				<p>Technical testing 3 2015-09-01</p>
-			</Timeline.Item>
-			<Timeline.Item color="gray">
-				<p>Technical testing 1</p>
-				<p>Technical testing 2</p>
-				<p>Technical testing 3 2015-09-01</p>
-			</Timeline.Item>
-			<Timeline.Item color="gray">
-				<p>Technical testing 1</p>
-				<p>Technical testing 2</p>
-				<p>Technical testing 3 2015-09-01</p>
-			</Timeline.Item>
+		<Timeline style={{marginTop: '10px'}}>
+			{
+				logs.map(log => <Timeline.Item key={log.id} color={log.err ? 'red' : 'green'}>
+					<p>{log.userName}</p>
+					<p>{FormatTime(log.ctime)}</p>
+					<p>{log.operator}</p>
+					{
+						log.error ? <p>{log.error}</p> : ''
+					}
+				</Timeline.Item>)
+			}
 		</Timeline>
 	);
 }
