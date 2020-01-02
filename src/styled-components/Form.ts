@@ -48,7 +48,7 @@ export const YHFlexCenterDiv = styled('div')`
   align-items: center;
 `
 
-export const YHFlexSpaceBetwenDiv = styled('div') `
+export const YHFlexSpaceBetwenDiv = styled('div')`
   display: flex;
   justify-content: space-between;
   align-items: center;

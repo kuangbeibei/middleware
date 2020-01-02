@@ -32,7 +32,7 @@ export async function getMysqlClusters({
 
 // 获取mysql高级配置默认值
 export async function getDefaultClusterConfig() {
-	return getApi(ProductMysqlApiUrl)(`/v1/info/db/defaultcfg`)
+	return getApi(ProductMysqlApiUrl)(`/v1/db/defaultcfg`)
 		.then(res => {
 			try {
 				return res.data;
@@ -84,7 +84,7 @@ export async function updateMysqlCluster(id, data) {
 
 // 部署
 export async function deployCluster(id) {
-	return postApi(ProductMysqlApiUrl)(`/v1/manage/deploy/${id}`)
+	return postApi(ProductMysqlApiUrl)(`/v1/cluster/deploy/${id}`)
 		.then(res => {
 			try {
 				return res.message;
@@ -97,7 +97,7 @@ export async function deployCluster(id) {
 
 // 卸载
 export async function unload(id) {
-	return delApi(ProductMysqlApiUrl)(`/v1/manage/deploy/${id}`)
+	return delApi(ProductMysqlApiUrl)(`/v1/cluster/deploy/${id}`)
 		.then(res => {
 			try {
 				return res.message;
@@ -124,6 +124,6 @@ export async function deleteCluster(id) {
 // 拓扑图
 export async function showtopology(id) {
 	return getApi(ProductMysqlApiUrl)(
-		`/v1/info/topology/${id}`
+		`/v1/cluster/topology/${id}`
 	).then(res => res).catch(e => Promise.reject(e));
 }
