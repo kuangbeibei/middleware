@@ -6,33 +6,73 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Table, Card, Switch, Icon, InputNumber } from "antd";
+import { Table, Card, Switch, Icon, InputNumber, message } from "antd";
+import { FormatTime } from "@utils/tools";
 
-import "./style.less";
+import {
+	saveBackupuStrategy,
+	saveBackupDays
+} from "./service";
 
-export default function(props) {
-	const { backupStrategy, backupKeepDays } = props;
+export default function (props) {
+	const {
+		backList,
+		basicData: { backupStrategy, backupKeepDays },
+		match: {
+			params: {
+				id
+			}
+		}
+	} = props;
+
+	const [tableList, settableList] = useState(Array());
+	const [isBackupstrategyEditing, setisBackupstrategyEditing] = useState(false);
+	const [isBackcupDaysEditing, setisBackcupDaysEditing] = useState(false);
+
+	const [hour, sethour] = useState(0);
+	const [minute, setminute] = useState(0);
+	const [days, setdays] = useState(0);
+	const [isStrategyRunning, setisStrategyRunning] = useState(true);
+	const [isDaysRunning, setisDaysRunning] = useState(true)
+
+	useEffect(() => {
+		if (Array.isArray(backList)) {
+			settableList(backList);
+		}
+		backupStrategy
+			.replace(/\*/g, "")
+			.split(" ")
+			.filter(i => i)
+			.forEach((item, idx) => {
+				idx === 0 ? setminute(item) : sethour(item);
+			});
+		setdays(backupKeepDays);
+	}, []);
 
 	const columns = [
 		{
 			title: "开始时间",
-			key: "start",
-			render: text => text
+			dataIndex: "startTime",
+			key: "startTime",
+			render: text => FormatTime(text)
 		},
 		{
 			title: "结束时间",
-			key: "end ",
-			render: text => text
+			dataIndex: "endTime",
+			key: "endTime ",
+			render: text => FormatTime(text)
 		},
 		{
 			title: "备份位置",
-			key: "position",
+			dataIndex: "path",
+			key: "path",
 			render: text => text
 		},
 		{
-			title: "元数据",
-			key: "meta",
-			render: text => text
+			title: "备份信息",
+			dataIndex: "BinlogPos",
+			key: "BinlogPos",
+			render: text => <pre>{text.replace(/\,/g, "\n")}</pre>
 		}
 	];
 
@@ -40,56 +80,174 @@ export default function(props) {
 		return (
 			<>
 				<span className="stop">{`停`}</span>
-				<Switch />
+				<Switch checked={idx === 1 ? isStrategyRunning : isDaysRunning} />
 				<span className="start">{`启`}</span>
 			</>
 		);
 	};
 
-	const actionChange = status =>
-		status === "init"
-			? [<Icon type="edit" theme="twoTone" />]
+	/**
+	 * 编辑备份信息
+	 * @param type
+	 */
+	const editContent = type => {
+		if (type === "strategy") {
+			setisBackupstrategyEditing(!isBackupstrategyEditing);
+		} else {
+			setisBackcupDaysEditing(!isBackcupDaysEditing);
+		}
+	};
+
+	/**
+	 * 操作面板
+	 * @param status 
+	 * @param type 
+	 */
+	const actionChange = (status, type) =>
+		!status
+			? [
+				<Icon
+					type="edit"
+					theme="twoTone"
+					onClick={() => editContent(type)}
+				/>
+			]
 			: [
-					<Icon type="close-square" theme="twoTone" />,
-					<Icon type="check-square" theme="twoTone" />
-			  ];
+				<Icon
+					type="close-square"
+					theme="twoTone"
+					onClick={() => editContent(type)}
+				/>,
+				<Icon
+					type="check-square"
+					theme="twoTone"
+					onClick={() => save(type)}
+				/>
+			];
+
+	/**
+	 * onchange备份时间
+	 * @param val 
+	 */
+	const setBackupDays = val => {
+		console.log('val', val);
+		setBackupDays(val)
+	}
+
+	/**
+	 * onchange备份策略
+	 * @param type 
+	 */
+	const setBackupTime = (type, val) => {
+
+	}
+
+	/**
+	 * 保存修改
+	 * @param type 
+	 */
+	const save = type => {
+		if (type === 'strategy') {
+			saveBackupuStrategy(id, `${minute} ${hour} * * *`).then(res => {
+				if (res === 'ok') {
+					message.success('备份策略修改成功');
+					editContent(type)
+				}
+			}).catch(e => message.error(e.message))
+		} else {
+			saveBackupDays(id, days).then(res => {
+				if (res === 'ok') {
+					message.success('备份时间修改成功');
+					editContent(type)
+				}
+			}).catch(e => message.error(e.message))
+		}
+	}
 
 	return (
 		<>
-			<Card
-				title={"备份清理策略"}
-				extra={switchBtn(2)}
-				actions={actionChange("init")}
-			>
-				{
-					<>
-						<InputNumber
-							// defaultValue={hour}
-							min={0}
-							max={6}
-							formatter={value => `${value}时`}
-							// onChange={val => setBackupTime("hour", val)}
-						/>
-						<InputNumber
-							// defaultValue={minute}
-							min={0}
-							max={59}
-							formatter={value => `${value}分`}
-							// onChange={val => setBackupTime("minute", val)}
-						/>
-					</>
-				}
-			</Card>
-			<Card
-				title={"备份时间"}
-				extra={switchBtn(1)}
-				actions={actionChange("init")}
-			>
-				{<InputNumber min={-1} formatter={value => `${value}天`} />}
-			</Card>
+			<div style={{ display: "flex", marginBottom: "30px" }}>
+				<Card
+					title={"备份清理策略"}
+					extra={switchBtn(2)}
+					actions={actionChange(isBackupstrategyEditing, "strategy")}
+				>
+					{
+						<>
+							<span
+								style={{
+									display: isBackupstrategyEditing
+										? "none"
+										: "block"
+								}}
+							>
+								{backupStrategy}
+							</span>
+							<div
+								style={{
+									display: isBackupstrategyEditing
+										? "block"
+										: "none"
+								}}
+							>
+								<InputNumber
+									value={hour}
+									min={0}
+									max={6}
+									formatter={value => `${value}时`}
+									onBlur={val => setBackupTime("hour", val)}
+								/>
+								<InputNumber
+									value={minute}
+									min={0}
+									max={59}
+									formatter={value => `${value}分`}
+									onBlur={val => setBackupTime("minute", val)}
+								/>
+							</div>
+						</>
+					}
+				</Card>
+				<Card
+					title={"备份时间"}
+					extra={switchBtn(1)}
+					actions={actionChange(isBackcupDaysEditing, "days")}
+				>
+					{
+						<>
+							<span
+								style={{
+									display: isBackcupDaysEditing
+										? "none"
+										: "block"
+								}}
+							>
+								{backupKeepDays}
+							</span>
+							<InputNumber
+								value={days}
+								min={-1}
+								formatter={value => `${value}天`}
+								onBlur={val => setBackupDays(val)}
+								style={{
+									display: isBackcupDaysEditing
+										? "block"
+										: "none"
+								}}
+							/>
+						</>
+					}
+				</Card>
+			</div>
 
-			<h4>备份历史列表:</h4>
-			<Table columns={columns} dataSource={[]} size="small" />
+			<Table
+				columns={columns}
+				dataSource={tableList}
+				size="small"
+				rowKey="BinlogPos"
+				title={() => `备份历史列表`}
+				style={{ marginTop: "-10px" }}
+			/>
 		</>
 	);
 }

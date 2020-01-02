@@ -17,9 +17,9 @@ import MonitorTab from "./Monitor-tab";
 import Loading from "@com/UI/Loading";
 
 import { getClusterDetail } from "../Home/service";
-import {
-	getActionlogs
-} from "./service"
+import { getActionlogs, getBackupList } from "./service";
+
+import "./style.less";
 
 export default function(props) {
 	const {
@@ -31,6 +31,7 @@ export default function(props) {
 	const [basicData, setbasicData] = useState({});
 	const [loading, setloading] = useState(true);
 	const [logs, setlogs] = useState(Array());
+	const [backList, setbackList] = useState(Array());
 
 	useEffect(() => {
 		changeTab("1");
@@ -50,14 +51,27 @@ export default function(props) {
 				}
 				break;
 			case "2":
-				setloading(false);
-				
+				if (backList.length === 0) {
+					getBackupList(id)
+						.then(res => {
+							if (res.code === 200) {
+								setbackList(res.data.history);
+								setloading(false);
+							}
+						})
+						.catch(e => console.log(e));
+				} else {
+					setloading(false);
+				}
 				break;
 			case "3":
 				if (logs.length === 0) {
-					getActionlogs(id).then(data => {
-						
-					})
+					getActionlogs(id).then(res => {
+						if (res.code === 200) {
+							setlogs(res.data.logs);
+							setloading(false);
+						}
+					});
 				} else {
 					setloading(false);
 				}
@@ -81,11 +95,19 @@ export default function(props) {
 				{loading ? (
 					<Loading />
 				) : (
-					<BackupTab {...props} {...basicData} />
+					<BackupTab
+						{...props}
+						backList={backList}
+						basicData={basicData}
+					/>
 				)}
 			</TabPane>
 			<TabPane tab="操作日志" key="3">
-				{loading ? <Loading /> : <ActionsLogTab {...props} />}
+				{loading ? (
+					<Loading />
+				) : (
+					<ActionsLogTab {...props} logs={logs} />
+				)}
 			</TabPane>
 			<TabPane tab="监控" key="4">
 				{loading ? <Loading /> : <MonitorTab {...props} />}
