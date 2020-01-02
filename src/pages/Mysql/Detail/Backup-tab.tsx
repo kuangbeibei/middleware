@@ -6,13 +6,23 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Table, Card, Switch, Icon, InputNumber } from "antd";
+import { Table, Card, Switch, Icon, InputNumber, message } from "antd";
 import { FormatTime } from "@utils/tools";
+
+import {
+	saveBackupuStrategy,
+	saveBackupDays
+} from "./service";
 
 export default function (props) {
 	const {
 		backList,
-		basicData: { backupStrategy, backupKeepDays }
+		basicData: { backupStrategy, backupKeepDays },
+		match: {
+			params: {
+				id
+			}
+		}
 	} = props;
 
 	const [tableList, settableList] = useState(Array());
@@ -88,6 +98,11 @@ export default function (props) {
 		}
 	};
 
+	/**
+	 * 操作面板
+	 * @param status 
+	 * @param type 
+	 */
 	const actionChange = (status, type) =>
 		!status
 			? [
@@ -106,9 +121,48 @@ export default function (props) {
 				<Icon
 					type="check-square"
 					theme="twoTone"
-					onClick={() => editContent(type)}
+					onClick={() => save(type)}
 				/>
 			];
+
+	/**
+	 * onchange备份时间
+	 * @param val 
+	 */
+	const setBackupDays = val => {
+		console.log('val', val);
+		setBackupDays(val)
+	}
+
+	/**
+	 * onchange备份策略
+	 * @param type 
+	 */
+	const setBackupTime = (type, val) => {
+
+	}
+
+	/**
+	 * 保存修改
+	 * @param type 
+	 */
+	const save = type => {
+		if (type === 'strategy') {
+			saveBackupuStrategy(id, `${minute} ${hour} * * *`).then(res => {
+				if (res === 'ok') {
+					message.success('备份策略修改成功');
+					editContent(type)
+				}
+			}).catch(e => message.error(e.message))
+		} else {
+			saveBackupDays(id, days).then(res => {
+				if (res === 'ok') {
+					message.success('备份时间修改成功');
+					editContent(type)
+				}
+			}).catch(e => message.error(e.message))
+		}
+	}
 
 	return (
 		<>
@@ -141,14 +195,14 @@ export default function (props) {
 									min={0}
 									max={6}
 									formatter={value => `${value}时`}
-								// onChange={val => setBackupTime("hour", val)}
+									onBlur={val => setBackupTime("hour", val)}
 								/>
 								<InputNumber
 									value={minute}
 									min={0}
 									max={59}
 									formatter={value => `${value}分`}
-								// onChange={val => setBackupTime("minute", val)}
+									onBlur={val => setBackupTime("minute", val)}
 								/>
 							</div>
 						</>
@@ -174,6 +228,7 @@ export default function (props) {
 								value={days}
 								min={-1}
 								formatter={value => `${value}天`}
+								onBlur={val => setBackupDays(val)}
 								style={{
 									display: isBackcupDaysEditing
 										? "block"
