@@ -15,32 +15,26 @@ import { transDataToArray } from "./tool";
 export default function(props) {
 	const { basicData } = props;
 	let _basicData = transDataToArray(basicData);
+
 	/**
 	 * 处理实例
 	 * @param val
 	 */
-	const processInstancesData = val => {
-		return val.reduce(
-			(prev, cur, idx) => `${prev}${cur.ip}:${cur.port}\n`,
-			""
-		);
-	};
+	const processInstancesData = val =>
+		val.reduce((prev, cur) => `${prev}${cur.ip}:${cur.port}\n`, "");
 
 	/**
 	 * 处理connection
 	 * @param
 	 */
-	const processConnection = val => {
-		return val.reduce((prev, cur, idx) => `${prev}${cur}\n`, "");
-	};
+	const processConnection = val =>
+		val.reduce((prev, cur) => `${prev}${cur}\n`, "");
 
 	/**
 	 * 处理密码展示
 	 * @param pass
 	 */
-	const processPass = pass => {
-		return <PasswordColumn pass={pass} />;
-	};
+	const processPass = pass => <PasswordColumn pass={pass} />;
 
 	return (
 		<Descriptions bordered column={1}>
@@ -65,15 +59,9 @@ export default function(props) {
 						key={configItem.enName}
 						label={configItem.name}
 					>
-						{configItem.enName === "dbConfiguration" ||
-						configItem.enName === "instances" ||
-						configItem.enName === "connection" ? (
-							<pre>{val}</pre>
-						) : configItem.enName === "rootPassword" ? (
-							processPass(val)
-						) : (
-							<span>{val || "无"}</span>
-						)}
+						{
+							configItem.enName === "rootPassword" ? processPass(val) : <pre>{val || "无"}</pre>
+						}
 					</Descriptions.Item>
 				) : null;
 			})}

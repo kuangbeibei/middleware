@@ -30,7 +30,7 @@ export default function(props) {
 			render: text => text
 		},
 		{
-			title: "元数据",
+			title: "备份信息",
 			key: "meta",
 			render: text => text
 		}
