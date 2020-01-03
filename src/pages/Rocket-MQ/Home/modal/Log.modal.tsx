@@ -1,17 +1,35 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
 import Modal from "@com/Modal";
 import { YhText } from "@styled/Text";
 import { YhTerminal } from "@styled/Terminal";
+import {LogLineWrapper, LogLineNumber, LogLineContent } from '@styled/Log'
+import LogItem from './LogModal/Log.Item';
 
+import { processLog } from "@funcs/Log-process";
+import './log.modal.less'
 function LogModal(props) {
   let { tableModalVisibility, setTableModalVisibility, logInfo } = props
 
   // logInfo是一个数组
   
+
+  const logLine = React.memo((props: any)=>{
+    let { count } = props
+    return (
+      <>
+        <LogLineWrapper>
+          <LogLineNumber>{count}</LogLineNumber>
+              <LogLineContent>
+                {props.chilren}
+              </LogLineContent>
+        </LogLineWrapper>
+      </>
+    )
+  }, props)
   
   let logsSummary = logInfo.reduce((prev, item) => {
     prev += item.output
@@ -22,30 +40,52 @@ function LogModal(props) {
   const formatLog = () => {
     let _output;
 		if (logsSummary) {
-			_output = logsSummary.split(/\n/g);
+      _output = logsSummary.split(/\n/g);
+      let count = 0;
 			let resOutput = _output.reduce((prev, cur) => {
+        console.log(cur, 'cur----->>>>>>')
+        if (cur.trim()==='') { 
+          console.log(cur.trim(), 'abcdef')
+          return(
+            <>
+            {prev}
+            </>
+          ) 
+        }
+        count++
 				return (
 					<>
-						{prev}
-						<YhText
-							type={
-								cur.startsWith("ok")
-									? "success"
-									: cur.startsWith("changed")
-									? "warning"
-									: cur.startsWith("warning")
-                  ? "warning"
-                  : cur.startsWith("fatal")
-                  ? "fatal"
-									: ""
-							}
-						>
-							{cur}
-						</YhText>
-						<br />
+            {prev}
+
+            {/* <div className="log-line"> */}
+            <LogLineWrapper>
+              {/* <span className="line-number"> {count} </span> */}
+              <LogLineNumber>{count}</LogLineNumber>
+              <LogLineContent>
+                <YhText
+                  className = "line-content"
+                  type={
+                    cur.startsWith("ok")
+                      ? "success"
+                      : cur.startsWith("changed")
+                      ? "warning"
+                      : cur.startsWith("warning")
+                      ? "warning"
+                      : cur.startsWith("fatal")
+                      ? "fatal"
+                      : ""
+                    }
+                  >
+                  {cur}
+                </YhText>
+              </LogLineContent>
+
+            {/* </div> */}
+            </LogLineWrapper>
 					</>
 				);
-			}, "");
+      }, "");
+      
 			return <>{resOutput}</>;
 		} else {
 			return null;
@@ -74,11 +114,18 @@ function LogModal(props) {
       handleOk= {handleOK}
     >
 			<YhTerminal width={1200}>
-				<div>
-					<pre>{formatLog()}</pre>
-				</div>
+        <div className="log-container modal-log">
+          {/* <pre> */}
+          <LogItem>
+            {formatLog()}
+            {/* {processLog(logsSummary)} */}
+          </LogItem>
+          
+          
+          {/* </pre> */}
+        </div> 
 			</YhTerminal>
-
+     
     </Modal>
   )
 }

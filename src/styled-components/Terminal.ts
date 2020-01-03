@@ -7,7 +7,7 @@ export const YhTerminal = styled['div']`
 	height: ${p => p.height || 500}px;
 	border: 1px solid #fff;
 	overflow-y: scroll;
-	div {
+  & > div {
 		height: 100%;
 		width: 100%;
 		padding: 5px 10px;
