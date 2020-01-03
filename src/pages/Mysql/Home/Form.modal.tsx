@@ -509,21 +509,19 @@ function FormModal(props) {
 						{...formAdvancesLayout}
 						label="自动备份"
 					>
-						{getFieldDecorator("backupStrategy", {
+						{getFieldDecorator("hour", {
 							initialValue: hour,
 						})(<InputNumber
-							// defaultValue={hour}
 							min={0}
-							max={6}
+							max={23}
 							formatter={value => `${value}时`}
 							onChange={val => setBackupTime("hour", val)}
 						/>)}
 					</YHSmallFormItemNarrow>
 					<YHSmallFormItemNarrow>
-						{getFieldDecorator("backupStrategy", {
+						{getFieldDecorator("minute", {
 							initialValue: minute,
 						})(<InputNumber
-							// defaultValue={minute}
 							min={0}
 							max={59}
 							formatter={value => `${value}分`}
