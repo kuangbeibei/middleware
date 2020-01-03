@@ -36,9 +36,6 @@ module.exports = {
 		],
 	},
   plugins: [
-    new Webpack.ProgressPlugin(),
-    new Webpack.DefinePlugin({
-      'NODE_ENV': JSON.stringify(process.env.ENV)
-    })
+    new Webpack.ProgressPlugin()
   ]
 };

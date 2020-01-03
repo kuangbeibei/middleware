@@ -6,7 +6,7 @@
  */
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import setTableModalVisibility from "@actions/setModalVisibility";
@@ -15,6 +15,7 @@ import Modal from "@com/Modal";
 import { jsPlumb } from 'jsplumb'
 import { YHSmallFormItem, YHFlexSpaceAroundDiv } from "@styled/Form";
 import './topo.modal.less'
+import styled from 'styled-components';
 
 import {
   Form,
@@ -23,12 +24,23 @@ import {
 } from 'antd';
 
 
+const InstanceCard = styled(`div`)`
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: #4d80e4;
+  text-align:center;
+  height:82px;
+  padding: 5px;
+  padding-top: 8px;
+  justify-content: space-around;
+`;
 
 function TopoModal(props) {
-  
+
   let [loading, setLoading] = useState(true)
 
-  
+
   const { tableModalVisibility, setTableModalVisibility, data } = props
   
 
@@ -37,15 +49,11 @@ function TopoModal(props) {
   }
 
   const handleOK = ()=>{
-    const { form: { getFieldsValue, validateFields } } = props;
-    let values = getFieldsValue()
-    console.log('点击了确定按钮，获取到的表单的值为', values.params)
+    setTableModalVisibility()
   }
 
   useEffect(()=>{
-    console.log('加载拓扑成功了--->>>>>')
     setTableModalVisibility();
-
     setTimeout(()=> {
         let instance:any = jsPlumb.getInstance({
           Connector: ['Flowchart', { curviness: 1 }],
@@ -54,81 +62,110 @@ function TopoModal(props) {
           // HoverPaintStyle: { strokeStyle: '#ec9f2e' },
           ConnectionOverlays: [
             // 注释掉，即可去掉箭头
-            // ['Arrow', {
-            //   location: 1,
-            //   id: 'arrow',
-            //   length: 14,
-            //   width: 10,
-            //   foldback: 0.8
-            // }]
-          ],
-          Container: 'canvas'
-        })
-        let array = [
-          ['k1', 'k2'],
-          ['k3', 'k2'],
-          ['k3', 'k4'],
-          ['k1', 'k4']
-        ]
-        array.forEach(item => {
-          instance.connect({
-            overlays: [
-              ['Arrow', {
+            ['Arrow', {
                 location: 1,
                 id: 'arrow',
-                length: 14,
+                length: 12,
                 width: 10,
                 foldback: 0.8
               },
-            ],   
-            ['Label', {
-              label: "",
-              location: 0.5,
-              // id: 'arrow',
-              // length: 14,
-              // width: 10,
-              // foldback: 0.8
-            },
-          ],  
-          
-          
-          ['Arrow', {
-            location: -0,
-            id: 'arrow222',
-            length: 14,
-            width: 10,
-            direction: -1,
-            foldback: 0.8
+            ],          
+            ['Arrow', {
+                location: 0,
+                id: 'arrow2',
+                length: 12,
+                width: 10,
+                direction: -1,
+                foldback: 0.8
+              },
+            ]
+
+          ],
+          Container: 'canvas',
+          PaintStyle: { strokeWidth: 1, stroke: '#676161',  } 
+        })
+        let array = [
+          {
+            source: 'k1',
+            target: 'k2',
+            label: 'Broker Discovery',
+            labelCss: 'overlay-label',
+            anchor: ['Top', 'Right'],
           },
+          {
+            source: 'k3',
+            target: 'k2',
+            label: 'Broker Discovery',
+            labelCss: 'overlay-label',
+            anchor:  ['Left', 'Top'],
+          },
+          {
+            source: 'k3',
+            target: 'k4',
+            label: 'Send Message',
+            labelCss: 'overlay-label',
+            anchor:  ['Bottom', 'Left'],
+          },
+          {
+            source: 'k1',
+            target: 'k4',
+            label: 'Receive Message',
+            labelCss: 'overlay-label',
+            anchor:  ['Bottom', 'Right'],
+          },
+          {
+            source: 'k2',
+            target: 'k4',
+            label: 'Routing Info',
+            labelCss: 'overlay-label route-label',
+            anchor: ['Bottom','Top'],
+          }          
         ]
-                    
+        array.forEach(item => {
+          instance.connect({
+            overlays: [ 
+              ['Label', {
+                  label: item.label,
+                  cssClass: item.labelCss,
+                  location: 0.5,
+                },
+              ],  
+     
             ],
-            source: item[0], target: item[1], paintStyle: { strokeWidth: 2, stroke: 'black' }, anchor: 'Continuous'
+            source: item.source,
+            target: item.target,
+            anchor: item.anchor
           })
         })        
         // 禁止拖拽
         instance.importDefaults({
           ConnectionsDetachable: false
         })
- 
         setLoading(false)
-
     }, 500)
 
   }, [])
 
-
-
-
-  const formItemBasicLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 12 }
-  };
-
   
-  const solutionIcons = Array.from({length: 1}).map((item,index) => {
-    return (<Icon key={index} type="solution" />)
-  })
+  const NSNodes = useMemo( () => data.nameServers && data.nameServers.map(item => {
+    return (
+      <InstanceCard key={item.id}>
+        <Icon type="database" />
+        #{item.id}
+      </InstanceCard>
+    )
+
+  }) , [data])
+
+  const BrokerNodes =useMemo (()=> data.brokers && data.brokers.map(item => {
+    return (
+      <InstanceCard key={item.id}>
+        <Icon type="database" />
+        #{item.id}
+      </InstanceCard>
+    )
+
+  }), [data])
 
   return(
     <Modal
@@ -138,43 +175,44 @@ function TopoModal(props) {
       handleCancel={handleCancel}
       handleOk= {handleOK}
     >
+
       <Spin spinning={loading}>
         <div className="topo-container">
 
-          <div  id="k1" className="card consumer">
+          <div id="k1" className="card consumer">
             <YHFlexSpaceAroundDiv className="icon-wrapper">
-              { solutionIcons }
+              <Icon type="solution" />
             </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
-              消费者
+              Consumer
             </div>
           </div>
 
           <div id="k3" className="card producer">
             <YHFlexSpaceAroundDiv className="icon-wrapper">
-              { solutionIcons }
+              <Icon type="solution" />
             </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
-              生产者
+              Producer
             </div>
           </div>   
 
 
           <div id="k2" className="card name-server">
             <YHFlexSpaceAroundDiv className="icon-wrapper">
-              <Icon type="database" />
+              {NSNodes}
             </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
-              NameServer
+              NameServer({NSNodes.length})
             </div>
           </div> 
 
           <div id="k4" className="card broker">
             <YHFlexSpaceAroundDiv className="icon-wrapper">
-              <Icon type="database" />
+              { BrokerNodes }
             </YHFlexSpaceAroundDiv>
             <div className="text-wrapper">
-              broker
+              broker({BrokerNodes.length})
             </div>
           </div>  
 
