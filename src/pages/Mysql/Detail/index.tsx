@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Tabs } from "antd";
+import { Tabs, message } from "antd";
 
 const { TabPane } = Tabs;
 
@@ -33,6 +33,8 @@ export default function(props) {
 	const [logs, setlogs] = useState(Array());
 	const [backList, setbackList] = useState(Array());
 
+	console.log('我是详情的父组件');
+
 	useEffect(() => {
 		changeTab("1");
 	}, []);
@@ -57,9 +59,17 @@ export default function(props) {
 							if (res.code === 200) {
 								setbackList(res.data.history);
 								setloading(false);
+							} else {
+								setbackList([])
+								setloading(false);
+								message.error(res.message)
 							}
 						})
-						.catch(e => console.log(e));
+						.catch(e => {
+							setbackList([])
+							setloading(false);
+							message.error(e)
+						});
 				} else {
 					setloading(false);
 				}
@@ -70,7 +80,15 @@ export default function(props) {
 						if (res.code === 200) {
 							setlogs(res.data.logs);
 							setloading(false);
+						} else {
+							setlogs([]);
+							setloading(false);
+							message.error(res.message)
 						}
+					}).catch(e => {
+						setlogs([]);
+						setloading(false);
+						message.error(e)
 					});
 				} else {
 					setloading(false);

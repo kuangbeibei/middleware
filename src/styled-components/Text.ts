@@ -20,8 +20,10 @@ export const YhText = styled["span"]`
 		} else if (p.type === "ready") {
 			return "#52c41a";
 		} else if (p.type === "fatal") {
-      return "red"
-    }
+			return "red"
+		} else {
+			return "#0070cc"
+		}
 	}};
 	width: ${p => (p.width ? p.width : 50)}px;
 	height: ${p => (p.height ? p.height : 30)}px;

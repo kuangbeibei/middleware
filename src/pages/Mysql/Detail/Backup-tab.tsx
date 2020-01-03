@@ -5,35 +5,34 @@
  */
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Table, Card, Switch, Icon, InputNumber, message } from "antd";
 import { FormatTime } from "@utils/tools";
 
-import {
-	saveBackupuStrategy,
-	saveBackupDays
-} from "./service";
+import { YhText } from "@styled/Text";
 
-export default function (props) {
+import { saveBackupuStrategy, saveBackupDays } from "./service";
+
+export default function(props) {
 	const {
 		backList,
 		basicData: { backupStrategy, backupKeepDays },
 		match: {
-			params: {
-				id
-			}
+			params: { id }
 		}
 	} = props;
 
 	const [tableList, settableList] = useState(Array());
-	const [isBackupstrategyEditing, setisBackupstrategyEditing] = useState(false);
+	const [isBackupstrategyEditing, setisBackupstrategyEditing] = useState(
+		false
+	);
 	const [isBackcupDaysEditing, setisBackcupDaysEditing] = useState(false);
 
 	const [hour, sethour] = useState(0);
 	const [minute, setminute] = useState(0);
 	const [days, setdays] = useState(0);
 	const [isStrategyRunning, setisStrategyRunning] = useState(true);
-	const [isDaysRunning, setisDaysRunning] = useState(true)
+	const [isDaysRunning, setisDaysRunning] = useState(true);
 
 	useEffect(() => {
 		if (Array.isArray(backList)) {
@@ -80,7 +79,9 @@ export default function (props) {
 		return (
 			<>
 				<span className="stop">{`停`}</span>
-				<Switch checked={idx === 1 ? isStrategyRunning : isDaysRunning} />
+				<Switch
+					checked={idx === 1 ? isStrategyRunning : isDaysRunning}
+				/>
 				<span className="start">{`启`}</span>
 			</>
 		);
@@ -100,69 +101,76 @@ export default function (props) {
 
 	/**
 	 * 操作面板
-	 * @param status 
-	 * @param type 
+	 * @param status
+	 * @param type
 	 */
 	const actionChange = (status, type) =>
 		!status
 			? [
-				<Icon
-					type="edit"
-					theme="twoTone"
-					onClick={() => editContent(type)}
-				/>
-			]
+					<Icon
+						type="edit"
+						theme="twoTone"
+						onClick={() => editContent(type)}
+					/>
+			  ]
 			: [
-				<Icon
-					type="close-square"
-					theme="twoTone"
-					onClick={() => editContent(type)}
-				/>,
-				<Icon
-					type="check-square"
-					theme="twoTone"
-					onClick={() => save(type)}
-				/>
-			];
+					<Icon
+						type="close-square"
+						theme="twoTone"
+						onClick={() => editContent(type)}
+					/>,
+					<Icon
+						type="check-square"
+						theme="twoTone"
+						onClick={() => save(type)}
+					/>
+			  ];
 
 	/**
 	 * onchange备份时间
-	 * @param val 
+	 * @param val
 	 */
 	const setBackupDays = val => {
-		console.log('val', val);
-		setBackupDays(val)
-	}
+		setdays(val);
+	};
 
 	/**
 	 * onchange备份策略
-	 * @param type 
+	 * @param type
 	 */
 	const setBackupTime = (type, val) => {
-
-	}
+		if (type === "hour") {
+			sethour(val);
+		} else {
+			setminute(val);
+		}
+	};
 
 	/**
 	 * 保存修改
 	 * @param type 
 	 */
 	const save = type => {
-		if (type === 'strategy') {
-			saveBackupuStrategy(id, `${minute} ${hour} * * *`).then(res => {
-				if (res === 'ok') {
-					message.success('备份策略修改成功');
-					editContent(type)
-				}
-			}).catch(e => message.error(e.message))
+		if (type === "strategy") {
+			saveBackupuStrategy(id, `${minute} ${hour} * * *`)
+				.then(res => {
+					if (res === "ok") {
+						message.success("备份策略修改成功");
+						editContent(type);
+					}
+				})
+				.catch(e => message.error(e.message));
 		} else {
-			saveBackupDays(id, days).then(res => {
-				if (res === 'ok') {
-					message.success('备份时间修改成功');
-					editContent(type)
-				}
-			}).catch(e => message.error(e.message))
+			saveBackupDays(id, days)
+				.then(res => {
+					if (res === "ok") {
+						message.success("备份时间修改成功");
+						editContent(type);
+					}
+				})
+				.catch(e => message.error(e.message));
 		}
-	}
+	};
 
 	return (
 		<>
@@ -174,15 +182,17 @@ export default function (props) {
 				>
 					{
 						<>
-							<span
+							<YhText
+								type="default"
+								width="100px"
 								style={{
 									display: isBackupstrategyEditing
 										? "none"
 										: "block"
 								}}
 							>
-								{backupStrategy}
-							</span>
+								{`${minute} ${hour} * * *`}
+							</YhText>
 							<div
 								style={{
 									display: isBackupstrategyEditing
@@ -195,14 +205,16 @@ export default function (props) {
 									min={0}
 									max={6}
 									formatter={value => `${value}时`}
-									onBlur={val => setBackupTime("hour", val)}
+									onChange={val => setBackupTime("hour", val)}
 								/>
 								<InputNumber
 									value={minute}
 									min={0}
 									max={59}
 									formatter={value => `${value}分`}
-									onBlur={val => setBackupTime("minute", val)}
+									onChange={val =>
+										setBackupTime("minute", val)
+									}
 								/>
 							</div>
 						</>
@@ -215,20 +227,21 @@ export default function (props) {
 				>
 					{
 						<>
-							<span
+							<YhText
+								type="default"
 								style={{
 									display: isBackcupDaysEditing
 										? "none"
 										: "block"
 								}}
 							>
-								{backupKeepDays}
-							</span>
+								{days}天
+							</YhText>
 							<InputNumber
 								value={days}
 								min={-1}
 								formatter={value => `${value}天`}
-								onBlur={val => setBackupDays(val)}
+								onChange={val => setBackupDays(val)}
 								style={{
 									display: isBackcupDaysEditing
 										? "block"
