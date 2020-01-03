@@ -132,3 +132,8 @@ export async function showtopology(id) {
 export async function showClusterFullOutput(id) {
 	return getApi(ProductMysqlApiUrl)(`/v1/logs/deploy/${id}`).then(res => res).catch(e => Promise.reject(e))
 }
+
+// 主从切换
+export async function switchRole(id) {
+	return putApi(ProductMysqlApiUrl)(`/v1/cluster/topology/${id}`).then(res => res).catch(e => Promise.reject(e))
+}

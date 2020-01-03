@@ -34,7 +34,8 @@ import {
 	unload,
 	deleteCluster,
 	showtopology,
-	showClusterFullOutput
+	showClusterFullOutput,
+	switchRole
 } from "./service";
 
 import { getTenantList } from "../../Redis/Home/service";
@@ -197,12 +198,16 @@ function MysqlCluster(props) {
 	const getMapRelationsInfo = id => {
 		showtopology(id)
 			.then(res => {
-				if (res.message === 'ok') {
-					import("./Topology.modal").then(component => {
-						setCom(<component.default {...Object.assign({})} data={res.data} />);
+				if (res.message === "ok") {
+					import("./Topology.modal").then((component:any) => {
+						setCom(
+							<component.default
+								data={res.data}
+							/>
+						);
 					});
 				} else {
-					message.error(res.message)
+					message.error(res.message);
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -213,20 +218,39 @@ function MysqlCluster(props) {
 	 * @param id 
 	 */
 	const getOutput = id => {
-		showClusterFullOutput(id).then(res => {
-			if (res.code === 200) {
-				if (Array.isArray(res.data) && res.data.length > 0) {
-					import("./Log.modal").then((component:any) => {
-						setCom(<component.default loginfo={res.data} {...props} />);
-					});
+		showClusterFullOutput(id)
+			.then(res => {
+				if (res.code === 200) {
+					if (Array.isArray(res.data) && res.data.length > 0) {
+						import("./Log.modal").then((component: any) => {
+							setCom(
+								<component.default
+									loginfo={res.data}
+									{...props}
+								/>
+							);
+						});
+					} else {
+						message.warning("暂无日志信息");
+					}
 				} else {
-					message.warning('暂无日志信息')
+					message.error(res.message);
 				}
-			} else {
-				message.error(res.message)
-			}
-		}).catch(e => message.error(e))
-	}
+			})
+			.catch(e => message.error(e));
+	};
+
+	const gotoSwitchRole = id => {
+		switchRole(id)
+			.then(res => {
+				if (res.code === 200) {
+					setLoadListCount(loadListCount => loadListCount + 1);
+				} else {
+					message.error(res.message);
+				}
+			})
+			.catch(e => message.error(e));
+	};
 
 	const getColumnSearchProps = dataIndex => ({
 		filterDropdown: ({
@@ -385,10 +409,13 @@ function MysqlCluster(props) {
 					</Popconfirm>
 				</Menu.Item>
 				<Menu.Item key="5">
-					<a>
-						慢查询
-					</a>
+					<a>慢查询</a>
 				</Menu.Item>
+				{text.instances.length === 2 ? (
+					<Menu.Item key="6">
+						<a onClick={() => gotoSwitchRole(text.id)}>主从切换</a>
+					</Menu.Item>
+				) : null}
 			</Menu>
 		);
 	};
@@ -459,10 +486,17 @@ function MysqlCluster(props) {
 			width: "8%",
 			render: text => (
 				<YhOp type="info">
-					<Button type="link" icon="code" onClick={() => checkStatusBeforeOperate(
-							"log",
-							text.status
-						)(text.id, text.name, getOutput)} />
+					<Button
+						type="link"
+						icon="code"
+						onClick={() =>
+							checkStatusBeforeOperate("log", text.status)(
+								text.id,
+								text.name,
+								getOutput
+							)
+						}
+					/>
 				</YhOp>
 			)
 		},
