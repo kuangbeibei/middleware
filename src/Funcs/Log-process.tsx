@@ -27,6 +27,8 @@ export const processLog = loginfo => {
 								? "warning"
 								: cur.startsWith("warning")
 								? "warning"
+								: cur.startsWith("fatal")
+								? "fatal"
 								: ""
 						}
 					>
@@ -41,4 +43,3 @@ export const processLog = loginfo => {
 		return null;
 	}
 };
-
