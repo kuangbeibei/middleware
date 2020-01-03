@@ -384,7 +384,7 @@ function RocketMqHome(props) {
       if (data) {
         import("./modal/Topo.modal").then((component:any) => {
           setCom(
-            <component.default data={data} />
+            <component.default data={data} history = {props.history} />
           )
         }).catch(e => message.error(e.message))
       } else {

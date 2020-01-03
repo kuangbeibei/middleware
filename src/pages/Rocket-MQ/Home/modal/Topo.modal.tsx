@@ -16,6 +16,7 @@ import { jsPlumb } from 'jsplumb'
 import { YHSmallFormItem, YHFlexSpaceAroundDiv } from "@styled/Form";
 import './topo.modal.less'
 import styled from 'styled-components';
+import { YhOp } from "@styled/Button";
 
 import {
   Form,
@@ -37,7 +38,6 @@ const InstanceCard = styled(`div`)`
 `;
 
 function TopoModal(props) {
-
   let [loading, setLoading] = useState(true)
 
 
@@ -167,6 +167,56 @@ function TopoModal(props) {
 
   }), [data])
 
+
+  const TopoDataDiv = React.memo((props) => {
+    return (
+      <YHFlexSpaceAroundDiv className="icon-wrapper">
+          {props.children}
+      </YHFlexSpaceAroundDiv>
+    )
+  })
+
+
+  const TextWrapper = React.memo((props) => {
+    return (
+      <div className="text-wrapper">
+        {props.children}
+      </div>
+    )
+  })
+
+  const TopoCard = React.memo(({children, ...props}:any) => {
+    return (
+      <div {...props} className={`card ${ props.className }` } >
+        {children}
+      </div>  
+    )
+  })
+
+
+  const goToRmqDetailPage = () => {
+		props.history.push(`/middleware/rocketmq/detail/${data.rmqCluster.id}`);
+  }
+
+  const MoreDetail = React.memo((props) => {
+    return (
+      <YhOp 
+        onClick={goToRmqDetailPage}
+        color="blue" 
+        style = {{
+          position: 'absolute',
+          bottom: 8,
+          right: 2,
+          fontSize: 12,
+          color: '#4d80e4'
+        }}>
+        更多..
+      </YhOp>
+    )
+  })
+
+
+
   return(
     <Modal
       modalName = {`拓扑图`}
@@ -179,42 +229,53 @@ function TopoModal(props) {
       <Spin spinning={loading}>
         <div className="topo-container">
 
-          <div id="k1" className="card consumer">
-            <YHFlexSpaceAroundDiv className="icon-wrapper">
+          {/* <div id="k1" className="card consumer">
+            <TopoDataDiv>
               <Icon type="solution" />
-            </YHFlexSpaceAroundDiv>
-            <div className="text-wrapper">
+            </TopoDataDiv>
+            <TextWrapper>
               Consumer
-            </div>
-          </div>
+            </TextWrapper>
+          </div> */}
 
-          <div id="k3" className="card producer">
-            <YHFlexSpaceAroundDiv className="icon-wrapper">
+          <TopoCard id="k1" className="consumer">
+            <TopoDataDiv>
               <Icon type="solution" />
-            </YHFlexSpaceAroundDiv>
-            <div className="text-wrapper">
+            </TopoDataDiv>
+            <TextWrapper>
+              Consumer
+            </TextWrapper>
+          </TopoCard>
+
+          <TopoCard id="k3" className="producer">
+            <TopoDataDiv>
+              <Icon type="solution" />
+            </TopoDataDiv>
+            <TextWrapper>
               Producer
-            </div>
-          </div>   
+            </TextWrapper>
+          </TopoCard>   
 
 
-          <div id="k2" className="card name-server">
-            <YHFlexSpaceAroundDiv className="icon-wrapper">
+          <TopoCard id="k2" className="name-server">
+            <TopoDataDiv>
               {NSNodes}
-            </YHFlexSpaceAroundDiv>
-            <div className="text-wrapper">
+            </TopoDataDiv>
+            <TextWrapper>
               NameServer({NSNodes.length})
-            </div>
-          </div> 
+            </TextWrapper>
+            {NSNodes.length > 4 ? <MoreDetail/> : null }
+          </TopoCard> 
 
-          <div id="k4" className="card broker">
-            <YHFlexSpaceAroundDiv className="icon-wrapper">
+          <TopoCard id="k4" className="broker">
+            <TopoDataDiv>
               { BrokerNodes }
-            </YHFlexSpaceAroundDiv>
-            <div className="text-wrapper">
+            </TopoDataDiv>
+            <TextWrapper>
               broker({BrokerNodes.length})
-            </div>
-          </div>  
+            </TextWrapper>
+            {BrokerNodes.length > 4 ? <MoreDetail/> : null }
+          </TopoCard>  
 
   
 
