@@ -214,8 +214,18 @@ function MysqlCluster(props) {
 	 */
 	const getOutput = id => {
 		showClusterFullOutput(id).then(res => {
-
-		})
+			if (res.code === 200) {
+				if (Array.isArray(res.data) && res.data.length > 0) {
+					import("./Log.modal").then((component:any) => {
+						setCom(<component.default loginfo={res.data} {...props} />);
+					});
+				} else {
+					message.warning('暂无日志信息')
+				}
+			} else {
+				message.error(res.message)
+			}
+		}).catch(e => message.error(e))
 	}
 
 	const getColumnSearchProps = dataIndex => ({

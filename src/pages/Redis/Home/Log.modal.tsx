@@ -13,8 +13,8 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 
 import Modal from "@com/Modal";
 
-import { YhText } from "@styled/Text";
 import { YhTerminal } from "@styled/Terminal";
+import { processLog } from "@funcs/Log-process";
 
 function LogMoal(props) {
 	const { tableModalVisibility, setTableModalVisibility, loginfo } = props;
@@ -22,41 +22,6 @@ function LogMoal(props) {
 	useEffect(() => {
 		setTableModalVisibility();
 	}, []);
-
-	/**
-	 * 颜色处理output
-	 * @param output
-	 */
-	const processLog = () => {
-		let _output;
-		if (loginfo) {
-			_output = loginfo.split(/\n/g);
-			let resOutput = _output.reduce((prev, cur) => {
-				return (
-					<>
-						{prev}
-						<YhText
-							type={
-								cur.startsWith("ok")
-									? "success"
-									: cur.startsWith("changed")
-									? "warning"
-									: cur.startsWith("warning")
-									? "warning"
-									: ""
-							}
-						>
-							{cur}
-						</YhText>
-						<br />
-					</>
-				);
-			}, "");
-			return <>{resOutput}</>;
-		} else {
-			return null;
-		}
-	};
 
 	const handleCancel = () => {
 		setTableModalVisibility();
@@ -72,7 +37,7 @@ function LogMoal(props) {
 		>
 			<YhTerminal width={1200}>
 				<div>
-					<pre>{processLog()}</pre>
+					<pre>{processLog(loginfo)}</pre>
 				</div>
 			</YhTerminal>
 		</Modal>
