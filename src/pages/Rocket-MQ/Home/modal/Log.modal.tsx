@@ -7,29 +7,29 @@ import Modal from "@com/Modal";
 import { YhText } from "@styled/Text";
 import { YhTerminal } from "@styled/Terminal";
 import {LogLineWrapper, LogLineNumber, LogLineContent } from '@styled/Log'
-import LogItem from './LogModal/Log.Item';
+import LogGroup from './LogModal/Log.group';
 
 import { processLog } from "@funcs/Log-process";
-import './log.modal.less'
+
 function LogModal(props) {
   let { tableModalVisibility, setTableModalVisibility, logInfo } = props
 
-  // logInfo是一个数组
   
 
-  const logLine = React.memo((props: any)=>{
+ // TODO 将style-components下面的LOG相关 和 Log.Group整合到一个文件夹
+  const LogLine = (props:any)=>{
     let { count } = props
     return (
       <>
         <LogLineWrapper>
           <LogLineNumber>{count}</LogLineNumber>
               <LogLineContent>
-                {props.chilren}
+                { props.children ?  props.children : null}
               </LogLineContent>
         </LogLineWrapper>
       </>
     )
-  }, props)
+  }
   
   let logsSummary = logInfo.reduce((prev, item) => {
     prev += item.output
@@ -37,15 +37,13 @@ function LogModal(props) {
   }, "")
 
   
-  const formatLog = () => {
+  const formatLog = (logsSummary) => {
     let _output;
 		if (logsSummary) {
       _output = logsSummary.split(/\n/g);
       let count = 0;
 			let resOutput = _output.reduce((prev, cur) => {
-        console.log(cur, 'cur----->>>>>>')
         if (cur.trim()==='') { 
-          console.log(cur.trim(), 'abcdef')
           return(
             <>
             {prev}
@@ -56,13 +54,8 @@ function LogModal(props) {
 				return (
 					<>
             {prev}
-
-            {/* <div className="log-line"> */}
-            <LogLineWrapper>
-              {/* <span className="line-number"> {count} </span> */}
-              <LogLineNumber>{count}</LogLineNumber>
-              <LogLineContent>
-                <YhText
+            <LogLine count={count}>
+              <YhText
                   className = "line-content"
                   type={
                     cur.startsWith("ok")
@@ -74,14 +67,13 @@ function LogModal(props) {
                       : cur.startsWith("fatal")
                       ? "fatal"
                       : ""
-                    }
-                  >
-                  {cur}
+                      }
+                    >
+                    {cur}
                 </YhText>
-              </LogLineContent>
+             </LogLine> 
 
-            {/* </div> */}
-            </LogLineWrapper>
+
 					</>
 				);
       }, "");
@@ -113,16 +105,16 @@ function LogModal(props) {
       handleCancel={handleCancel}
       handleOk= {handleOK}
     >
-			<YhTerminal width={1200}>
-        <div className="log-container modal-log">
-          {/* <pre> */}
-          <LogItem>
-            {formatLog()}
-            {/* {processLog(logsSummary)} */}
-          </LogItem>
+			<YhTerminal height={620} width={1200}>
+        <div>
+          {
+              logInfo.map((logGroupItem, index) =>(
+                <LogGroup key={index} isUnFold={index==(logInfo.length-1)} title ={logGroupItem.createTime}>
+                  {formatLog(logGroupItem.output)}
+                </LogGroup>
+              ))
+          }
           
-          
-          {/* </pre> */}
         </div> 
 			</YhTerminal>
      
