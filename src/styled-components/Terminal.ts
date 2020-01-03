@@ -4,7 +4,7 @@ export const YhTerminal = styled['div']`
   	display: flex;
 	background: #000;
 	color: #fff;
-	height: ${p => p.height || 700}px;
+	height: ${p => p.height || 500}px;
 	border: 1px solid #fff;
 	overflow-y: scroll;
 	div {
