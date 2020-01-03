@@ -7,18 +7,11 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 
-// import { getConfigDetail } from "../Home/service";
-
 import { Table, message, Tooltip, Button, Icon, Menu } from "antd";
 
 import Loading from "@com/UI/Loading";
 
-import { isEven } from "@tools";
-import { YhOp, YhAdd } from "@styled/Button";
-
 import PasswordColumn from "@com/Password-unit";
-import StatusControl from "@com/Status.control";
-import OperationControl from "@com/Operation.control";
 
 import { getHostList } from "./service";
 
@@ -31,6 +24,11 @@ export default function(props) {
 	const {
 		match: {
 			params: { id }
+		},
+		location: {
+			state: {
+				query: { name }
+			}
 		}
 	} = props;
 
@@ -50,8 +48,8 @@ export default function(props) {
 							user: `${item.user}.${Math.random()}`,
 							password: item.password
 								? `${item.password}.${Math.random()}`
-								: "",
-						}
+								: ""
+						};
 					});
 					setTableList(data);
 				}
@@ -71,14 +69,14 @@ export default function(props) {
 	 * 跳转实例监控页面
 	 */
 	const gotoInstanceMonitor = (ip, port) => {
-		// props.history.push(`/middleware/redis/${taskId}/instance/monitor`, {
-		// 	query: {
-		// 		ip,
-		// 		port,
-		// 		clusterId: id,
-		// 		clusterName: name
-		// 	}
-		// })
+		props.history.push(`/middleware/mysql/${id}/instance/config-monitor`, {
+			query: {
+				ip,
+				port,
+				clusterId: id,
+				clusterName: name
+			}
+		});
 	};
 
 	const menu = text => {
@@ -148,23 +146,6 @@ export default function(props) {
 						/>
 					</Tooltip>
 				);
-			}
-		},
-		// {
-		// 	title: "日志",
-		// 	key: "log",
-		// 	width: "8%",
-		// 	render: text => (
-		// 		<YhOp type="info">
-		// 			<Button type="link" icon="code" onClick={() => {}} />
-		// 		</YhOp>
-		// 	)
-		// },
-		{
-			title: "操作",
-			key: "action",
-			render: text => {
-				return <OperationControl {...props} text={text} menu={menu} />;
 			}
 		}
 	];

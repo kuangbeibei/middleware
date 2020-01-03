@@ -33,8 +33,6 @@ export default function(props) {
 	const [logs, setlogs] = useState(Array());
 	const [backList, setbackList] = useState(Array());
 
-	console.log('我是详情的父组件');
-
 	useEffect(() => {
 		changeTab("1");
 	}, []);

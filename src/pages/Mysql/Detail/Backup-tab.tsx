@@ -11,12 +11,17 @@ import { FormatTime } from "@utils/tools";
 
 import { YhText } from "@styled/Text";
 
-import { saveBackupuStrategy, saveBackupDays } from "./service";
+import {
+	saveBackupuStrategy,
+	saveBackupDays,
+	runBackup,
+	stopBackup
+} from "./service";
 
 export default function(props) {
 	const {
 		backList,
-		basicData: { backupStrategy, backupKeepDays },
+		basicData: { backupStrategy, backupKeepDays, backupEnabled },
 		match: {
 			params: { id }
 		}
@@ -31,8 +36,9 @@ export default function(props) {
 	const [hour, sethour] = useState(0);
 	const [minute, setminute] = useState(0);
 	const [days, setdays] = useState(0);
-	const [isStrategyRunning, setisStrategyRunning] = useState(true);
-	const [isDaysRunning, setisDaysRunning] = useState(true);
+	// const [isStrategyRunning, setisStrategyRunning] = useState(true);
+	// const [isDaysRunning, setisDaysRunning] = useState(true);
+	const [isRunning, setisRunning] = useState(false);
 
 	useEffect(() => {
 		if (Array.isArray(backList)) {
@@ -46,6 +52,7 @@ export default function(props) {
 				idx === 0 ? setminute(item) : sethour(item);
 			});
 		setdays(backupKeepDays);
+		setisRunning(backupEnabled);
 	}, []);
 
 	const columns = [
@@ -75,12 +82,25 @@ export default function(props) {
 		}
 	];
 
+	const setBackupuRunningStatus = isChecked => {
+		setisRunning(isChecked);
+		isChecked
+			? runBackup(id)
+					.then(res => {})
+					.catch(e => message.error(e))
+			: stopBackup(id)
+					.then(res => {})
+					.catch(e => message.error(e));
+	};
+
 	const switchBtn = idx => {
 		return (
 			<>
 				<span className="stop">{`停`}</span>
 				<Switch
-					checked={idx === 1 ? isStrategyRunning : isDaysRunning}
+					// checked={idx === 1 ? isStrategyRunning : isDaysRunning}
+					checked={isRunning}
+					onChange={val => setBackupuRunningStatus(val)}
 				/>
 				<span className="start">{`启`}</span>
 			</>
@@ -176,8 +196,8 @@ export default function(props) {
 		<>
 			<div style={{ display: "flex", marginBottom: "30px" }}>
 				<Card
-					title={"备份清理策略"}
-					extra={switchBtn(2)}
+					title={"备份时间"}
+					// extra={switchBtn(2)}
 					actions={actionChange(isBackupstrategyEditing, "strategy")}
 				>
 					{
@@ -221,7 +241,7 @@ export default function(props) {
 					}
 				</Card>
 				<Card
-					title={"备份时间"}
+					title={"备份清理策略"}
 					extra={switchBtn(1)}
 					actions={actionChange(isBackcupDaysEditing, "days")}
 				>

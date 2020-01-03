@@ -59,4 +59,20 @@ export async function saveBackupDays(id, days) {
 	}).catch(e => Promise.reject(e.message));
 }
 
+/**
+ * 启用备份
+ * @param id 
+ */
+export async function runBackup(id) {
+	return postApi(ProductMysqlApiUrl)(`/v1/backup/strategy/${id}`).then(res => res).catch(e => Promise.reject(e.message))
+}
+
+/**
+ * 停用备份
+ * @param id 
+ */
+export async function stopBackup(id) {
+	return delApi(ProductMysqlApiUrl)(`/v1/backup/strategy/${id}`).then(res => res).catch(e => Promise.reject(e.message))
+}
+
 
