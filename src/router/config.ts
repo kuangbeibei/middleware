@@ -18,6 +18,13 @@ export const MysqlRoutesMap = [
 		icon: "database",
 		subs: [
 			{
+				key: "/middleware/mysql/:id/instance/config-monitor",
+				component: "MysqlConfigMonitor",
+				name: "MysqlConfigMonitor",
+				isExact: false,
+				breadcrumbTitle: "监控"
+			},
+			{
 				key: "/middleware/mysql/:id/instance",
 				component: "MysqlInstance",
 				name: "MysqlInstance",

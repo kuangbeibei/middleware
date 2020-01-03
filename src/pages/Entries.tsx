@@ -56,6 +56,12 @@ const MysqlInstance = props => (
 	</DynamicImport>
 );
 
+const MysqlConfigMonitor = props => (
+	<DynamicImport load={() => import("@pages/Mysql/Instance-monitor")}>
+		{Component => childrenOfDynamicImport(Component, props)}
+	</DynamicImport>
+);
+
 // Redis 入口
 const Redis = props => (
 	<DynamicImport load={() => import("@pages/Redis")}>
@@ -148,6 +154,7 @@ export default {
 	MysqlHome,
 	MysqlDetail,
 	MysqlInstance,
+	MysqlConfigMonitor,
 	Redis,
 	RedisHome,
 	RedisInstance,

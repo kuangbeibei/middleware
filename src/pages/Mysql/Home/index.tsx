@@ -187,8 +187,12 @@ function MysqlCluster(props) {
 	 * 前往mysql节点列表页
 	 * @param text
 	 */
-	const gotoInstance = id => {
-		history.push(`/middleware/mysql/${id}/instance`);
+	const gotoInstance = (id, name) => {
+		history.push(`/middleware/mysql/${id}/instance`, {
+			query: {
+				name
+			}
+		});
 	};
 
 	/**
@@ -451,7 +455,7 @@ function MysqlCluster(props) {
 			key: "instances",
 			width: "8%",
 			render: text => (
-				<a onClick={() => gotoInstance(text.id)}>
+				<a onClick={() => gotoInstance(text.id, text.name)}>
 					{text.instances.length === 2 ? "1主1从" : "1主2从"}
 				</a>
 			)
