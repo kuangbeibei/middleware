@@ -17,7 +17,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			if (status === "done") {
 				return (taskId, name, fn) => fn(taskId);
 			}
-			return () => message.info(`集群状态是${status}，无法展示拓扑图!`);
+			return () => message.warning(`集群状态是${status}，无法展示拓扑图!`);
 		case "delete":
 			if (
 				status === "release" ||
@@ -26,7 +26,7 @@ export const checkStatusBeforeOperate = (type, status) => {
 			) {
 				return (id, name, fn) => fn(id, name);
 			}
-			return () => message.info(`集群状态是${status}，无法删除!`);
+			return () => message.warning(`集群状态是${status}，无法删除!`);
 		case "release":
 			if (
 				status !== "running" &&
@@ -35,27 +35,32 @@ export const checkStatusBeforeOperate = (type, status) => {
 			) {
 				return (taskId, name, fn) => fn(taskId, name);
 			}
-			return () => message.info(`集群状态是${status}，不可卸载!`);
+			return () => message.warning(`集群状态是${status}，不可卸载!`);
 		case "deploy":
 			if (status === "ready" || status === "failed") {
 				return (taskId, name, fn) => fn(taskId);
 			}
-			return () => message.info(`集群状态是${status}，不可部署！`);
+			return () => message.warning(`集群状态是${status}，不可部署！`);
 		case "edit":
 			if (status !== "done" && status !== 'running' && status !== 'init') {
 				return (taskId, name, fn) => fn(taskId)
 			}
-			return () => message.info(`集群状态是${status}，不可编辑`);
+			return () => message.warning(`集群状态是${status}，不可编辑`);
 		case "monitor":
 			if (status === "done") {
 				return (id, name, fn) => fn(id, name);
 			}
-			return () => message.info(`集群状态是${status}，暂无监控状态`);
+			return () => message.warning(`集群状态是${status}，暂无监控状态`);
 		case "extension":
 			if (status === "done") { //目前只有redis有扩容
 				return (id, taskId, fn) => fn(id, taskId);
 			}
-			return () => message.info(`集群状态是${status}, 不可扩容`);
+			return () => message.warning(`集群状态是${status}, 不可扩容`);
+		case "log":
+			if (status !== 'ready' && status !== 'init' && status !== 'running') {
+				return (id, name, fn) => fn(id)
+			}
+			return () => message.warning(`集群状态是${status}, 暂无日志输出`);
 		default:
 			return () => {};
 	}

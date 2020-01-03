@@ -127,3 +127,8 @@ export async function showtopology(id) {
 		`/v1/cluster/topology/${id}`
 	).then(res => res).catch(e => Promise.reject(e));
 }
+
+// 部署日志
+export async function showClusterFullOutput(id) {
+	return getApi(ProductMysqlApiUrl)(`/v1/logs/deploy/${id}`).then(res => res).catch(e => Promise.reject(e))
+}

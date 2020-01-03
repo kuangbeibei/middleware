@@ -33,7 +33,8 @@ import {
 	deployCluster,
 	unload,
 	deleteCluster,
-	showtopology
+	showtopology,
+	showClusterFullOutput
 } from "./service";
 
 import { getTenantList } from "../../Redis/Home/service";
@@ -206,6 +207,16 @@ function MysqlCluster(props) {
 			})
 			.catch(e => message.error(e.message));
 	};
+
+	/**
+	 * 展示部署日志
+	 * @param id 
+	 */
+	const getOutput = id => {
+		showClusterFullOutput(id).then(res => {
+
+		})
+	}
 
 	const getColumnSearchProps = dataIndex => ({
 		filterDropdown: ({
@@ -438,7 +449,10 @@ function MysqlCluster(props) {
 			width: "8%",
 			render: text => (
 				<YhOp type="info">
-					<Button type="link" icon="code" onClick={() => {}} />
+					<Button type="link" icon="code" onClick={() => checkStatusBeforeOperate(
+							"log",
+							text.status
+						)(text.id, text.name, getOutput)} />
 				</YhOp>
 			)
 		},

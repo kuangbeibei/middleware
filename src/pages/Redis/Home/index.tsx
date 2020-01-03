@@ -200,13 +200,13 @@ function RedisCluster(props) {
 		deployClusterApi(taskId)
 			.then(res => {
 				// if (res.msg === 'ok') {
-					setStatusTaskId(taskId)
+				setStatusTaskId(taskId)
 				// } else {
 				// 	message.error(res.msg)
 				// }
 				// statusTaskIds.push(taskId);
 				// setStatusTaskId(statusTaskIds[statusTaskIds.length - 1]);
-				
+
 			})
 			.catch(e => message.error(e.message));
 	};
@@ -223,7 +223,7 @@ function RedisCluster(props) {
 						setCom(<component.default {...data} />);
 					});
 				} else {
-					return message.info('无日志信息');
+					return message.warning('无日志信息');
 				}
 			})
 			.catch(e => message.error(e.message));
@@ -318,38 +318,38 @@ function RedisCluster(props) {
 			confirm,
 			clearFilters
 		}) => (
-			<div style={{ padding: 8 }}>
-				<Input
-					placeholder={`搜索 ${dataIndex}`}
-					value={selectedKeys[0]}
-					onChange={e =>
-						setSelectedKeys(e.target.value ? [e.target.value] : [])
-					}
-					onPressEnter={() =>
-						handleSearch(selectedKeys, confirm, dataIndex)
-					}
-					style={{ width: 188, marginBottom: 8, display: "block" }}
-				/>
-				<Button
-					type="primary"
-					onClick={() =>
-						handleSearch(selectedKeys, confirm, dataIndex)
-					}
-					icon="search"
-					size="small"
-					style={{ width: 90, marginRight: 8 }}
-				>
-					搜索
+				<div style={{ padding: 8 }}>
+					<Input
+						placeholder={`搜索 ${dataIndex}`}
+						value={selectedKeys[0]}
+						onChange={e =>
+							setSelectedKeys(e.target.value ? [e.target.value] : [])
+						}
+						onPressEnter={() =>
+							handleSearch(selectedKeys, confirm, dataIndex)
+						}
+						style={{ width: 188, marginBottom: 8, display: "block" }}
+					/>
+					<Button
+						type="primary"
+						onClick={() =>
+							handleSearch(selectedKeys, confirm, dataIndex)
+						}
+						icon="search"
+						size="small"
+						style={{ width: 90, marginRight: 8 }}
+					>
+						搜索
 				</Button>
-				<Button
-					onClick={() => handleReset(clearFilters)}
-					size="small"
-					style={{ width: 90 }}
-				>
-					重置
+					<Button
+						onClick={() => handleReset(clearFilters)}
+						size="small"
+						style={{ width: 90 }}
+					>
+						重置
 				</Button>
-			</div>
-		),
+				</div>
+			),
 		filterIcon: filtered => (
 			<Icon
 				type="search"
@@ -361,11 +361,11 @@ function RedisCluster(props) {
 				return filterClusterStatus(value, record, dataIndex)
 			} else {
 				return record[dataIndex]
-				? record[dataIndex].toString().includes(value)
-				: false
+					? record[dataIndex].toString().includes(value)
+					: false
 			}
 		},
-			
+
 		onFilterDropdownVisibleChange: visible => {
 			// if (visible) {
 			// 	setTimeout(() => this.searchInput.select());
@@ -553,7 +553,10 @@ function RedisCluster(props) {
 					<Button
 						type="link"
 						icon="code"
-						onClick={() => getOutput(text.taskId)}
+						onClick={() => checkStatusBeforeOperate(
+							"log",
+							text.status
+						)(text.taskId, text.name, getOutput)}
 					/>
 				</YhOp>
 			)
@@ -576,7 +579,7 @@ function RedisCluster(props) {
 			key: "action",
 			width: "12%",
 			render: text => {
-				return  <OperationControl {...props} text={text} menu={menu} />
+				return <OperationControl {...props} text={text} menu={menu} />
 			}
 		}
 	];
@@ -594,8 +597,8 @@ function RedisCluster(props) {
 			{loading ? (
 				<Loading />
 			) : (
-				<Table columns={columns} dataSource={tableList} rowKey="id" />
-			)}
+					<Table columns={columns} dataSource={tableList} rowKey="id" />
+				)}
 
 			{
 				// Modal
