@@ -363,6 +363,11 @@ function MysqlCluster(props) {
 						<a>删除</a>
 					</Popconfirm>
 				</Menu.Item>
+				<Menu.Item key="5">
+					<a>
+						慢查询
+					</a>
+				</Menu.Item>
 			</Menu>
 		);
 	};

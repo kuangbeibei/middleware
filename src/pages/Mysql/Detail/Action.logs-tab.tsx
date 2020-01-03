@@ -20,12 +20,12 @@ export default function (props) {
 		<Timeline style={{marginTop: '10px'}}>
 			{
 				logs.map(log => <Timeline.Item key={log.id} color={log.err ? 'red' : 'green'}>
-					<p>{log.userName}</p>
 					<p>{FormatTime(log.ctime)}</p>
 					<p>{log.operator}</p>
 					{
 						log.error ? <p>{log.error}</p> : ''
 					}
+					<p>{log.userName}</p>
 				</Timeline.Item>)
 			}
 		</Timeline>

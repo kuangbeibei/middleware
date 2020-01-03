@@ -115,9 +115,6 @@ export default function(props) {
 			<TabPane tab="告警" key="5">
 				告警
 			</TabPane>
-			<TabPane tab="慢查询" key="6">
-				慢查询
-			</TabPane>
 		</Tabs>
 	);
 }
