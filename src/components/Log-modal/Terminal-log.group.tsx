@@ -83,7 +83,7 @@ function LogsModal(props) {
 							title={FormatTime(logGroupItem.createTime || logGroupItem.ctime)}
 						>
 							<div style={{marginTop: '20px'}}>
-								{processLogWithUI(logGroupItem.output || logGroupItem.msg)}
+								{processLogWithUI(logGroupItem.output)}
 							</div>
 						</LogGroup>
 					))}
