@@ -10,7 +10,7 @@ export const LogLineWrapper = styled(`div`)`
 	padding-top: 4px;
 	padding-bottom: 4px;
 	cursor: default;
-	align-items: center;
+	align-items: flex-start;
 `;
 
 export const LogLineNumber = styled(`span`)`
@@ -25,7 +25,8 @@ export const LogLineNumber = styled(`span`)`
 `;
 
 export const LogLineContent = styled(`span`)`
-	display: inline-block;
+  display: inline-block;
+  margin-top: -1px;
 	width: auto;
 	height: auto;
 `;
