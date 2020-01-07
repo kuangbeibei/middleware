@@ -14,7 +14,7 @@ import setTableModalVisibility from "@actions/setModalVisibility";
 import Modal from "@com/Modal";
 
 import { YhTerminal } from "@styled/Terminal";
-import { processLog } from "@funcs/Log-process";
+import { processLog } from "@com/Log-modal/Log-process";
 
 function LogMoal(props) {
 	const { tableModalVisibility, setTableModalVisibility, loginfo } = props;

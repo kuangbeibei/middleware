@@ -50,6 +50,10 @@ export default function(props) {
 		setloading(true);
 		switch (key) {	
 			case "1":
+				if (Object.keys(hostConfig).length > 0 && Object.keys(dbConfig).length > 0) {
+					setloading(false);
+					return 
+				}
 				Promise.race([
 					getHostConfigApi(),
 					getDbConfigApi()

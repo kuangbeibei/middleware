@@ -18,7 +18,7 @@ import Modal from "@com/Modal";
 
 import { YhTerminal } from "@styled/Terminal";
 import { FormatTime } from "@utils/tools";
-import { processLog } from "@funcs/Log-process";
+import { processLog } from "@com/Log-modal/Log-process";
 
 function LogsModal(props) {
 	const { tableModalVisibility, setTableModalVisibility, logs } = props;

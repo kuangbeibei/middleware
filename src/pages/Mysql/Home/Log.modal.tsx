@@ -5,8 +5,9 @@
  */ 
 
 import * as React from "react";
-import LogsModal from "@com/Terminal-log.modal"
+import LogsModal from "@com/Log-modal/Terminal-log.modal"
+import LogGroupModal from "@com/Log-modal/Terminal-log.group"
 
-const MysqlMoal = (props) => <LogsModal logs={props.loginfo} {...props} />
+const MysqlMoal = (props) => <LogGroupModal logs={props.loginfo} {...props} />
 
 export default MysqlMoal
