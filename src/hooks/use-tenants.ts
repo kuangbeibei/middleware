@@ -4,6 +4,7 @@ import { ProductApiUrl } from "@utils/data";
 
 const { ProductUumApiUrl } = ProductApiUrl;
 
+// 把接口调用单独提出来，只调用一次即可
 const getTenantList = (
 	async () => {
 	let res = await getApi(ProductUumApiUrl)(`/tenant/os/list`)
