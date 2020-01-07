@@ -26,6 +26,7 @@ import OperationControl from "@com/Operation.control";
 
 import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
+import useTenants from "@hooks/use-tenants";
 
 import {
 	getMysqlClusters,
@@ -50,22 +51,16 @@ import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
 
 function MysqlCluster(props) {
 	const { tableModalVisibility, history } = props;
+	let tenantList = useTenants();
 
 	const [loading, setloading] = useState(true);
 	const [tableList, setTableList] = useState(Array());
 	let [loadingListCount, setLoadListCount] = useState(0);
 	let [com, setCom] = useState();
-	const [tenantRes, settenantRes] = useState(Array());
 
 	useEffect(() => {
 		getList({});
 	}, [loadingListCount]);
-
-	useEffect(() => {
-		getTenantList().then(data => {
-			settenantRes(data);
-		});
-	}, []);
 
 	useEffect(() => {
 		if (!tableModalVisibility.visible && com) {
@@ -146,20 +141,18 @@ function MysqlCluster(props) {
 	};
 
 	const showFormModal = async (id?) => {
-		import("./Form.modal").then(component => {
+		import("./Form.modal").then((component:any) => {
 			if (id && typeof id === "number") {
 				setCom(
 					<component.default
-						{...Object.assign({})}
-						tenantRes={tenantRes}
+						tenantRes={tenantList}
 						id={id}
 					/>
 				);
 			} else {
 				setCom(
 					<component.default
-						{...Object.assign({})}
-						tenantRes={tenantRes}
+						tenantRes={tenantList}
 					/>
 				);
 			}

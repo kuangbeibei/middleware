@@ -32,10 +32,13 @@ const LogGroup = props => {
 		<>
 			<div
 				className="log-header"
-				style={{ position: 'absolute', background: '#000'}}
+				style={{ position: "absolute", background: "#000" }}
 				onClick={() => setUnfold(pre => !pre)}
 			>
-				<span className="fold-status-icon" style={{cursor: 'pointer'}}>
+				<span
+					className="fold-status-icon"
+					style={{ cursor: "pointer" }}
+				>
 					{unFold ? (
 						<Icon type="caret-down" />
 					) : (
@@ -80,9 +83,11 @@ function LogsModal(props) {
 						<LogGroup
 							key={index}
 							isUnFold={index == logs.length - 1}
-							title={FormatTime(logGroupItem.createTime || logGroupItem.ctime)}
+							title={FormatTime(
+								logGroupItem.createTime || logGroupItem.ctime
+							)}
 						>
-							<div style={{marginTop: '20px'}}>
+							<div style={{ marginTop: "20px" }}>
 								{processLogWithUI(logGroupItem.output)}
 							</div>
 						</LogGroup>
