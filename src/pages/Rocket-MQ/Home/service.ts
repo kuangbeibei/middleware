@@ -125,7 +125,7 @@ export const getDeployTaskOutput = (taskId) => {
   }).catch(e => Promise.reject(e))
 }
 
-// 获取拓扑信息
+// 获取拓扑信息, 包含了实例的列表
 export const getTopoData = (id) => {
   return getApi(ProductRocketMqApiUrl)(`/mid/v1/deployEntryDetail/rmqCluster/${id}`)
     .then(res => {

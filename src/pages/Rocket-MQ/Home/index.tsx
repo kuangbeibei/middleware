@@ -75,28 +75,6 @@ function RocketMqHome(props) {
     })
   }
 
-	/**
-	 * 删除一个未创建的RMQ类型
-	 */
-	const delRmqType = () => {
-		if (addFlag) {
-			addFlag = false;
-			setTableList(tableList => tableList.slice(0, -1)); // 对数组的操作一定要返回新的值
-		}
-	};
-
-	/**
-	 *  添加RMQ类型
-	 */
-	const addRmqType = () => {
-		if (!addFlag) {
-			addFlag = true;
-			setTableList(setTableList => [
-				...setTableList,
-				deepCloneObject(rmqDataPrototype)
-			]);
-		}
-	};
 
 
 	/**
@@ -106,21 +84,14 @@ function RocketMqHome(props) {
 		setNewItemName(event.currentTarget.value);
 	};
 
-	/**
-	 * 获取newItemType
-	 */
-	const getTypeWhenChange = value => {
-		setNewItemType(value);
-	};
-
-	/**
-	 * 前往二级列表页
-	 */
-	const gotoNameServerList = (id, type) => {
-		addFlag = false;
-		type = type.toLowerCase();
-		props.history.push(`/middleware/rocketmq/${type}/${id}`);
-	};
+	// /**
+	//  * 前往二级列表页
+	//  */
+	// const gotoNameServerList = (id, type) => {
+	// 	addFlag = false;
+	// 	type = type.toLowerCase();
+	// 	props.history.push(`/middleware/rocketmq/${type}/${id}`);
+	// };
 
   const gotToRocketMQInstancesDetail = (id) => {
     addFlag = false;

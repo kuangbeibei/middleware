@@ -1,0 +1,18 @@
+
+.broker-group-split {
+  // border-bottom: 1px solid #d8d0d0;
+
+}
+.ant-table-tbody > tr > td.broker-merge-cell {
+  border-left: 1px solid #e8e8e8;
+  &:extend(.broker-group-split);
+  &.without-border {
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+
+.broker-table .ant-table-tbody > tr:nth-child(2n):not(:last-child) td {
+  &:extend(.broker-group-split);
+}
+
+
