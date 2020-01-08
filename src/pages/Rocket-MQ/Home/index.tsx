@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
 	Button,
@@ -50,7 +50,7 @@ function RocketMqHome(props) {
 	// let [delLoading, setDelLoading] = useState(false);
   // let [addLoading, setAddLoading] = useState(false);
   
-  let tenantList = useTenants()
+  let tenantList = useTenants();
 
   let {
     tableModalVisibility,

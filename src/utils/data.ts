@@ -9,9 +9,9 @@ const ProductRocketMqApiUrl = '/api-mid-deploy-rmq.api.fz.yonghui.cn' // rocketM
 export const ProductApiUrl = {
 	ProductRedisApiUrl,
 	ProductMysqlApiUrl,
-  ProductUumApiUrl,
-  ProductAlarmApiUrl,
-  ProductRocketMqApiUrl,
+	ProductUumApiUrl,
+	ProductAlarmApiUrl,
+	ProductRocketMqApiUrl,
 }
 
 export const clusterStatus = {
@@ -44,7 +44,7 @@ export const clusterStatus = {
 	}
 }
 
-export const dateLocale =  {
+export const dateLocale = {
 	lang: {
 		placeholder: "选择日期",
 		rangePlaceholder: ["开始时间", "结束时间"],

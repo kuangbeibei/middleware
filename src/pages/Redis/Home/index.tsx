@@ -42,6 +42,7 @@ import {
 
 import { FormatTime } from "@tools";
 import { useIntervalWithCondition } from "@hooks/use-interval";
+import useTenants from "@hooks/use-tenants";
 
 import {
 	filterClusterStatus
@@ -60,7 +61,8 @@ function RedisCluster(props) {
 	let [com, setCom] = useState();
 	// const statusTaskIds = Array();
 	const [statusTaskId, setStatusTaskId] = useState("");
-	const [tenantRes, settenantRes] = useState(Array());
+
+	let tenantList = useTenants();
 
 	const getList = ({
 		name = "",
@@ -93,11 +95,6 @@ function RedisCluster(props) {
 		}
 	}, [drawerVisibility.visible]);
 
-	useEffect(() => {
-		getTenantList().then(data => {
-			settenantRes(data);
-		});
-	}, []);
 
 	const removeLayer = () => {
 		setTimeout(() => {
@@ -162,7 +159,7 @@ function RedisCluster(props) {
 	 * @param taskId
 	 */
 	const showFormModal = async (taskId?) => {
-		import("./Form.modal").then(component => {
+		import("./Form.modal").then((component:any) => {
 			if (taskId && typeof taskId === "number") {
 				getClusterDetail(taskId)
 					.then(data => {
@@ -175,7 +172,7 @@ function RedisCluster(props) {
 									},
 									data
 								)}
-								tenantRes={tenantRes}
+								tenantRes={tenantList}
 							/>
 						);
 					})
@@ -183,8 +180,7 @@ function RedisCluster(props) {
 			} else {
 				setCom(
 					<component.default
-						{...Object.assign({})}
-						tenantRes={tenantRes}
+						tenantRes={tenantList}
 					/>
 				);
 			}
