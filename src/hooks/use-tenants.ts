@@ -23,7 +23,7 @@ const getTenantList = (async () => {
 function useTenants() {
 	let [tenants, setTenants] = useState<Array<any>>([]);
 
-	let getlist = useMemo(() => {
+	let getlist = useCallback(() => {
 		getTenantList.then(list => {
 			// console.log('list,', list);
 			setTenants(list);
