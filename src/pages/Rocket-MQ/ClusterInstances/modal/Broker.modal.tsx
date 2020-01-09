@@ -16,7 +16,7 @@ import { isEven, deepCloneObject } from "@utils/tools";
 import styled from 'styled-components';
 // import PropTypes from 'prop-types'
 import { getTenants, addRocketMqCluster, updateRmqCluster } from '../../Home/service'
-import { addBrokerInstance } from '../service'
+import { addBrokerInstance, updateBrokerTaskInfo } from '../service'
 import { IrmqDataPrototype } from '../../Home/data'
 import '../../Home/modal/cluster.modal.less';
 import InstanceWrapper from '../../Home/modal/InstanceWrapper'
@@ -113,7 +113,7 @@ const BrokerFormWrapper = styled(`div`)`
   `
 
 function RocketMqModal(props) {
-  let { clusterData, id } = props // 如果为undefined 则是编辑
+  let { brokerData, id, taskId } = props // 如果为undefined 则是编辑
   let [ clusterObj, setClusterObj ] = useState(Object.assign( {}, initialRocketMqObj)); // modal数据对象
   let [ addFlag, setAddFlag ] = useState<boolean>(true); // 默认为添加
 
@@ -194,40 +194,35 @@ function RocketMqModal(props) {
             getInstancesList() // 从新获取列表
             setTableModalVisibility()
           } 
-        }).catch((err)=>{
-            message.warning(err.toString())
-        })
+        }).catch((err)=>message.warning(err.toString()))
       } else {
-        updateRmqCluster(id, postData.params).then((data) => {
+        updateBrokerTaskInfo(taskId, postData.params).then((data) => {
           if(data.taskId) {
             message.success("编辑成功")
-            getRmqList()
+            getInstancesList()
             setTableModalVisibility()
           }
-        })
+        }).catch(err=>message.warning(err.toString()))
       }
-
     })
     
   }
 
   useEffect(()=>{
     console.log('load success')
-    if (clusterData) {
+    if (brokerData) {
       setAddFlag(false)
-      setClusterObj(formatEditData(clusterData))
+      setClusterObj(formatEditData(brokerData))
     }
     setTableModalVisibility();
   }, [])
 
 
-  const formatEditData = (editClusterData)=> {
+  const formatEditData = (editBrokerData)=> {
     // 格式化，添加key
-    let { nameServerInstances, brokerInstances, consoleInstances  } = editClusterData
-    nameServerInstances && nameServerInstances.forEach(item => item.key = Date.now()+'_ns')
-    consoleInstances && consoleInstances.forEach(item => item.key = Date.now()+'_console')
+    let { brokerInstances  } = editBrokerData
     if (brokerInstances) {
-      editClusterData.brokerInstances = brokerInstances.reduce((arr, item, index) => {
+      editBrokerData.brokerInstances = brokerInstances.reduce((arr, item, index) => {
         if (index % 2 ==0) {
           arr.push({
             key: Date.now() + '_broker',
@@ -239,7 +234,7 @@ function RocketMqModal(props) {
         return arr
       }, [])
     }
-    return editClusterData
+    return editBrokerData
   }
 
 
@@ -249,256 +244,6 @@ function RocketMqModal(props) {
     wrapperCol: { span: 24 }
   };
 
-
-
-
-
-
-  // const getConsoleFormItems = ()=> {
-
-  //   const formItems = clusterObj.consoleInstances && clusterObj.consoleInstances.map((broker, index) => (
-  //     <RmqFormItemWrapper key={'broker_item_' + index}>
-         
-  //       <QuarterFormItem
-  //         {...formItemInstanceLayout}
-  //         label=""
-  //         labelAlign="left"
-  //       >
-  //         {getFieldDecorator(`params.consoleInstances[${broker.key}].ip`, {
-  //           initialValue: broker.ip,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "ip必填"
-  //             }
-  //           ]
-  //           })(<Input placeholder="请输入ip"></Input>)}
-  //       </QuarterFormItem>
-
-  //       <QuarterFormItem
-  //         {...formItemInstanceLayout}
-
-  //         label="端口"
-  //       >
-  //         {getFieldDecorator(`params.consoleInstances[${broker.key}].port`, {
-  //           initialValue: broker.port,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "端口必填"
-  //             }
-  //           ]
-  //           })(<Input type="number" placeholder="请输入端口"></Input>)}
-  //       </QuarterFormItem>   
-
-  //       <QuarterFormItem
-  //         {...formItemInstanceLayout}
-
-  //         label="用户名"
-  //       >
-  //         {getFieldDecorator(`params.consoleInstances[${broker.key}].user`, {
-  //           initialValue: broker.user,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "用户名必填"
-  //             }
-  //           ]
-  //           })(<Input placeholder="请输入用户名"></Input>)}
-  //       </QuarterFormItem> 
-
-  //       <QuarterFormItem
-  //         {...formItemInstanceLayout}
-  //         label="密码"
-  //       >
-  //         {getFieldDecorator(`params.consoleInstances[${broker.key}].pass`, {
-  //           initialValue: broker.pass,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "密码必填"
-  //             }
-  //           ]
-  //           })(<Input.Password placeholder="请输入密码" />)}
-  //       </QuarterFormItem>   
-        
-  //       <Tooltip title="删除">
-  //         <DeleteIcon onClick={()=>{deleteConsole(broker.key)}} >-</DeleteIcon>
-  //       </Tooltip>
-                       
-  //     </RmqFormItemWrapper>
-  //   ))
-
-
-
-  //   formItems.push(
-  //     <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-  //       <span onClick= {addConsole} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Console </span>
-  //     </YHFlexSpaceBetwenDiv>
-  //   )
-
- 
-  //   let content = (
-  //     <InstanceWrapper title="Console"> {formItems} </InstanceWrapper>
-  //   )
-   
-
-  //   return content
-
-  // }
-
-  // const addConsole = ()=>{
-  //   let consoleInstances = clusterObj.consoleInstances
-  //   consoleInstances.push({
-  //     ip: '',
-  //     port: '',
-  //     user: '',
-  //     pass: '',
-  //     key: Date.now()+'_console'
-  //   })
-  //   setClusterObj(
-  //     Object.assign({},
-  //     clusterObj,
-  //     consoleInstances
-  //     )
-  //   )
-  // }
-  // const deleteConsole = (key)=>{
-  //   let cloneObj = deepCloneObject(clusterObj)
-  //   cloneObj.consoleInstances = cloneObj.consoleInstances.filter(item => item.key != key)
-  //   setClusterObj(
-  //     Object.assign({},
-  //       cloneObj
-  //     )
-  //   )
-  // }
-
-  // const getNameServerForms = () => {
-
-  //   const formItems = clusterObj.nameServerInstances && clusterObj.nameServerInstances.map((nameServer, index) =>(
-  //     <RmqFormItemWrapper key={nameServer.key}>
-
-  //       <QuarterFormItem
-  //         key={index+'_ip'}
-  //         {...formItemInstanceLayout}
-  //         label="ip"
-  //         labelAlign="left"
-  //       >
-  //         {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].ip`, {
-  //           initialValue: nameServer.ip,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "ip必填"
-  //             }
-  //           ]
-  //           })(<Input placeholder="请输入ip"></Input>)}
-  //       </QuarterFormItem>
-
-  //       <QuarterFormItem
-  //         key={index+'_port'}
-  //         {...formItemInstanceLayout}
-  //         label="端口"
-  //       >
-  //         {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].port`, {
-  //           initialValue: nameServer.port,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "端口必填"
-  //             }
-  //           ]
-  //           })(<Input type="number" placeholder="请输入端口"></Input>)}
-  //       </QuarterFormItem>   
-
-  //       <QuarterFormItem
-  //         key={index+'_user'}
-  //         {...formItemInstanceLayout}
-  //         label="用户名"
-  //       >
-  //         {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].user`, {
-  //           initialValue: nameServer.user,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "用户名必填"
-  //             }
-  //           ]
-  //           })(<Input placeholder="请输入用户名"></Input>)}
-  //       </QuarterFormItem> 
-
-  //       <QuarterFormItem
-  //          key={index+'_pass'}
-  //         {...formItemInstanceLayout}
-  //         label="密码"
-  //       >
-  //         {getFieldDecorator(`params.nameServerInstances[${nameServer.key}].pass`, {
-  //           initialValue: nameServer.pass,
-  //           rules: [
-  //             {
-  //               required: true,
-  //               message: "密码必填"
-  //             }
-  //           ]
-  //           })(<Input.Password placeholder="请输入密码" />)}
-  //       </QuarterFormItem>   
-        
-  //       <Tooltip title="删除">
-  //               <DeleteIcon onClick = { ()=>{deleteNameServer(nameServer.key)}}>-</DeleteIcon>
-
-  //       </Tooltip>
-
-               
-
-  //     </RmqFormItemWrapper>
-  //   ))
-
-
-
-  //   formItems.push(
-  //     <YHFlexSpaceBetwenDiv key={'add_btn_broker'}>
-  //       <span onClick= {addNameServer} style={{color: '#2277DA', cursor: 'pointer'}}>+ 添加Name Server</span>
-  //     </YHFlexSpaceBetwenDiv>
-  //   )
-
-
-  //   let content = (
-  //     <InstanceWrapper title="Name Server"> {formItems} </InstanceWrapper>
-  //   )
-
-  //   return content
-
-
-  // }
-  // const deleteNameServer = (key) => {
-  //   let cloneObj = deepCloneObject(clusterObj)
-  //   let { nameServerInstances } = cloneObj
-  //   cloneObj.nameServerInstances = nameServerInstances.filter(item => item.key !== key)
-  //   setClusterObj(
-  //     Object.assign({},
-  //      cloneObj
-  //     )
-  //   )
-
-    
-  // }
-  // const addNameServer = () => {
-  //   let cloneNmObjv =  deepCloneObject(clusterObj)
-  //   let nameServerInstances = cloneNmObjv.nameServerInstances
-  //   nameServerInstances.push({
-  //     ip: '',
-  //     port: '',
-  //     user: '',
-  //     pass: '',
-  //     key: Date.now()+'_ns'
-  //   })
-
-  //   setClusterObj(
-  //     Object.assign({},
-  //       cloneNmObjv
-  //     )
-  //   )
-  // }
 
 
   

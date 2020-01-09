@@ -25,6 +25,8 @@ import { getTopoData as getInstanceList } from '../../Home/service'
 import { FormatTime, deepCloneObject } from "@tools";
 import Loading from "@com/UI/Loading";
 import '../style.less'
+import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
+import { getBrokerTaskInfo } from '../service'
 
 function ClusterDetail(props){
 
@@ -77,19 +79,83 @@ function ClusterDetail(props){
     })
   }
 
+  const editBroker = (taskId) => {
+    getBrokerTaskInfo(taskId).then(data => {
+      console.log('brokerInstance Id', data)
+      if (data && !com) {
+        import('../modal/Broker.modal').then((component: any) => {
+          if (!com) {
+            setCom(<component.default taskId = {taskId} brokerData = {data} getInstancesList = {getInstancesList} clusterId = { clusterId } tenantList = { tenantList }/>)
+          }
+        })
+      }
+    }).catch(e => {
+      message.warning(e.toString())
+    })
+  }
 
 
 
-  const brokerMenu = text => {
+  // const brokerMenu = text => {
+	// 	return (
+	// 		<Menu>
+	// 			<Menu.Item key="1">
+	// 				<a onClick={() => {}}>部署</a>
+	// 			</Menu.Item>
+	// 			<Menu.Item key="2">
+	// 				<a
+	// 					onClick={() => {
+	// 						// showFormModal(text.id);
+	// 					}}
+	// 				>
+	// 					编辑
+	// 				</a>
+	// 			</Menu.Item>
+	// 			<Menu.Item key="3">
+	// 				<Popconfirm
+	// 					placement="topRight"
+	// 					title={`确定卸载集群${text.name}?`}
+	// 					onConfirm={() => {}}
+	// 					okText="是"
+	// 					cancelText="否"
+	// 				>
+	// 					<a>卸载</a>
+	// 				</Popconfirm>
+	// 			</Menu.Item>
+	// 			<Menu.Item key="4">
+	// 				<Popconfirm
+	// 					placement="topRight"
+	// 					title={`确定删除集群${text.name}?`}
+	// 					onConfirm={() => {}}
+	// 					okText="是"
+	// 					cancelText="否"
+	// 				>
+	// 					<a>删除</a>
+	// 				</Popconfirm>
+	// 			</Menu.Item>
+	// 		</Menu>
+	// 	);
+  // };
+  
+
+  const brokerMenu = item => {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a onClick={() => {}}>部署</a>
+					<a onClick={() => {
+            // checkStatusBeforeOperate('deploy', item.status)(
+            //   item.taskId,
+            //   item.name,
+            //   runRmqTask
+            // )
+
+          }}>部署</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
 						onClick={() => {
-							// showFormModal(text.id);
+              console.log(item, '-----item----->>>>')
+							editBroker(item.taskId);
 						}}
 					>
 						编辑
@@ -98,8 +164,14 @@ function ClusterDetail(props){
 				<Menu.Item key="3">
 					<Popconfirm
 						placement="topRight"
-						title={`确定卸载集群${text.name}?`}
-						onConfirm={() => {}}
+						title={`确定卸载集群?`}
+						onConfirm={() => {
+              // checkStatusBeforeOperate('release', item.status)(
+              //   item.taskId,
+              //   item.name,
+              //   releaseRmqTask
+              // )
+            }}
 						okText="是"
 						cancelText="否"
 					>
@@ -109,8 +181,14 @@ function ClusterDetail(props){
 				<Menu.Item key="4">
 					<Popconfirm
 						placement="topRight"
-						title={`确定删除集群${text.name}?`}
-						onConfirm={() => {}}
+						title={`确定删除集群?`}
+						onConfirm={() => {
+              // checkStatusBeforeOperate("delete", item.status)(
+							// 	item.id,
+							// 	item.name,
+							// 	deleteRmqTask
+							// )
+            }}
 						okText="是"
 						cancelText="否"
 					>
@@ -120,6 +198,8 @@ function ClusterDetail(props){
 			</Menu>
 		);
 	};
+
+
 
   const brokerColumns = [
     {
