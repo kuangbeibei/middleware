@@ -45,7 +45,7 @@ function RocketMqHome(props) {
   let [tableList, setTableList] = useState(Array());
   let [pageInfo, setPageInfo] = useState();
 	let [newItemName, setNewItemName] = useState("");
-	let [newItemType, setNewItemType] = useState("");
+	// let [newItemType, setNewItemType] = useState("");
 	let [loading, setloading] = useState(true);
 	// let [delLoading, setDelLoading] = useState(false);
   // let [addLoading, setAddLoading] = useState(false);

@@ -20,13 +20,24 @@ import {
   Menu,
   Dropdown
 } from "antd";
-import StatusControl from "@com/Status.control";
 import { getClusterConfigInfo as getInstanceList } from '../Detail/service'
-import { FormatTime, deepCloneObject } from "@tools";
 import BrokerTable from './table/BrokerTable'
 import NameServerTable from './table/NameServerTable';
 import ConsoleTable from './table/ConsoleTable';
+import useTenants from "@hooks/use-tenants";
 import './style.less'
+
+
+// const RmqInstancesDispatch = React.createContext(null)
+
+// const rmqInstancessReducer = (state, action) => {
+//   switch(action.typee) {
+//     case 'Get_Instances'
+
+
+//   }
+
+// }
 
 function ClusterDetail(props){
 
@@ -37,6 +48,10 @@ function ClusterDetail(props){
   let [consoleList, setConsoleList] = useState(Array());
   let [brokerList, setBrokerList] = useState(Array());
 
+  let tenantList = useTenants()
+
+
+  // const [  ]
 
 
   const getInstancesList = useCallback(async ()=>{
@@ -85,12 +100,11 @@ function ClusterDetail(props){
       <Divider />
 
 
-      <BrokerTable brokerList={brokerList} />
+      <BrokerTable getInstancesList={getInstancesList} clusterId ={clusterId} tenantList={ tenantList } brokerList={ brokerList } />
 
-      <NameServerTable nameServerList={nameServerList} />
+      <NameServerTable clusterId = {clusterId} tenantList= { tenantList } nameServerList={ nameServerList } />
   
-
-      <ConsoleTable  consoleList={consoleList}/>
+      <ConsoleTable clusterId= {clusterId} tenantList={ tenantList }  consoleList={ consoleList }/>
 
       {
         com

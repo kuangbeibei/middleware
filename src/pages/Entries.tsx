@@ -120,7 +120,7 @@ const RocketmqHome = props => (
 
 // Rocketmq 实例详情页
 const RocketmqInstancesDetail = props => (
-	<DynamicImport load={() => import("@pages/Rocket-MQ/ClusterDetail")}>
+	<DynamicImport load={() => import("@pages/Rocket-MQ/ClusterInstances")}>
 		{Component => childrenOfDynamicImport(Component, props)}
 	</DynamicImport>
 );

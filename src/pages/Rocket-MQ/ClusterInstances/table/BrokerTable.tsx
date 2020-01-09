@@ -28,7 +28,7 @@ import '../style.less'
 
 function ClusterDetail(props){
 
-  let { tableModalVisibility, setTableModalVisibility, brokerList } = props
+  let { tableModalVisibility, setTableModalVisibility, brokerList, tenantList, clusterId, getInstancesList } = props
   let [ loading, setLoading ] = useState(true)
 
   let [com, setCom] = useState();
@@ -68,10 +68,11 @@ function ClusterDetail(props){
   }, [brokerList])
 
   const addBroker = ()=> {
-    import('../modal/Broker.modal').then(component => {
+    import('../modal/Broker.modal').then((component: any) => {
       console.log('加载Broker的modal框完成');
+      console.log(tenantList, 'abcd')
       if (!com) {
-        setCom(<component.default />)
+        setCom(<component.default getInstancesList = {getInstancesList} clusterId = { clusterId } tenantList = { tenantList }/>)
       }
     })
   }
@@ -235,7 +236,15 @@ function ClusterDetail(props){
       { loading ? 
         <Loading /> 
         : 
-        (<Table className="broker-table"  columns={brokerColumns}  dataSource={brokerList} rowKey="id" />) 
+        (<Table 
+          pagination={
+            {
+              defaultCurrent: 1,
+              defaultPageSize: 6
+            }
+          }
+          
+          className="broker-table"  columns={brokerColumns}  dataSource={brokerList} rowKey="id" />) 
       }
       
       {
