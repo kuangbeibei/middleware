@@ -32,7 +32,7 @@ function useTenants() {
 	// console.log('memo list,', tenants);
 	// console.log('getlist,', getlist);
 
-	useEffect(() => getlist, []);
+	useEffect(() => getlist(), []);
 
 	return tenants;
 }
