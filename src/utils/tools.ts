@@ -2,10 +2,18 @@
  * @Author: kuangdan
  * @Date: 2019-11-01 10:32:39
  * @Last Modified: 2019-11-01 10:32:39
+ * 
  */
 // 格式化时间
+// 目前传入的时间都是GMT时间字符串
 export function FormatTime(t) {
-	return t.replace("T", " ").replace("Z", "").replace(/\+\d*\:00/, "");
+  let date = new Date(t)
+  let dateString = t.substring(0, 10);
+  let hour = date.getHours() < 10 ? '0'+ date.getHours() : date.getHours() + ''
+  let min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() + ''
+  let seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds() + ''
+  return `${dateString} ${hour}:${min}:${seconds}`
+	// return t.replace("T", " ").replace("Z", "").replace(/\+\d*\:00/, ""); // GMT string wrong
 }
 
 // 判断是否是对象
