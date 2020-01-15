@@ -23,6 +23,7 @@ import {
 import StatusControl from "@com/Status.control";
 import { getTopoData as getInstanceList } from '../../Home/service'
 import { FormatTime, deepCloneObject } from "@tools";
+import Password from '@com/Password-unit'
 import Loading from "@com/UI/Loading";
 import '../style.less'
 
@@ -133,6 +134,19 @@ function ClusterDetail(props){
       title: "监听端口",
       key: 'port',
       dataIndex: 'port'
+    },
+    {      
+      title: "用户名",
+      key: 'user',
+      dataIndex: 'user'
+    },
+    {
+      title: "密码",
+      key: 'pass',
+      dataIndex: 'pass',
+      render: (val) => {
+        return <Password pass={val} />
+      }
     },
     // {
     //   title: "用户名",

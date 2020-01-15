@@ -21,10 +21,11 @@ import {
   Dropdown
 } from "antd";
 import StatusControl from "@com/Status.control";
-import { getTopoData as getInstanceList } from '../../Home/service'
 import { FormatTime, deepCloneObject } from "@tools";
 import Loading from "@com/UI/Loading";
 import '../style.less'
+import { checkStatusBeforeOperate } from "@funcs/Check-status-before-action";
+import { getBrokerTaskInfo, deleteBrokerInstance, deployBrokerInstance, releaseBrokerResource } from '../service'
 
 function ClusterDetail(props){
 
@@ -34,10 +35,6 @@ function ClusterDetail(props){
   let [com, setCom] = useState();
 
 
-
-
-
-      
   // 监听modal属性的变化
   useEffect(()=>{
     if (!tableModalVisibility.visible && com) {
@@ -72,24 +69,73 @@ function ClusterDetail(props){
       console.log('加载Broker的modal框完成');
       console.log(tenantList, 'abcd')
       if (!com) {
-        setCom(<component.default getInstancesList = {getInstancesList} clusterId = { clusterId } tenantList = { tenantList }/>)
+        setCom(<component.default 
+          getInstancesList = {getInstancesList}
+          clusterId = { clusterId }
+          tenantList = { tenantList }
+        />)
       }
     })
   }
 
+  const editBroker = (taskId) => {
+    getBrokerTaskInfo(taskId).then(data => {
+      console.log('brokerInstance Id', data)
+      if (data && !com) {
+        import('../modal/Broker.modal').then((component: any) => {
+          if (!com) {
+            setCom(<component.default 
+                taskId = {taskId}
+                brokerData = {data}
+                getInstancesList = {getInstancesList}
+                clusterId = { clusterId }
+                tenantList = { tenantList }
+            />)
+          }
+        })
+      }
+    }).catch(e => {
+      message.warning(e.toString())
+    })
+  }
+
+  const deleteBroker = (taskId) => {
+    deleteBrokerInstance(taskId).then(data => {
+      if (data) {
+        message.success('删除成功');
+        getInstancesList()
+      } 
+    }).catch(err => message.warning(err.toString()))
+  }
+
+
+  const deployBroker = (taskId) => {
+    deployBrokerInstance(taskId).then(data => {
+      if (data) {
+        message.success('部署成功');
+        getInstancesList()
+      } 
+    }).catch(err => message.warning(err.toString()))
+  }
 
 
 
-  const brokerMenu = text => {
+  const brokerMenu = item => {
 		return (
 			<Menu>
 				<Menu.Item key="1">
-					<a onClick={() => {}}>部署</a>
+					<a onClick={() => {
+            checkStatusBeforeOperate('deploy', item.status)(
+              item.taskId,
+              item.name,
+              deployBroker
+            )
+          }}>部署</a>
 				</Menu.Item>
 				<Menu.Item key="2">
 					<a
 						onClick={() => {
-							// showFormModal(text.id);
+							editBroker(item.taskId);
 						}}
 					>
 						编辑
@@ -98,8 +144,14 @@ function ClusterDetail(props){
 				<Menu.Item key="3">
 					<Popconfirm
 						placement="topRight"
-						title={`确定卸载集群${text.name}?`}
-						onConfirm={() => {}}
+						title={`确定卸载?`}
+						onConfirm={() => {
+              checkStatusBeforeOperate('release', item.status)(
+                item.taskId,
+                item.name,
+                releaseBrokerResource
+              )
+            }}
 						okText="是"
 						cancelText="否"
 					>
@@ -109,8 +161,14 @@ function ClusterDetail(props){
 				<Menu.Item key="4">
 					<Popconfirm
 						placement="topRight"
-						title={`确定删除集群${text.name}?`}
-						onConfirm={() => {}}
+						title={`确定删除broker实例?`}
+						onConfirm={() => {
+              checkStatusBeforeOperate("delete", item.status)(
+								item.taskId,
+								item.name,
+								deleteBroker
+							)
+            }}
 						okText="是"
 						cancelText="否"
 					>
@@ -120,6 +178,8 @@ function ClusterDetail(props){
 			</Menu>
 		);
 	};
+
+
 
   const brokerColumns = [
     {

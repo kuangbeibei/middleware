@@ -37,9 +37,6 @@ function ClusterDetail(props){
 
 
 
-
-
-      
   // 监听modal属性的变化
   useEffect(()=>{
     if (!tableModalVisibility.visible && com) {
